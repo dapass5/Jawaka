@@ -4318,7 +4318,7 @@ static void jw__render_controls(const jw_settings_ui *ui, int x, int y, int w, i
     char strength[16];
     snprintf(strength, sizeof(strength), "%d%%", ui->rumble_strength);
     jw__render_list_row(&ui->controls_list, x, ly, w, JW_CONTROLS_STRENGTH,
-                        "Strength", ui->rumble_enabled ? strength : "-", true);
+                        "Strength", (ui->rumble_enabled || ui->rumble_game) ? strength : "-", true);
 
     jw__render_list_row(&ui->controls_list, x, ly, w, JW_CONTROLS_NAV,
                         "Cursor Movement",
@@ -4326,7 +4326,7 @@ static void jw__render_controls(const jw_settings_ui *ui, int x, int y, int w, i
 
     jw__render_list_row(&ui->controls_list, x, ly, w, JW_CONTROLS_GAME,
                         "Game Rumble",
-                        ui->rumble_enabled ? (ui->rumble_game ? "On" : "Off") : "-", true);
+                        ui->rumble_game ? "On" : "Off", true);
 
     jw__render_list_row(&ui->controls_list, x, ly, w, JW_CONTROLS_SCREENSHOTS,
                         "Screenshots", ui->screenshots_enabled ? "On" : "Off", true);
@@ -7344,15 +7344,16 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     if (ui->rumble_enabled)
                         jw_ipc_rumble_preview(ui->socket_path, ui->rumble_strength);
                 } else if (ui->controls_list.cursor == JW_CONTROLS_STRENGTH) {
-                    if (!ui->rumble_enabled) break;
+                    if (!ui->rumble_enabled && !ui->rumble_game) break;
                     int s = ui->rumble_strength + dir * 5;
                     if (s < 0) s = 0;
                     if (s > 100) s = 100;
                     if (s != ui->rumble_strength) {
                         ui->rumble_strength = s;
                         jw__persist_int(ui, "rumble_strength", s);
-                        /* Live preview: feel the exact new strength as you slide. */
-                        jw_ipc_rumble_preview(ui->socket_path, s);
+                        /* Preview is menu feedback, so respect its independent switch. */
+                        if (ui->rumble_enabled)
+                            jw_ipc_rumble_preview(ui->socket_path, s);
                     }
                 } else if (ui->controls_list.cursor == JW_CONTROLS_NAV) {
                     if (!ui->rumble_enabled) break;
@@ -7360,7 +7361,6 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     ui->rumble_nav = !ui->rumble_nav;
                     jw__persist_bool(ui, "rumble_nav", ui->rumble_nav);
                 } else if (ui->controls_list.cursor == JW_CONTROLS_GAME) {
-                    if (!ui->rumble_enabled) break;
                     (void)dir;
                     ui->rumble_game = !ui->rumble_game;
                     /* Read by the daemon at game launch, so it takes effect on

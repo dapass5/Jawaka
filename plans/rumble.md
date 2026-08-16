@@ -141,7 +141,8 @@ name for "General" is `JW_SETTINGS_BEHAVIOR`). Rumble does not belong in Display
 
 Seed the section with:
 
-- **Rumble** — master on/off. **Default ON.**
+- **Rumble** — UI/menu haptics on/off. **Default ON.** Game rumble is controlled
+  independently by the Phase-2 toggle below.
 - **Strength** — a **percent slider** reusing the existing brightness/volume track+fill
   widget (`settings.c` ~1866–1871, L/R to adjust), default ~65%, with a **live preview
   buzz** as you drag so you feel the level while setting it. (Slider only — no named
@@ -264,10 +265,10 @@ pad reports no rumble — so the config change is inert rather than harmful if F
 
 ### Settings
 
-**Game Rumble** in Controls & Feedback (DB key `rumble_game`, default on), gated by the
-master Rumble toggle and using the strength slider as the intensity ceiling (the game
-supplies the variable magnitude). Lets a user keep UI haptics without game rumble, or vice
-versa. Read at game launch, so a change takes effect on the next launch.
+**Game Rumble** in Controls & Feedback (DB key `rumble_game`, default on) is independent
+from the Rumble UI-haptics toggle and uses the strength slider as the intensity ceiling
+(the game supplies the variable magnitude). This lets a user keep UI haptics without game
+rumble, or vice versa. Read at game launch, so a change takes effect on the next launch.
 
 ### Ownership / arbitration
 

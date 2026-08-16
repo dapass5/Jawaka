@@ -1392,7 +1392,8 @@ static void jw__rumble_resolve_game_env(jw_daemon_state *state,
     memset(out, 0, sizeof(*out));
     if (!g_rumble_ready || !state) return;
     jw__rumble_refresh_cache(state, (uint64_t)jw__monotonic_ms());
-    if (!state->rumble_enabled_cached || !state->rumble_game_cached) return;
+    /* Menu haptics and emulator rumble are independent user controls. */
+    if (!state->rumble_game_cached) return;
     long max = jw__rumble_duty_for(state->rumble_strength_cached);
     if (max <= 0) return;
     /* Game rumble is SUSTAINED, so it uses the lower sustained floor -- holding it
@@ -11003,9 +11004,12 @@ static int jw__handle_message(jw_daemon_state *state, jw_ipc_client *client,
         if (event && strcmp(event, "preview") == 0) {
             /* Live slider preview: one tick at the exact passed strength (not the
                TTL cache), so the user feels the level as they drag. */
-            cJSON *s = cJSON_GetObjectItemCaseSensitive(root, "strength");
-            int strength = cJSON_IsNumber(s) ? (int)s->valuedouble : 65;
-            jw__rumble_queue(1, jw__rumble_duty_for(strength), JW_RUMBLE_TICK_MS);
+            jw__rumble_refresh_cache(state, (uint64_t)jw__monotonic_ms());
+            if (state->rumble_enabled_cached) {
+                cJSON *s = cJSON_GetObjectItemCaseSensitive(root, "strength");
+                int strength = cJSON_IsNumber(s) ? (int)s->valuedouble : 65;
+                jw__rumble_queue(1, jw__rumble_duty_for(strength), JW_RUMBLE_TICK_MS);
+            }
         } else if (event) {
             jw__rumble_event(state, event);
         }

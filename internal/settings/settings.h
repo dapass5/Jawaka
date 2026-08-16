@@ -148,7 +148,7 @@ typedef enum {
 #define JW_BEHAVIOR_ROW_COUNT   7
 
 /* Controls & Feedback page */
-#define JW_CONTROLS_RUMBLE      0   /* master on/off */
+#define JW_CONTROLS_RUMBLE      0   /* UI/menu haptics on/off */
 #define JW_CONTROLS_STRENGTH    1   /* 0-100 %, left/right adjust */
 #define JW_CONTROLS_NAV         2   /* per-move navigation tick (opt-in) */
 #define JW_CONTROLS_GAME        3   /* hand the motor to emulators in-game */
@@ -296,7 +296,7 @@ typedef struct {
     bool               recording_enabled;   /* Menu+R1 game recording hotkey (daemon reads the DB key) */
     bool               recording_split;     /* cut clips over 10MB into postable parts */
     bool               recording_keep_src;  /* keep the lossless .mkv once the MP4 exists */
-    bool               rumble_enabled;    /* Controls & Feedback: haptics master (daemon reads DB) */
+    bool               rumble_enabled;    /* UI/menu haptics (daemon reads DB) */
     int                rumble_strength;   /* 0-100 % */
     bool               rumble_nav;        /* per-move navigation tick */
     bool               rumble_game;       /* in-game emulator rumble */
