@@ -34,16 +34,16 @@ static int jw__utf8_next(const unsigned char **cursor, uint32_t *out_code) {
     if (*p < 0x80) {
         code = *p;
         length = 1;
-    } else if ((*p & 0xe0) == 0xc0 && p[1] != 0 && p[1] >= 0x80) {
+    } else if ((*p & 0xe0) == 0xc0 && p[1] != 0 && (p[1] & 0xc0) == 0x80) {
         code = ((uint32_t)(p[0] & 0x1f) << 6) | (p[1] & 0x3f);
         length = 2;
     } else if ((*p & 0xf0) == 0xe0 && p[1] != 0 && p[2] != 0 &&
-               p[1] >= 0x80 && p[2] >= 0x80) {
+               (p[1] & 0xc0) == 0x80 && (p[2] & 0xc0) == 0x80) {
         code = ((uint32_t)(p[0] & 0x0f) << 12) |
                ((uint32_t)(p[1] & 0x3f) << 6) | (p[2] & 0x3f);
         length = 3;
     } else if ((*p & 0xf8) == 0xf0 && p[1] != 0 && p[2] != 0 && p[3] != 0 &&
-               p[1] >= 0x80 && p[2] >= 0x80 && p[3] >= 0x80) {
+               (p[1] & 0xc0) == 0x80 && (p[2] & 0xc0) == 0x80 && (p[3] & 0xc0) == 0x80) {
         code = ((uint32_t)(p[0] & 0x07) << 18) |
                ((uint32_t)(p[1] & 0x3f) << 12) |
                ((uint32_t)(p[2] & 0x3f) << 6) | (p[3] & 0x3f);
