@@ -74,6 +74,7 @@ static int jw_pinyin_match(const char *name, const char *query) {
     if (wanted_count == 0) return 0;
 
     const char *candidates[512];
+    char ascii_candidates[512][2];
     size_t candidate_count = 0;
     const unsigned char *cursor = (const unsigned char *)name;
     uint32_t code;
@@ -81,10 +82,12 @@ static int jw_pinyin_match(const char *name, const char *query) {
         const char *initials = NULL;
         if (code < 0x80) {
             if (isalnum((int)code)) {
-                static char ascii[256][2];
-                ascii[code][0] = (char)tolower((int)code);
-                ascii[code][1] = '\0';
-                initials = ascii[code];
+                if (candidate_count >= sizeof(candidates) / sizeof(candidates[0])) {
+                    break;
+                }
+                ascii_candidates[candidate_count][0] = (char)tolower((int)code);
+                ascii_candidates[candidate_count][1] = '\0';
+                initials = ascii_candidates[candidate_count];
             }
         } else {
             initials = jw__pinyin_initials(code);

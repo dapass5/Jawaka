@@ -2630,6 +2630,27 @@ static int jw__build_like_query(const char *query, char *out, size_t out_size) {
     return token_count > 0 ? 0 : 1;
 }
 
+static int jw__pinyin_search_enabled(sqlite3 *db, int *out_enabled) {
+    if (!db || !out_enabled) return -1;
+    *out_enabled = 0;
+
+    static const char *sql =
+        "SELECT value FROM settings WHERE key = 'language';";
+    sqlite3_stmt *stmt = NULL;
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+        return -1;
+    }
+
+    int step_rc = sqlite3_step(stmt);
+    if (step_rc == SQLITE_ROW) {
+        const unsigned char *language = sqlite3_column_text(stmt, 0);
+        *out_enabled = language && strcmp((const char *)language, "zh_CN") == 0;
+    }
+    int rc = (step_rc == SQLITE_ROW || step_rc == SQLITE_DONE) ? 0 : -1;
+    sqlite3_finalize(stmt);
+    return rc;
+}
+
 int jw_db_search_library(const char *db_path, const char *query,
                          jw_search_result *out, int max_count, int *out_count) {
     if (!db_path || !query || !out || max_count <= 0 || !out_count) {
@@ -2654,6 +2675,16 @@ int jw_db_search_library(const char *db_path, const char *query,
     if (jw_db_apply_schema(db) != 0) {
         jw_db_close(db);
         return -1;
+    }
+
+    int pinyin_enabled = 0;
+    if (jw__pinyin_search_enabled(db, &pinyin_enabled) != 0) {
+        jw_db_close(db);
+        return -1;
+    }
+    if (!pinyin_enabled && query_rc > 0) {
+        jw_db_close(db);
+        return 0;
     }
 
     static const char *sql =
@@ -2740,12 +2771,13 @@ int jw_db_search_library(const char *db_path, const char *query,
 
     /* Chinese names are not tokenized by the byte-oriented FTS builder. Scan
        effective display names and append only new games for the fallback. */
-    if (rc == 0 && *out_count < max_count) {
+    if (rc == 0 && pinyin_enabled && *out_count < max_count) {
         static const char *fallback_sql =
             "SELECT games.id, games.system, "
             "COALESCE(NULLIF(gs.value, ''), NULLIF(ig.value, ''), games.name), "
             "games.source_id, games.rom_relpath, COALESCE(games.image_root_kind,''), "
-            "COALESCE(games.image_relpath,''), games.rom_path, COALESCE(games.image_path,'') "
+            "COALESCE(games.image_relpath,''), games.rom_path, COALESCE(games.image_path,''), "
+            "EXISTS(SELECT 1 FROM favorites f WHERE f.kind = 'game' AND f.target_id = games.id) "
             "FROM games "
             "LEFT JOIN game_settings gs ON gs.game_id = games.id AND gs.key = 'display_name' "
             "LEFT JOIN game_settings ig ON ig.game_id = games.id AND ig.key = 'imported_display_name';";
@@ -2754,7 +2786,9 @@ int jw_db_search_library(const char *db_path, const char *query,
             jw_db_close(db);
             return -1;
         }
-        while (sqlite3_step(fallback) == SQLITE_ROW && *out_count < max_count) {
+        int fallback_step_rc = SQLITE_ROW;
+        while ((fallback_step_rc = sqlite3_step(fallback)) == SQLITE_ROW &&
+               *out_count < max_count) {
             const char *name = (const char *)sqlite3_column_text(fallback, 2);
             if (!jw_pinyin_match(name ? name : "", query)) continue;
             int id = sqlite3_column_int(fallback, 0);
@@ -2776,6 +2810,7 @@ int jw_db_search_library(const char *db_path, const char *query,
             const unsigned char *image_relpath = sqlite3_column_text(fallback, 6);
             const unsigned char *rom_path = sqlite3_column_text(fallback, 7);
             const unsigned char *image_path = sqlite3_column_text(fallback, 8);
+            out[i].favorite = sqlite3_column_int(fallback, 9) != 0;
             if (system) snprintf(out[i].system, sizeof(out[i].system), "%s", system);
             snprintf(out[i].name, sizeof(out[i].name), "%s", name ? name : "");
             if (source_id) snprintf(out[i].source_id, sizeof(out[i].source_id), "%s", source_id);
@@ -2785,6 +2820,9 @@ int jw_db_search_library(const char *db_path, const char *query,
             if (rom_path) snprintf(out[i].rom_path, sizeof(out[i].rom_path), "%s", rom_path);
             if (image_path) snprintf(out[i].image_path, sizeof(out[i].image_path), "%s", image_path);
             (*out_count)++;
+        }
+        if (fallback_step_rc != SQLITE_DONE && *out_count < max_count) {
+            rc = -1;
         }
         sqlite3_finalize(fallback);
     }
