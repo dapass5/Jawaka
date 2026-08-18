@@ -9826,6 +9826,19 @@ int main(void) {
        costs ~1s of dead time before the next screen appears, with no benefit. Skip
        it: hide the surface and _Exit. Logs are line-flushed; the resume + clean-exit
        markers are already on disk; the worker threads above were joined cleanly. */
+    /* Coverage dump, when a tester asked for one. It goes here rather than in an
+       atexit handler because this path _Exit()s deliberately, and it is safe to
+       put a file write in front of a fast exit only because it is gated: with
+       JAWAKA_I18N_COVERAGE unset this is a single branch on a cold global. */
+    if (jw_i18n_coverage_enabled()) {
+        const char *logs = getenv("LOGS_PATH");
+        char cov[PATH_MAX];
+        if (logs && logs[0] &&
+            snprintf(cov, sizeof(cov), "%s/i18n-coverage-launcher.txt", logs) <
+                (int)sizeof(cov)) {
+            jw_i18n_coverage_dump(cov);
+        }
+    }
     cat_hide_window();
     _Exit(0);
 }

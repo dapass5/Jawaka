@@ -565,6 +565,10 @@ msgid "HDMI output unavailable on this platform"
 msgstr ""
 
 #: internal/settings/settings.c
+msgid "Hidden"
+msgstr ""
+
+#: internal/settings/settings.c
 msgid "Home Layout"
 msgstr ""
 
@@ -1329,15 +1333,15 @@ msgid "Virtual Boy"
 msgstr ""
 
 #: internal/settings/settings.c
+msgid "Visible"
+msgstr ""
+
+#: internal/settings/settings.c
 msgid "Volume"
 msgstr ""
 
 #: internal/settings/settings.c
 msgid "Wi-Fi"
-msgstr ""
-
-#: internal/settings/settings.c
-msgid "Wifi"
 msgstr ""
 
 #: internal/launcher/system_names.c

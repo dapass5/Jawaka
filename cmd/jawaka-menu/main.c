@@ -2476,6 +2476,19 @@ int main(int argc, char **argv) {
         jw__render_menu(&state);
     }
 
+    /* Coverage dump, when a tester asked for one. Its own file rather than the
+       launcher's: this is a separate binary with its own table, and the failure
+       that made that matter -- jawaka-menu rendering English because only the
+       launcher had loaded a table -- is exactly what per-binary coverage shows. */
+    if (jw_i18n_coverage_enabled()) {
+        const char *logs = getenv("LOGS_PATH");
+        char cov[PATH_MAX];
+        if (logs && logs[0] &&
+            snprintf(cov, sizeof(cov), "%s/i18n-coverage-menu.txt", logs) <
+                (int)sizeof(cov)) {
+            jw_i18n_coverage_dump(cov);
+        }
+    }
     /* Hand-off exit (back to the launcher): skip cat_quit()'s SDL/TTF teardown — the
        OS reclaims it and the Wayland surface on exit, and it's pure dead time before
        the launcher reappears. Logs are line-flushed; no exit-time writes are pending. */

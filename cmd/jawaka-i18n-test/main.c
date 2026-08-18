@@ -208,6 +208,39 @@ int main(int argc, char **argv) {
     expect_true("tsv-only language offered", n == 2);
     unlink(path);
 
+    /* ── Coverage recording ─────────────────────────────────────────── */
+
+    /* Off unless asked for. A tester enables it; nobody else pays for it. */
+    unsetenv("JAWAKA_I18N_COVERAGE");
+    expect_true("coverage off by default", jw_i18n_load("zh_CN") &&
+                                           !jw_i18n_coverage_enabled());
+    (void)T("Definitely Not Translated");
+    snprintf(path, sizeof(path), "%s/cov-off.txt", userdata);
+    expect_true("dump writes nothing when off", jw_i18n_coverage_dump(path) == 0);
+
+    setenv("JAWAKA_I18N_COVERAGE", "1", 1);
+    expect_true("coverage on with env", jw_i18n_load("zh_CN") &&
+                                        jw_i18n_coverage_enabled());
+
+    /* A hit must not be recorded, and the same miss repeated must count once --
+       this sits on the render path, where the same keys miss every redraw. */
+    (void)T("Settings");
+    (void)T("Definitely Not Translated");
+    (void)T("Definitely Not Translated");
+    (void)T("Also Missing");
+    snprintf(path, sizeof(path), "%s/cov-on.txt", userdata);
+    expect_true("records misses, deduped, hits excluded",
+                jw_i18n_coverage_dump(path) == 2);
+
+    /* Reloading a language starts a fresh set rather than accumulating across
+       a language change. */
+    expect_true("reload clears the set", jw_i18n_load("zh_CN"));
+    (void)T("Only One Now");
+    snprintf(path, sizeof(path), "%s/cov-reload.txt", userdata);
+    expect_true("set is per-load", jw_i18n_coverage_dump(path) == 1);
+    unsetenv("JAWAKA_I18N_COVERAGE");
+    jw_i18n_shutdown();
+
     if (failures) {
         fprintf(stderr, "i18n-test: %d failure(s)\n", failures);
         return 1;

@@ -198,7 +198,9 @@ msgstr "电池"
 msgid "Battery Saver"
 msgstr "省电"
 
-msgid "Beta builds are tester previews and may be unstable or lose data. Switch to the Beta update channel?"
+msgid ""
+"Beta builds are tester previews and may be unstable or lose data. Switch to "
+"the Beta update channel?"
 msgstr "测试版可能不稳定或导致数据丢失，确认切换到测试版更新通道吗？"
 
 msgid "Black Frame Insertion"
@@ -351,6 +353,9 @@ msgstr "要启用 USB ADB 并设为开机自启吗？"
 msgid "Enabled"
 msgstr "已启用"
 
+msgid "Exit to Stock"
+msgstr "退出到原厂系统"
+
 msgid "Famicom Disk System"
 msgstr ""
 
@@ -419,6 +424,9 @@ msgstr "HDMI 输出切换失败"
 
 msgid "HDMI output unavailable on this platform"
 msgstr "此平台不支持 HDMI 输出"
+
+msgid "Hidden"
+msgstr ""
 
 msgid "Home Layout"
 msgstr "主页布局"
@@ -552,6 +560,10 @@ msgstr "未找到游戏"
 msgid "No playtime recorded yet."
 msgstr "暂无游玩记录。"
 
+#, fuzzy
+msgid "No results"
+msgstr "无结果"
+
 msgid "No save in this slot"
 msgstr "此存档位为空"
 
@@ -597,6 +609,13 @@ msgstr "选项"
 msgid "Paired"
 msgstr "已配对"
 
+msgid "Pak Rat"
+msgstr ""
+
+#, fuzzy
+msgid "Path: Apps/%s"
+msgstr "路径：Apps/%s"
+
 msgid "Performance"
 msgstr "性能"
 
@@ -627,6 +646,10 @@ msgstr "移植游戏"
 msgid "Power"
 msgstr "电源"
 
+#, fuzzy
+msgid "Power Off"
+msgstr "关机"
+
 msgid "Profile"
 msgstr "配置"
 
@@ -635,6 +658,10 @@ msgstr "退出"
 
 msgid "RAM"
 msgstr "内存"
+
+#, fuzzy
+msgid "Reboot"
+msgstr "重启"
 
 msgid "Reboot failed"
 msgstr "重启失败"
@@ -660,6 +687,10 @@ msgstr "重新安装"
 msgid "Release"
 msgstr "版本"
 
+#, fuzzy
+msgid "Release-managed path"
+msgstr "由系统更新管理的路径"
+
 msgid "Releases"
 msgstr "版本"
 
@@ -677,6 +708,10 @@ msgstr "替换"
 
 msgid "Rescan"
 msgstr "重新扫描"
+
+#, fuzzy
+msgid "Rescan Library"
+msgstr "重新扫描游戏库"
 
 msgid "Reset"
 msgstr "重置"
@@ -825,6 +860,10 @@ msgstr "稳定版"
 msgid "Start"
 msgstr "开始"
 
+#, fuzzy
+msgid "Start 5-Game Mode"
+msgstr "开启精选游戏模式"
+
 msgid "Start with Leaf"
 msgstr "随 Leaf 启动"
 
@@ -900,6 +939,10 @@ msgstr "关闭"
 msgid "Turn On"
 msgstr "开启"
 
+#, fuzzy
+msgid "Type to search"
+msgstr "输入以搜索"
+
 msgid "UK / Ireland"
 msgstr "英国 / 爱尔兰"
 
@@ -966,13 +1009,13 @@ msgstr ""
 msgid "Virtual Boy"
 msgstr ""
 
+msgid "Visible"
+msgstr ""
+
 msgid "Volume"
 msgstr "音量"
 
 msgid "Wi-Fi"
-msgstr ""
-
-msgid "Wifi"
 msgstr ""
 
 msgid "WonderSwan"
@@ -1020,6 +1063,10 @@ msgstr "刷新率切换失败"
 msgid "refresh rate unavailable on this platform"
 msgstr "此平台不支持刷新率切换"
 
+#, fuzzy
+msgid "space"
+msgstr "空格"
+
 msgid "unsaved · %d of %d"
 msgstr "未保存 · %d / %d"
 
@@ -1031,45 +1078,3 @@ msgstr "音量调节失败"
 
 msgid "—"
 msgstr ""
-
-msgid "Exit to Stock"
-msgstr "退出到原厂系统"
-
-msgid "Pak Rat"
-msgstr ""
-
-#, fuzzy
-msgid "Power Off"
-msgstr "关机"
-
-#, fuzzy
-msgid "Reboot"
-msgstr "重启"
-
-#, fuzzy
-msgid "Rescan Library"
-msgstr "重新扫描游戏库"
-
-#, fuzzy
-msgid "Start 5-Game Mode"
-msgstr "开启精选游戏模式"
-
-#, fuzzy
-msgid "No results"
-msgstr "无结果"
-
-#, fuzzy
-msgid "Type to search"
-msgstr "输入以搜索"
-
-#, fuzzy
-msgid "space"
-msgstr "空格"
-
-#, fuzzy
-msgid "Path: Apps/%s"
-msgstr "路径：Apps/%s"
-
-#, fuzzy
-msgid "Release-managed path"
-msgstr "由系统更新管理的路径"

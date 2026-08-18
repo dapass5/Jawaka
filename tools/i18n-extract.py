@@ -40,7 +40,6 @@ EXCLUDE_PARTS = ("third_party", "cmd/jawaka-i18n-test")
 FUNNELS = [
     "T",
     "jw__render_list_row",
-    "jw__render_list_row_c",
     "jw__render_list_row_h",
     "jw__render_nav_row",
     "jw__draw_header",

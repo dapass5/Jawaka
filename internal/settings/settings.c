@@ -1960,7 +1960,12 @@ static void jw__render_nav_row(const cat_list_state *list, int x, int y,
 
     ap_color tc = selected ? theme->highlighted_text : theme->text;
     int ty = pill_y + (pill_h - TTF_FontHeight(body)) / 2;
-    cat_draw_text_ellipsized(body, label, x + cat_scale(12), ty, tc, w - cat_scale(24));
+    /* Translated here for the same reason jw__render_list_row_impl does it: the
+       label belongs to the renderer, not to its call sites. Missing that made
+       every nav row in Settings render English while its translation sat in the
+       table unused -- extraction had always found these strings, so the .po was
+       right and only the lookup was absent. */
+    cat_draw_text_ellipsized(body, T(label), x + cat_scale(12), ty, tc, w - cat_scale(24));
 }
 
 static void jw__render_color_swatch(int x, int list_y, int w, int row, ap_color c) {
@@ -2165,9 +2170,13 @@ static void jw__battery_mode_to_flags(int mode, bool *icon, bool *number) {
     *number = (mode == JW_BATTERY_PERCENT || mode == JW_BATTERY_BOTH);
 }
 
-/* Status-bar visibility toggles read as Visible/Hidden rather than On/Off. */
+/* Status-bar visibility toggles read as Visible/Hidden rather than On/Off.
+   Translated here rather than at the call sites: a helper is a function, so it
+   can call T() directly, and T is the first funnel the extractor looks for -- so
+   the strings reach the .po with no registry entry to keep in step. Returning
+   bare literals is why four Status Bar rows rendered English. */
 static inline const char *jw__vis_label(bool visible) {
-    return visible ? "Visible" : "Hidden";
+    return visible ? T("Visible") : T("Hidden");
 }
 
 static void jw__render_statusbar(const jw_settings_ui *ui, int x, int y, int w, int h) {
@@ -2182,7 +2191,7 @@ static void jw__render_statusbar(const jw_settings_ui *ui, int x, int y, int w, 
                         kBatteryModeLabels[jw__battery_mode(ui->show_battery, ui->show_battery_level)],
                         true);
     jw__render_list_row(&ui->statusbar_list, x, ly, w, JW_STATUSBAR_WIFI,
-                        "Wifi", jw__vis_label(ui->show_wifi), true);
+                        "Wi-Fi", jw__vis_label(ui->show_wifi), true);
     jw__render_list_row(&ui->statusbar_list, x, ly, w, JW_STATUSBAR_BLUETOOTH,
                         "Bluetooth", jw__vis_label(ui->show_bluetooth), true);
     jw__render_list_row(&ui->statusbar_list, x, ly, w, JW_STATUSBAR_VOLUME,

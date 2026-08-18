@@ -71,4 +71,26 @@ size_t jw_i18n_available(const char **out, size_t max);
  * coverage gate; not needed for normal use. */
 size_t jw_i18n_count(void);
 
+/* Coverage recording. A missing translation is otherwise silent -- T() returns
+ * its key and the screen renders English -- so the only thing that has ever
+ * detected one is a native speaker reading the whole device. This makes the gap
+ * measurable instead, in any language, and catches keys assembled at runtime
+ * that no source-scanning extractor can see.
+ *
+ * Enabled by JAWAKA_I18N_COVERAGE=1 in the environment, read once when a table
+ * loads. Off, the cost is one predictable branch on a cold global. It records
+ * distinct keys in memory only and never touches the filesystem during a
+ * lookup: T() sits on the render path, and misses are the COMMON case there
+ * because values (game names, scraper status) flow through it too.
+ *
+ * Meaningful only with a table loaded; running in English records nothing.
+ */
+bool jw_i18n_coverage_enabled(void);
+
+/* Write the recorded keys, one per line, and return how many. Call from a
+ * deliberate teardown or a signal handler's follow-up, never per frame.
+ * Returns 0 when recording is off. A dumped key that already has a translation
+ * in the .po is a format-conversion mismatch rather than a coverage gap. */
+size_t jw_i18n_coverage_dump(const char *path);
+
 #endif /* JW_I18N_H */

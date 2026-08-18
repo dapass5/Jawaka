@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "internal/core/log.h"
 
@@ -290,10 +291,16 @@ static bool g_i18n_entries_owned = false;
 
 /* ── Public API ──────────────────────────────────────────────────────────── */
 
+static void jw__i18n_miss_init(void);
+
 bool jw_i18n_load(const char *lang) {
     jw_i18n_shutdown();
 
     if (!lang || !lang[0] || strcmp(lang, "en") == 0) return false;
+
+    /* Only with a table loaded. English has nothing to miss against, so
+       recording there would report every string in the product as untranslated. */
+    jw__i18n_miss_init();
 
     char path[PATH_MAX];
 
@@ -320,9 +327,180 @@ bool jw_i18n_load(const char *lang) {
     return false;
 }
 
+/* ── Coverage log ────────────────────────────────────────────────────────────
+ *
+ * A missing translation is silent: T() returns its key and the screen renders
+ * English, so the only thing that has ever detected one is a native speaker
+ * reading the device. That does not scale to a second language, and it spends a
+ * volunteer's time on a task a machine should do.
+ *
+ * Recording the keys that miss turns coverage into something measurable: walk
+ * the UI, dump the set, translate what comes out. It also catches the class no
+ * static extractor can reach, because a key assembled with snprintf at runtime
+ * has no literal to find.
+ *
+ * ⛔ A miss is the HOT path, not an exception. Values flow through T() as well
+ * as labels, so every game name, system name and scraper status misses on every
+ * redraw. This is why the whole thing hangs off a flag that is off in normal
+ * use, why nothing here touches the filesystem, and why the set never grows
+ * without bound. jawakad logging one line per haptic tick once accounted for
+ * 16% of the log; the same mistake here would sit on the render path.
+ */
+
+#define JW_I18N_MISS_CAP 4096u          /* distinct keys; ~200KB worst case */
+
+typedef struct {
+    char    **keys;                      /* open-addressed, NULL = free slot */
+    uint32_t *hashes;
+    uint32_t  cap;                       /* power of two */
+    uint32_t  count;
+    bool      enabled;
+    bool      overflowed;
+} jw__i18n_misses;
+
+static jw__i18n_misses g_misses;
+
+/* Read once at load rather than per lookup: getenv on the render path is the
+ * kind of thing this file's header comment exists to prevent.
+ *
+ * Two triggers, because the env var alone is not usable on the device. The
+ * launcher and menu are spawned by jawakad, which init starts three levels up
+ * from any shell a tester has, so there is nowhere convenient to export a
+ * variable. A marker file on the card is settable over ADB in one line, sticks
+ * across reboots until removed, and matches how everything else here is gated
+ * (loong_upgrade, the .umrk-migrations stamps). The env var stays for desktop
+ * runs and the test binary. */
+static void jw__i18n_miss_init(void) {
+    const char *env = getenv("JAWAKA_I18N_COVERAGE");
+    g_misses.enabled = env && env[0] && strcmp(env, "0") != 0;
+
+    if (!g_misses.enabled) {
+        const char *root = getenv("UMRK_INTERNAL_DATA_PATH");
+        if (root && root[0]) {
+            char marker[PATH_MAX];
+            if (snprintf(marker, sizeof(marker), "%s/i18n/coverage.on", root) <
+                    (int)sizeof(marker) &&
+                access(marker, F_OK) == 0) {
+                g_misses.enabled = true;
+            }
+        }
+    }
+    if (!g_misses.enabled) return;
+
+    g_misses.cap = 1024u;
+    g_misses.keys = calloc(g_misses.cap, sizeof(*g_misses.keys));
+    g_misses.hashes = calloc(g_misses.cap, sizeof(*g_misses.hashes));
+    if (!g_misses.keys || !g_misses.hashes) {
+        free(g_misses.keys);
+        free(g_misses.hashes);
+        g_misses.keys = NULL;
+        g_misses.hashes = NULL;
+        g_misses.enabled = false;
+        return;
+    }
+    g_misses.count = 0;
+    g_misses.overflowed = false;
+    jw_log_info("i18n coverage: recording untranslated keys (cap %u)",
+                JW_I18N_MISS_CAP);
+}
+
+static void jw__i18n_miss_free(void) {
+    for (uint32_t i = 0; i < g_misses.cap; i++) {
+        if (g_misses.keys && g_misses.keys[i]) free(g_misses.keys[i]);
+    }
+    free(g_misses.keys);
+    free(g_misses.hashes);
+    memset(&g_misses, 0, sizeof(g_misses));
+}
+
+static bool jw__i18n_miss_grow(void);
+
+/* Cheap on a repeat, which is the common case: the same handful of keys miss on
+ * every redraw, so after the first frame this is a hash probe and a strcmp
+ * against a slot that is already there. */
+static void jw__i18n_miss_record(const char *english, uint32_t hash) {
+    if (!g_misses.enabled) return;
+    if (g_misses.count * 4 >= g_misses.cap * 3 && !jw__i18n_miss_grow()) return;
+
+    uint32_t mask = g_misses.cap - 1;
+    uint32_t i = hash & mask;
+    while (g_misses.keys[i]) {
+        if (g_misses.hashes[i] == hash &&
+            strcmp(g_misses.keys[i], english) == 0) {
+            return;                                  /* already recorded */
+        }
+        i = (i + 1) & mask;
+    }
+
+    char *copy = strdup(english);
+    if (!copy) return;                               /* diagnostics never fail a launch */
+    g_misses.keys[i] = copy;
+    g_misses.hashes[i] = hash;
+    g_misses.count++;
+}
+
+static bool jw__i18n_miss_grow(void) {
+    if (g_misses.cap >= JW_I18N_MISS_CAP) {
+        if (!g_misses.overflowed) {
+            g_misses.overflowed = true;
+            jw_log_warn("i18n coverage: hit the %u key cap; later misses dropped",
+                        JW_I18N_MISS_CAP);
+        }
+        return false;
+    }
+    uint32_t ncap = g_misses.cap * 2;
+    char **nk = calloc(ncap, sizeof(*nk));
+    uint32_t *nh = calloc(ncap, sizeof(*nh));
+    if (!nk || !nh) { free(nk); free(nh); return false; }
+
+    uint32_t nmask = ncap - 1;
+    for (uint32_t i = 0; i < g_misses.cap; i++) {
+        if (!g_misses.keys[i]) continue;
+        uint32_t j = g_misses.hashes[i] & nmask;
+        while (nk[j]) j = (j + 1) & nmask;
+        nk[j] = g_misses.keys[i];
+        nh[j] = g_misses.hashes[i];
+    }
+    free(g_misses.keys);
+    free(g_misses.hashes);
+    g_misses.keys = nk;
+    g_misses.hashes = nh;
+    g_misses.cap = ncap;
+    return true;
+}
+
+size_t jw_i18n_coverage_dump(const char *path) {
+    if (!g_misses.enabled || !path || !path[0]) return 0;
+    FILE *fp = fopen(path, "w");
+    if (!fp) {
+        jw_log_warn("i18n coverage: cannot write %s", path);
+        return 0;
+    }
+    /* One key per line, unsorted -- the consumer sorts. Context prefixes are
+       kept as written so a "verb|Open" miss is distinguishable from "noun|Open". */
+    fprintf(fp, "# untranslated keys seen while running, language=%s\n",
+            g_i18n.lang[0] ? g_i18n.lang : "en");
+    if (g_misses.overflowed) {
+        fprintf(fp, "# WARNING: hit the %u key cap; this list is incomplete\n",
+                JW_I18N_MISS_CAP);
+    }
+    size_t written = 0;
+    for (uint32_t i = 0; i < g_misses.cap; i++) {
+        if (!g_misses.keys[i]) continue;
+        fprintf(fp, "%s\n", g_misses.keys[i]);
+        written++;
+    }
+    fclose(fp);
+    jw_log_info("i18n coverage: wrote %zu untranslated keys to %s", written, path);
+    return written;
+}
+
+bool jw_i18n_coverage_enabled(void) { return g_misses.enabled; }
+
 void jw_i18n_shutdown(void) {
     if (g_i18n_entries_owned) free((void *)g_i18n.entries);
     g_i18n_entries_owned = false;
+    jw__i18n_miss_free();
     jw__i18n_reset();
 }
 
@@ -349,11 +527,19 @@ const char *jw_i18n(const char *english) {
             /* Format strings are looked up and then handed to snprintf, so a
                translation with mismatched conversions must lose here, not
                crash there. Cheap for plain strings: no '%' exits instantly. */
-            if (strchr(english, '%') && !jw__i18n_fmt_compatible(english, val))
+            if (strchr(english, '%') && !jw__i18n_fmt_compatible(english, val)) {
+                /* Recorded like any other miss: the user sees English either
+                   way. It stays distinguishable downstream without extra
+                   plumbing, because this key IS in the .po -- so a dumped key
+                   that already has a translation is a format mismatch, not a
+                   coverage gap. */
+                jw__i18n_miss_record(english, h);
                 return jw__i18n_strip_context(english);
+            }
             return val;
         }
     }
+    jw__i18n_miss_record(english, h);
     return jw__i18n_strip_context(english);
 }
 
