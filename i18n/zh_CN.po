@@ -1516,124 +1516,94 @@ msgstr "A：选择   B：返回"
 msgid "Shortcut"
 msgstr "快捷键"
 
-# In-game shader picker. Marked fuzzy: suggested, not reviewed.
-#, fuzzy
+# In-game shader picker. Reviewed by dapass5 in PR #117 review; fuzzy cleared.
 msgid "Advanced RetroArch menu"
 msgstr "RetroArch 高级菜单"
 
-#, fuzzy
 msgid "All RetroArch"
 msgstr "所有 RetroArch 游戏"
 
-#, fuzzy
 msgid "All RetroArch requires a Leaf build with Fugazi's conflict resolver."
 msgstr "所有 RetroArch 游戏需要包含 Fugazi 冲突解析器的 Leaf 版本。"
 
-#, fuzzy
 msgid "Remove the saved preset at the selected scope and turn shaders off."
 msgstr "移除所选作用范围内已保存的预设，并关闭着色器。"
 
-#, fuzzy
 msgid "Edit the current shader in RetroArch."
 msgstr "在 RetroArch 中编辑当前着色器。"
 
-#, fuzzy
 msgid "Leaf's in-game picker supports GLSL presets (.glslp)."
 msgstr "Leaf 的游戏内选择器支持 GLSL 预设（.glslp）。"
 
-#, fuzzy
 msgid "Leaf's shader files are incomplete. Update or reinstall Leaf."
 msgstr "Leaf 的着色器文件不完整。请更新或重新安装 Leaf。"
 
-#, fuzzy
 msgid "No saved shader exists at that scope."
 msgstr "该作用范围内没有已保存的着色器。"
 
-#, fuzzy
 msgid "Save your edits in RetroArch before you leave."
 msgstr "离开前，请在 RetroArch 中保存修改。"
 
-#, fuzzy
 msgid "Recommended shaders are unavailable. Update or reinstall Leaf."
 msgstr "推荐的着色器不可用。请更新或重新安装 Leaf。"
 
-#, fuzzy
 msgid "RetroArch did not confirm the shader. Reopen Shader or restart the game."
 msgstr "RetroArch 未确认着色器。请重新打开“着色器”或重启游戏。"
 
-#, fuzzy
 msgid "RetroArch is not available. Shader unchanged."
 msgstr "RetroArch 不可用。着色器未更改。"
 
-#, fuzzy
 msgid "Save globally"
 msgstr "全局保存"
 
-#, fuzzy
 msgid "Save current shader…"
 msgstr "保存当前着色器…"
 
-#, fuzzy
 msgid "Choose where RetroArch should load this shader automatically."
 msgstr "选择 RetroArch 应自动加载此着色器的作用范围。"
 
-#, fuzzy
 msgid "A broader preset may apply after you reload the game."
 msgstr "重新加载游戏后，可能会应用作用范围更广的预设。"
 
-#, fuzzy
 msgid "Scope"
 msgstr "作用范围"
 
-#, fuzzy
 msgid "Shader"
 msgstr "着色器"
 
-#, fuzzy
 msgid "Shader failed and the previous shader could not be restored. Reopen the game."
 msgstr "着色器应用失败，且无法恢复之前的着色器。请重新打开游戏。"
 
-#, fuzzy
 msgid "Shader is active for this session, but could not be saved for %s."
 msgstr "着色器在本次会话中已启用，但无法保存到%s。"
 
-#, fuzzy
 msgid "Shader operation failed."
 msgstr "着色器操作失败。"
 
-#, fuzzy
 msgid "Shader scope"
 msgstr "着色器作用范围"
 
-#, fuzzy
 msgid "The saved shader could not be removed."
 msgstr "无法移除已保存的着色器。"
 
-#, fuzzy
 msgid "This RetroArch build does not support Leaf's shader picker."
 msgstr "当前 RetroArch 版本不支持 Leaf 的着色器选择器。"
 
-#, fuzzy
 msgid "This folder"
 msgstr "此文件夹"
 
-#, fuzzy
 msgid "This game"
 msgstr "此游戏"
 
-#, fuzzy
 msgid "This replaces the shader for every RetroArch game and can replace Fugazi. Continue?"
 msgstr "这会替换所有 RetroArch 游戏的着色器，也可能替换 Fugazi。是否继续？"
 
-#, fuzzy
 msgid "This shader could not compile or link on this video driver. Previous shader restored."
 msgstr "此着色器无法在当前视频驱动下编译或链接。已恢复之前的着色器。"
 
-#, fuzzy
 msgid "Use Advanced to edit it in RetroArch."
 msgstr "使用高级选项在 RetroArch 中编辑。"
 
-#, fuzzy
 msgid "that scope"
 msgstr "该作用范围"
 
