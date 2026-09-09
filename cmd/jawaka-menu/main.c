@@ -233,7 +233,6 @@ typedef struct {
 } jw_perf_option;
 
 static const jw_platform_perf_profile kInGamePerfProfiles[] = {
-    JW_PLATFORM_PERF_PROFILE_AUTO,
     JW_PLATFORM_PERF_PROFILE_BALANCED,
     JW_PLATFORM_PERF_PROFILE_PERFORMANCE,
     JW_PLATFORM_PERF_PROFILE_BATTERY_SAVER,
@@ -918,9 +917,20 @@ static void jw__ingame_perf_sync_indices(jw_ingame_state *state) {
     if (!state || !state->perf_ready) {
         return;
     }
-    state->perf_profile_index = jw__ingame_perf_profile_index(
-        state->perf.session_override ? state->perf.session_profile
-                                     : state->perf.global_profile);
+    /* Auto is intentionally not offered in the in-game picker. When the
+       session inherits global Auto, use the daemon's resolved active profile
+       so the displayed choice matches the profile actually applied for this
+       system (Balanced or Performance). */
+    const char *requested_profile = state->perf.session_override
+        ? state->perf.session_profile : state->perf.global_profile;
+    jw_platform_perf_profile requested;
+    if (!state->perf.session_override &&
+        jw_platform_parse_perf_profile(requested_profile, &requested) &&
+        requested == JW_PLATFORM_PERF_PROFILE_AUTO &&
+        state->perf.active_profile[0]) {
+        requested_profile = state->perf.active_profile;
+    }
+    state->perf_profile_index = jw__ingame_perf_profile_index(requested_profile);
     state->perf_cpu_index = jw__ingame_perf_match_option(
         &state->perf.domains[JW_PLATFORM_PERF_DOMAIN_CPU],
         kCpuPerfOptions, JW_CPU_PERF_OPTION_COUNT);
