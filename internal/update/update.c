@@ -1,6 +1,7 @@
 #include "internal/update/update.h"
 #include "internal/update/sha256.h"
 #include "internal/platform/leaf_version.h"
+#include "internal/i18n/i18n.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -55,7 +56,7 @@ static void jw__set_message(jw_update_status *status, const char *fmt, ...) {
 
     va_list args;
     va_start(args, fmt);
-    vsnprintf(status->message, sizeof(status->message), fmt ? fmt : "", args);
+    vsnprintf(status->message, sizeof(status->message), fmt ? T(fmt) : "", args);
     va_end(args);
 }
 
@@ -72,7 +73,7 @@ static void jw__set_install_message(jw_update_status *status,
     va_list args;
     va_start(args, fmt);
     vsnprintf(status->install_message, sizeof(status->install_message),
-              fmt ? fmt : "", args);
+              fmt ? T(fmt) : "", args);
     va_end(args);
 }
 
@@ -259,7 +260,7 @@ static int jw__download_with_libcurl(const char *url,
     (void)out_path;
     (void)accept;
     if (error && error_size > 0) {
-        snprintf(error, error_size, "%s", "libcurl support is not built in");
+        snprintf(error, error_size, "%s", T("libcurl support is not built in"));
     }
     return -2;
 #else
@@ -274,7 +275,7 @@ static int jw__download_with_libcurl(const char *url,
     CURLcode rc = curl_global_init(CURL_GLOBAL_DEFAULT);
     if (rc != CURLE_OK) {
         if (error && error_size > 0) {
-            snprintf(error, error_size, "libcurl global init failed: %s",
+            snprintf(error, error_size, T("libcurl global init failed: %s"),
                      curl_easy_strerror(rc));
         }
         goto cleanup;
@@ -284,7 +285,7 @@ static int jw__download_with_libcurl(const char *url,
     easy = curl_easy_init();
     if (!easy) {
         if (error && error_size > 0) {
-            snprintf(error, error_size, "%s", "libcurl easy init failed");
+            snprintf(error, error_size, "%s", T("libcurl easy init failed"));
         }
         goto cleanup;
     }
@@ -292,7 +293,7 @@ static int jw__download_with_libcurl(const char *url,
     fp = fopen(out_path, "wb");
     if (!fp) {
         if (error && error_size > 0) {
-            snprintf(error, error_size, "cannot open download output: %s",
+            snprintf(error, error_size, T("cannot open download output: %s"),
                      strerror(errno));
         }
         goto cleanup;
@@ -304,7 +305,7 @@ static int jw__download_with_libcurl(const char *url,
     headers = curl_slist_append(headers, accept_header);
     if (!headers) {
         if (error && error_size > 0) {
-            snprintf(error, error_size, "%s", "cannot allocate libcurl header list");
+            snprintf(error, error_size, "%s", T("cannot allocate libcurl header list"));
         }
         goto cleanup;
     }
@@ -314,7 +315,7 @@ static int jw__download_with_libcurl(const char *url,
         CURLcode set_rc = curl_easy_setopt(easy, option, value); \
         if (set_rc != CURLE_OK) { \
             if (error && error_size > 0) { \
-                snprintf(error, error_size, "libcurl option failed: %s", \
+                snprintf(error, error_size, T("libcurl option failed: %s"), \
                          curl_easy_strerror(set_rc)); \
             } \
             goto cleanup; \
@@ -365,7 +366,7 @@ static int jw__download_with_libcurl(const char *url,
     if (rc != CURLE_OK) {
         if (error && error_size > 0) {
             const char *msg = curl_easy_strerror(rc);
-            snprintf(error, error_size, "libcurl download failed: %s",
+            snprintf(error, error_size, T("libcurl download failed: %s"),
                      curl_error[0] ? curl_error :
                      (msg && msg[0] ? msg : "unknown error"));
         }
@@ -375,7 +376,7 @@ static int jw__download_with_libcurl(const char *url,
     if (fflush(fp) != 0 || fclose(fp) != 0) {
         fp = NULL;
         if (error && error_size > 0) {
-            snprintf(error, error_size, "cannot finish download output: %s",
+            snprintf(error, error_size, T("cannot finish download output: %s"),
                      strerror(errno));
         }
         goto cleanup;
@@ -410,7 +411,7 @@ static pid_t jw__spawn_https_to_file(const char *url,
     }
     if (!jw__https_url_safe(url) || !out_path || !out_path[0]) {
         if (error && error_size > 0) {
-            snprintf(error, error_size, "%s", "invalid HTTPS download request");
+            snprintf(error, error_size, "%s", T("invalid HTTPS download request"));
         }
         return -1;
     }
@@ -448,7 +449,7 @@ static pid_t jw__spawn_https_to_file(const char *url,
     pid_t pid = fork();
     if (pid < 0) {
         if (error && error_size > 0) {
-            snprintf(error, error_size, "cannot start HTTPS downloader: %s",
+            snprintf(error, error_size, T("cannot start HTTPS downloader: %s"),
                      strerror(errno));
         }
         return -1;
@@ -481,7 +482,7 @@ static int jw__fetch_https_to_file(const char *url,
     }
     if (!jw__https_url_safe(url) || !out_path || !out_path[0]) {
         if (error && error_size > 0) {
-            snprintf(error, error_size, "%s", "invalid HTTPS download request");
+            snprintf(error, error_size, "%s", T("invalid HTTPS download request"));
         }
         return -1;
     }
@@ -490,7 +491,7 @@ static int jw__fetch_https_to_file(const char *url,
     if (snprintf(tmp_path, sizeof(tmp_path), "%s.tmp.%ld",
                  out_path, (long)getpid()) >= (int)sizeof(tmp_path)) {
         if (error && error_size > 0) {
-            snprintf(error, error_size, "%s", "download path is too long");
+            snprintf(error, error_size, "%s", T("download path is too long"));
         }
         return -1;
     }
@@ -515,7 +516,7 @@ static int jw__fetch_https_to_file(const char *url,
         if (errno != EINTR) {
             unlink(tmp_path);
             if (error && error_size > 0) {
-                snprintf(error, error_size, "HTTPS downloader wait failed: %s",
+                snprintf(error, error_size, T("HTTPS downloader wait failed: %s"),
                          strerror(errno));
             }
             return -1;
@@ -525,7 +526,7 @@ static int jw__fetch_https_to_file(const char *url,
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
         unlink(tmp_path);
         if (error && error_size > 0) {
-            snprintf(error, error_size, "HTTPS download failed for %s", url);
+            snprintf(error, error_size, T("HTTPS download failed for %s"), url);
         }
         return -1;
     }
@@ -534,7 +535,7 @@ move_download:
     if (rename(tmp_path, out_path) != 0) {
         unlink(tmp_path);
         if (error && error_size > 0) {
-            snprintf(error, error_size, "cannot move download into place: %s",
+            snprintf(error, error_size, T("cannot move download into place: %s"),
                      strerror(errno));
         }
         return -1;
@@ -548,7 +549,7 @@ static char *jw__read_text_file(const char *path, char *error, size_t error_size
     }
     if (!path || !path[0]) {
         if (error && error_size > 0) {
-            snprintf(error, error_size, "%s", "missing file path");
+            snprintf(error, error_size, "%s", T("missing file path"));
         }
         return NULL;
     }
@@ -556,19 +557,19 @@ static char *jw__read_text_file(const char *path, char *error, size_t error_size
     struct stat st;
     if (stat(path, &st) != 0) {
         if (error && error_size > 0) {
-            snprintf(error, error_size, "cannot stat %s: %s", path, strerror(errno));
+            snprintf(error, error_size, T("cannot stat %s: %s"), path, strerror(errno));
         }
         return NULL;
     }
     if (!S_ISREG(st.st_mode)) {
         if (error && error_size > 0) {
-            snprintf(error, error_size, "not a regular file: %s", path);
+            snprintf(error, error_size, T("not a regular file: %s"), path);
         }
         return NULL;
     }
     if (st.st_size < 0 || st.st_size > JW_UPDATE_MANIFEST_MAX_BYTES) {
         if (error && error_size > 0) {
-            snprintf(error, error_size, "file too large: %s", path);
+            snprintf(error, error_size, T("file too large: %s"), path);
         }
         return NULL;
     }
@@ -576,7 +577,7 @@ static char *jw__read_text_file(const char *path, char *error, size_t error_size
     FILE *fp = fopen(path, "rb");
     if (!fp) {
         if (error && error_size > 0) {
-            snprintf(error, error_size, "cannot open %s: %s", path, strerror(errno));
+            snprintf(error, error_size, T("cannot open %s: %s"), path, strerror(errno));
         }
         return NULL;
     }
@@ -586,7 +587,7 @@ static char *jw__read_text_file(const char *path, char *error, size_t error_size
     if (!buf) {
         fclose(fp);
         if (error && error_size > 0) {
-            snprintf(error, error_size, "%s", "out of memory");
+            snprintf(error, error_size, "%s", T("out of memory"));
         }
         return NULL;
     }
@@ -597,7 +598,7 @@ static char *jw__read_text_file(const char *path, char *error, size_t error_size
     if (got != len || read_error) {
         free(buf);
         if (error && error_size > 0) {
-            snprintf(error, error_size, "cannot read %s", path);
+            snprintf(error, error_size, T("cannot read %s"), path);
         }
         return NULL;
     }
@@ -804,7 +805,7 @@ void jw_update_refresh_install_result(jw_update_status *status,
     if (armed_now_installed) {
         snprintf(status->install_result_message,
                  sizeof(status->install_result_message),
-                 "Leaf %s installed", release_id);
+                 T("Leaf %s installed"), release_id);
         status->install_armed = false;
         status->install_blocked = false;
     } else if (stock_trigger_present) {
@@ -816,11 +817,11 @@ void jw_update_refresh_install_result(jw_update_status *status,
         if (primary_stock_trigger_present) {
             snprintf(status->install_result_message,
                      sizeof(status->install_result_message),
-                     "%s", "Restart to finish installing");
+                     "%s", T("Restart to finish installing"));
         } else {
             snprintf(status->install_result_message,
                      sizeof(status->install_result_message),
-                     "%s", "Update was prepared on the other SD slot; install again");
+                     "%s", T("Update was prepared on the other SD slot; install again"));
         }
         jw__set_install_message(status,
                                 primary_stock_trigger_present ? "restart_needed" : "install_again",
@@ -1304,7 +1305,7 @@ int jw_update_check_github(jw_update_status *status,
 
     char last_message[JW_UPDATE_MESSAGE_MAX];
     snprintf(last_message, sizeof(last_message), "%s",
-             "No compatible Leaf update metadata found");
+             T("No compatible Leaf update metadata found"));
     jw__clear_options(status);
 
     const cJSON *release = NULL;
@@ -1327,7 +1328,7 @@ int jw_update_check_github(jw_update_status *status,
                                     "application/octet-stream",
                                     error, sizeof(error)) != 0) {
             snprintf(last_message, sizeof(last_message), "%s",
-                     error[0] ? error : "Cannot fetch release manifest");
+                     error[0] ? error : T("Cannot fetch release manifest"));
             continue;
         }
 
@@ -1359,7 +1360,7 @@ int jw_update_check_github(jw_update_status *status,
             const char *artifact_url = jw__release_asset_download_url(artifact_asset);
             if (!artifact_url) {
                 snprintf(last_message, sizeof(last_message), "%s",
-                         "Release is missing an update asset");
+                         T("Release is missing an update asset"));
                 continue;
             }
 

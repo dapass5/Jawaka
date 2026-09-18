@@ -1,14 +1,70 @@
-# Simplified Chinese -- MACHINE SEED
-# seeded from the AlexL-confirmed glossary of 2026-08-20
+# Simplified Chinese translation for Leaf.
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
-# SD card read-only warning and repair (storage health, SD Cards settings,
-# launch confirmation, scraper pause, repair result). Reviewed by AlexL; fuzzy
-# cleared.
+#: cmd/jawaka-launcher/main.c
+msgid "\n%s: %s (%s)"
+msgstr "%s: %s (%s)"
+
+#: internal/settings/settings.c
+msgid "  saved"
+msgstr "  已保存"
+
+#: internal/settings/settings.c
+msgid " (charging)"
+msgstr "（充电）"
+
 #: internal/settings/storage_ui.c
 msgid " Some damaged files were changed."
 msgstr " 部分受损文件已被更改。"
+
+#: internal/settings/settings.c
+msgid " | %d thread"
+msgstr "| %d 线程"
+
+#: internal/settings/settings.c
+msgid " | %d/%d threads"
+msgstr "| %d/%d 线程"
+
+#: internal/settings/settings.c
+msgid " | API %d/%d"
+msgstr "| API %d/%d"
+
+#: internal/settings/settings.c
+msgid " | ETA %s"
+msgstr "|预计到达时间%s"
+
+#: internal/settings/settings.c
+msgid " | showing first %d"
+msgstr "|显示第一个 %d"
+
+#: cmd/jawaka-launcher/main.c
+msgid " — no app to open"
+msgstr "— 没有可打开的应用程序"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%.120s changed; refresh failed"
+msgstr "%.120s 已更改；刷新失败"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%.120s has no compatible install action"
+msgstr "%.120s 没有兼容的安装操作"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%.120s is not installed by Pak Rat"
+msgstr "Pak Rat 未安装 %.120s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%.120s is release-managed"
+msgstr "%.120s 是发布管理的"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%.180s is already installed manually.\n\nReplace it with the Pak Rat version so it can be updated? User data is preserved."
+msgstr "%.180s 已手动安装。\n\n换成Pak Rat版本就可以更新了？用户数据被保留。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%.80s %.120s"
+msgstr "%.80s %.120s"
 
 #: cmd/jawaka-launcher/main.c
 msgid "%d %s games"
@@ -21,6 +77,38 @@ msgstr "%d Hz"
 #: cmd/jawaka-launcher/main.c
 msgid "%d apps"
 msgstr "%d 个应用"
+
+#: internal/settings/settings.c
+msgid "%d artwork job already queued"
+msgstr "%d 图稿作业已排队"
+
+#: internal/settings/settings.c
+msgid "%d artwork jobs already queued"
+msgstr "%d 封面作业已排队"
+
+#: internal/store/pakrat_state.c
+msgid "%d core"
+msgstr "%d核心"
+
+#: internal/store/pakrat_state.c
+msgid "%d core for %d existing system"
+msgstr "%d 个核心，适用于 %d 个现有平台"
+
+#: internal/store/pakrat_state.c
+msgid "%d core for %d existing systems"
+msgstr "%d 个核心，适用于 %d 个现有平台"
+
+#: internal/store/pakrat_state.c
+msgid "%d cores"
+msgstr "%d 核心"
+
+#: internal/store/pakrat_state.c
+msgid "%d cores for %d existing system"
+msgstr "%d 个核心，适用于 %d 个现有平台"
+
+#: internal/store/pakrat_state.c
+msgid "%d cores for %d existing systems"
+msgstr "%d 个核心，适用于 %d 个现有平台"
 
 #: internal/settings/settings.c
 msgid "%d done"
@@ -38,17 +126,42 @@ msgstr "%d 个收藏"
 msgid "%d games"
 msgstr "%d 个游戏"
 
+#: internal/settings/settings.c
+msgid "%d games across %d systems"
+msgstr "跨 %d 个系统的 %d 个游戏"
+
 #: cmd/jawaka-launcher/main.c
 msgid "%d games, %d systems, %d apps"
 msgstr "%d 个游戏，%d 个平台，%d 个应用"
+
+#: internal/settings/settings.c
+msgid "%d missing"
+msgstr "%d 缺失"
+
+#: internal/settings/settings.c
+msgid "%d missing across %d systems"
+msgstr "%d 在 %d 系统中缺失"
 
 #: cmd/jawaka-menu/main.c
 msgid "%d of %d"
 msgstr "%d / %d"
 
-# Pak Rat themes: the Themes section, theme details, Apply, and the notices
-# for refusals, updates and uninstalling the current theme. Theme follows the
-# glossary (主题); Pak Rat, Leaf, Themes/ folder names and PNG/JPEG stay English.
+#: cmd/jawaka-launcher/main.c
+msgid "%d recent"
+msgstr "%d 最近"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%d results"
+msgstr "%d 结果"
+
+#: internal/store/pakrat_state.c
+msgid "%d system extension"
+msgstr "%d 系统扩展"
+
+#: internal/store/pakrat_state.c
+msgid "%d system extensions"
+msgstr "%d 系统扩展"
+
 #: cmd/jawaka-launcher/main.c
 msgid "%d theme"
 msgstr "%d 个主题"
@@ -56,6 +169,10 @@ msgstr "%d 个主题"
 #: cmd/jawaka-launcher/main.c
 msgid "%d themes"
 msgstr "%d 个主题"
+
+#: internal/settings/settings.c
+msgid "%d total"
+msgstr "%d总计"
 
 #: internal/settings/settings.c
 msgid "%d/%d done"
@@ -73,6 +190,10 @@ msgstr "%d分钟"
 msgid "%ldd ago"
 msgstr "%ld 天前"
 
+#: internal/settings/settings.c
+msgid "%ldh %ldm"
+msgstr "%ld 小时 %ld 分钟"
+
 #: cmd/jawaka-menu/main.c
 msgid "%ldh ago"
 msgstr "%ld 小时前"
@@ -81,107 +202,185 @@ msgstr "%ld 小时前"
 msgid "%ldm ago"
 msgstr "%ld 分钟前"
 
-#: cmd/jawaka-launcher/main.c
-msgid ""
-"%s can't be installed because Leaf could not read it as a theme.\n"
-"\n"
-"Nothing was changed."
-msgstr ""
-"无法安装 %s：Leaf 无法将其识别为主题。\n"
-"\n"
-"未做任何更改。"
+#: internal/settings/settings.c
+msgid "%lld days ago"
+msgstr "%lld天前"
+
+#: internal/settings/settings.c
+msgid "%lld month ago"
+msgstr "%lld 个月前"
+
+#: internal/settings/settings.c
+msgid "%lld months ago"
+msgstr "%lld 个月前"
+
+#: internal/settings/settings.c
+msgid "%lld week ago"
+msgstr "%lld 一周前"
+
+#: internal/settings/settings.c
+msgid "%lld weeks ago"
+msgstr "%lld 周前"
+
+#: internal/settings/settings.c
+msgid "%lld year ago"
+msgstr "%lld 一年前"
+
+#: internal/settings/settings.c
+msgid "%lld years ago"
+msgstr "%lld 年前"
+
+#: internal/settings/settings.c
+msgid "%lldh %lldm"
+msgstr "%lld 小时 %lld 分钟"
+
+#: internal/settings/settings.c
+msgid "%lldm"
+msgstr "%lld 分钟"
+
+#: internal/settings/settings.c
+msgid "%s  -  %s"
+msgstr "%s - %s"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"%s can't be installed because it is not a valid theme.\n"
-"\n"
-"%s"
-msgstr ""
-"无法安装 %s：它不是有效的主题。\n"
-"\n"
-"%s"
+msgid "%s %.200s"
+msgstr "%s %.200s"
+
+#: internal/settings/settings.c
+msgid "%s %s"
+msgstr "%s %s"
+
+#: internal/settings/settings.c
+msgid "%s (current)"
+msgstr "%s（当前）"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"%s can't be installed because the download did not match the catalog.\n"
-"\n"
-"Nothing was changed. Try again later."
-msgstr ""
-"无法安装 %s：下载的文件与目录不符。\n"
-"\n"
-"未做任何更改。请稍后再试。"
+msgid "%s (custom)"
+msgstr "%s（自定义）"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%s (default)"
+msgstr "%s（默认）"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%s (game)"
+msgstr "%s（游戏）"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%s (system)"
+msgstr "%s（系统）"
+
+#: internal/store/pakrat_state.c
+msgid "%s and %d core"
+msgstr "%s 和 %d 核心"
+
+#: internal/store/pakrat_state.c
+msgid "%s and %d cores"
+msgstr "%s 和 %d 内核"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%s can't be installed because Leaf could not read it as a theme.\n\nNothing was changed."
+msgstr "无法安装 %s：Leaf 无法将其识别为主题。\n\n未做任何更改。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%s can't be installed because it is not a valid theme.\n\n%s"
+msgstr "无法安装 %s：它不是有效的主题。\n\n%s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%s can't be installed because the download did not match the catalog.\n\nNothing was changed. Try again later."
+msgstr "无法安装 %s：下载的文件与目录不符。\n\n未做任何更改。请稍后再试。"
 
 #: cmd/jawaka-launcher/main.c
 msgid "%s can't be installed right now"
 msgstr "暂时无法安装 %s"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"%s can't be installed.\n"
-"\n"
-"A theme that comes with Leaf already uses the folder name %s."
-msgstr ""
-"无法安装 %s。\n"
-"\n"
-"Leaf 自带的主题已使用文件夹名 %s。"
+msgid "%s can't be installed.\n\nA theme that comes with Leaf already uses the folder name %s."
+msgstr "无法安装 %s。\n\nLeaf 自带的主题已使用文件夹名 %s。"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"%s can't be installed.\n"
-"\n"
-"The Themes folder already has %d themes, the most Leaf can list. Uninstall "
-"or remove a theme to make room."
-msgstr ""
-"无法安装 %s。\n"
-"\n"
-"Themes 文件夹中已有 %d 个主题，已达 Leaf 可显示的上限。请卸载或删除一个主题以"
-"腾出空间。"
+msgid "%s can't be installed.\n\nThe Themes folder already has %d themes, the most Leaf can list. Uninstall or remove a theme to make room."
+msgstr "无法安装 %s。\n\nThemes 文件夹中已有 %d 个主题，已达 Leaf 可显示的上限。请卸载或删除一个主题以腾出空间。"
+
+#: cmd/jawakad/main.c
+msgid "%s failed: %s"
+msgstr "%s 失败：%s"
 
 #: internal/settings/settings.c
 msgid "%s first"
 msgstr "%s 优先"
+
+#: internal/platform/device_mlp1.c
+msgid "%s fixed frequency requires userspace governor"
+msgstr "%s 固定频率需要用户空间调控器"
+
+#: internal/platform/device_mlp1.c
+msgid "%s frequency path invalid"
+msgstr "%s 频率路径无效"
+
+#: internal/platform/device_mlp1.c
+msgid "%s frequency unsupported: %d"
+msgstr "%s 频率不受支持：%d"
+
+#: internal/platform/device_mlp1.c
+msgid "%s frequency write failed: %s"
+msgstr "%s 频率写入失败：%s"
+
+#: internal/platform/device_mlp1.c
+msgid "%s governor path invalid"
+msgstr "%s 调控器路径无效"
+
+#: internal/platform/device_mlp1.c
+msgid "%s governor unsupported: %s"
+msgstr "%s 调速器不受支持：%s"
+
+#: internal/platform/device_mlp1.c
+msgid "%s governor write failed: %s"
+msgstr "%s 调速器写入失败：%s"
 
 #: cmd/jawaka-launcher/main.c
 msgid "%s is already your theme"
 msgstr "%s 已是当前主题"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"%s is installed.\n"
-"\n"
-"Apply it now?"
-msgstr ""
-"%s 已安装。\n"
-"\n"
-"现在应用吗？"
+msgid "%s is installed.\n\nApply it now?"
+msgstr "%s 已安装。\n\n现在应用吗？"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"%s is no longer available in Pak Rat.\n"
-"\n"
-"A copy that is already installed keeps working."
-msgstr ""
-"%s 已不再在 Pak Rat 中提供。\n"
-"\n"
-"已安装的副本仍可继续使用。"
+msgid "%s is no longer available in Pak Rat.\n\nA copy that is already installed keeps working."
+msgstr "%s 已不再在 Pak Rat 中提供。\n\n已安装的副本仍可继续使用。"
 
 #: cmd/jawaka-launcher/main.c
 msgid "%s is not installed by Pak Rat"
 msgstr "%s 不是由 Pak Rat 安装的"
 
+#: internal/platform/device.c
+msgid "%s is unsupported on %s"
+msgstr "%s 在 %s 上不受支持"
+
+#: internal/settings/settings.c
+msgid "%s isn't saved"
+msgstr "%s 未保存"
+
 #: cmd/jawaka-launcher/main.c
 msgid "%s launcher exited (status %s)"
 msgstr ""
 
+#: internal/platform/device_mlp1.c
+msgid "%s output unavailable"
+msgstr "%s 输出不可用"
+
+#: internal/platform/device_mlp1.c
+msgid "%s performance unavailable"
+msgstr "%s 性能不可用"
+
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"%s was uninstalled.\n"
-"\n"
-"It was your current theme, so Leaf switched to no theme."
-msgstr ""
-"%s 已卸载。\n"
-"\n"
-"它是当前主题，因此 Leaf 已切换为无主题。"
+msgid "%s unavailable: version %s is missing from catalog history."
+msgstr "%s 不可用：目录历史记录中缺少版本 %s。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%s was uninstalled.\n\nIt was your current theme, so Leaf switched to no theme."
+msgstr "%s 已卸载。\n\n它是当前主题，因此 Leaf 已切换为无主题。"
 
 #: cmd/jawaka-menu/main.c
 msgid "%s · %d of %d"
@@ -194,6 +393,18 @@ msgstr "%s · %s · %d / %d"
 #: internal/settings/settings.c
 msgid "%s · fallback"
 msgstr "%s · 备用"
+
+#: internal/settings/settings.c
+msgid "%s%d/%d done, %d failed, %d busy%s%s%s%s"
+msgstr "%s%d/%d 已完成，%d 失败，%d 忙碌%s%s%s%s"
+
+#: cmd/jawaka-menu/main.c
+msgid "%s, %d C"
+msgstr "%s, %d C"
+
+#: cmd/jawaka-launcher/main.c
+msgid "%s: %.160s"
+msgstr "%s：%.160s"
 
 #: internal/settings/settings.c
 msgid "%s: %d icons not %dx%d (contain-fit)"
@@ -212,8 +423,20 @@ msgid "%s: %d icons over %dpx skipped, %d off-size"
 msgstr "%s：%d 个图标超过 %dpx 已跳过，%d 个尺寸不符"
 
 #: cmd/jawaka-launcher/main.c
+msgid ", %d cancelled"
+msgstr ", %d 已取消"
+
+#: cmd/jawaka-launcher/main.c
+msgid ", %d failed"
+msgstr ", %d 失败"
+
+#: cmd/jawaka-launcher/main.c
 msgid ", %d not found"
 msgstr "，%d 个未找到"
+
+#: internal/settings/settings.c
+msgid ", quota %d/%d"
+msgstr ", 配额 %d/%d"
 
 #: internal/settings/settings.c
 msgid "-"
@@ -264,14 +487,11 @@ msgid "120Hz BFI measured 59.249 FPS and further reduces brightness."
 msgstr ""
 
 #: internal/retroarch/shader_strings.c
-msgid ""
-"120Hz cadence counters can report periodic drops for nominal 59.94/60fps "
-"content."
+msgid "120Hz cadence counters can report periodic drops for nominal 59.94/60fps content."
 msgstr ""
 
 #: internal/retroarch/shader_strings.c
-msgid ""
-"120Hz cadence counters can report periodic drops for nominal 60fps content."
+msgid "120Hz cadence counters can report periodic drops for nominal 60fps content."
 msgstr ""
 
 #: internal/settings/settings.c
@@ -310,7 +530,7 @@ msgstr ""
 msgid "45 sec"
 msgstr "45 秒"
 
-#: internal/settings/settings.c
+#: internal/platform/device_mlp1.c
 msgid "4:3"
 msgstr ""
 
@@ -318,7 +538,6 @@ msgstr ""
 msgid "5 min"
 msgstr "5 分钟"
 
-# Saturn BIOS selection (Core actions menu). BIOS stays English per the glossary.
 #: cmd/jawaka-launcher/main.c
 msgid "512 KiB candidate"
 msgstr "512 KiB 候选文件"
@@ -347,6 +566,14 @@ msgstr ""
 msgid "816 MHz"
 msgstr ""
 
+#: internal/settings/settings.c
+msgid "<1m"
+msgstr "不到 1 分钟"
+
+#: cmd/jawaka-launcher/main.c
+msgid "A background service"
+msgstr "后台服务"
+
 #: cmd/jawaka-menu/main.c
 msgid "A broader preset may apply after you reload the game."
 msgstr "重新加载游戏后，可能会应用作用范围更广的预设。"
@@ -356,30 +583,17 @@ msgid "A lighter handheld LCD grid with softer cell edges."
 msgstr ""
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"A theme folder named %s is already on your SD card.\n"
-"\n"
-"Replace it with %s from Pak Rat so it can be updated? The files in that "
-"folder will be replaced."
-msgstr ""
-"SD 卡上已有名为 %s 的主题文件夹。\n"
-"\n"
-"要用 Pak Rat 中的 %s 替换它，以便日后更新吗？该文件夹中的文件将被替换。"
+msgid "A theme folder named %s is already on your SD card.\n\nReplace it with %s from Pak Rat so it can be updated? The files in that folder will be replaced."
+msgstr "SD 卡上已有名为 %s 的主题文件夹。\n\n要用 Pak Rat 中的 %s 替换它，以便日后更新吗？该文件夹中的文件将被替换。"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"A theme folder with this name is already on your SD card. Installing "
-"replaces it after you confirm."
+msgid "A theme folder with this name is already on your SD card. Installing replaces it after you confirm."
 msgstr "SD 卡上已有同名的主题文件夹。确认后，安装将替换它。"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"A theme that comes with Leaf already uses this folder name, so this one "
-"can't be installed."
+msgid "A theme that comes with Leaf already uses this folder name, so this one can't be installed."
 msgstr "Leaf 自带的主题已使用此文件夹名，因此无法安装此主题。"
 
-# Shortcut picker.
-# Follows the file's own entries: "Choose" -> 选择, "Back" -> 返回.
 #: internal/settings/settings.c
 msgid "A: Choose   B: Back"
 msgstr "A：选择   B：返回"
@@ -396,9 +610,57 @@ msgstr ""
 msgid "ADB disable canceled"
 msgstr "ADB 禁用已取消"
 
+#: internal/platform/device_mlp1.c
+msgid "ADB disable failed"
+msgstr "ADB 禁用失败"
+
+#: internal/ipc/ipc_client.c
+msgid "ADB disabled"
+msgstr "ADB 已禁用"
+
+#: internal/platform/device_mlp1.c
+msgid "ADB disabled, marker removal failed"
+msgstr "ADB 已禁用，标记删除失败"
+
+#: internal/platform/device_mlp1.c
+msgid "ADB disabled; USB restart failed"
+msgstr "ADB 已禁用；USB 重启失败"
+
 #: internal/settings/settings.c
 msgid "ADB enable canceled"
 msgstr "ADB 启用已取消"
+
+#: internal/settings/settings.c
+msgid "ADB enable failed"
+msgstr "ADB 启用失败"
+
+#: internal/ipc/ipc_client.c
+msgid "ADB enabled"
+msgstr "ADB 已启用"
+
+#: internal/platform/device_mlp1.c
+msgid "ADB enabled, restore marker failed"
+msgstr "ADB 已启用，恢复标记失败"
+
+#: internal/platform/device_mlp1.c
+msgid "ADB enabled; USB restart failed"
+msgstr "ADB 已启用；USB 重启失败"
+
+#: internal/ipc/ipc_client.c
+msgid "ADB failed"
+msgstr "ADB 操作失败"
+
+#: internal/ipc/ipc_client.c
+msgid "ADB failed: daemon unavailable"
+msgstr "ADB 失败：守护进程不可用"
+
+#: internal/platform/device_mlp1.c
+msgid "ADB pin failed"
+msgstr "ADB 固定设置失败"
+
+#: internal/platform/device_mlp1.c
+msgid "ADB support unavailable"
+msgstr "ADB 支持不可用"
 
 #: internal/settings/settings.c
 msgid "ADB unavailable on this platform"
@@ -437,38 +699,36 @@ msgid "Active: %s  Temp: %d C"
 msgstr "生效：%s  温度：%d°C"
 
 #: cmd/jawaka-osd/game_launch.c
-#, fuzzy
 msgid "Adding Splore favorites"
 msgstr "正在添加 Splore 收藏"
 
+#: cmd/jawaka-launcher/main.c
+msgid "Adds %s%s"
+msgstr "添加 %s%s"
+
 #: internal/retroarch/shader_strings.c
-msgid ""
-"Adds a Pocket-style backing texture and low-cost pixel grid tuned for Game "
-"Boy Color art."
+msgid "Adds a Pocket-style backing texture and low-cost pixel grid tuned for Game Boy Color art."
 msgstr ""
 
 #: internal/retroarch/shader_strings.c
-msgid ""
-"Adds a gray backing texture, low-cost pixel grid, and transparency response "
-"tuned for the original GBA screen."
+msgid "Adds a gray backing texture, low-cost pixel grid, and transparency response tuned for the original GBA screen."
 msgstr ""
 
 #: internal/retroarch/shader_strings.c
-msgid ""
-"Adds a lightweight aperture mask and softened scanlines without curvature."
+msgid "Adds a lightweight aperture mask and softened scanlines without curvature."
 msgstr ""
 
 #: internal/retroarch/shader_strings.c
-msgid ""
-"Adds a subdued Pocket-style backing texture, pixel grid, and edge shadows "
-"for original Game Boy games."
+msgid "Adds a subdued Pocket-style backing texture, pixel grid, and edge shadows for original Game Boy games."
 msgstr ""
 
 #: internal/retroarch/shader_strings.c
-msgid ""
-"Adds lightweight scanlines with reduced darkness for 8-bit, 16-bit, and "
-"PlayStation-era games."
+msgid "Adds lightweight scanlines with reduced darkness for 8-bit, 16-bit, and PlayStation-era games."
 msgstr ""
+
+#: cmd/jawaka-launcher/main.c
+msgid "Adds systems and emulators rather than an app to open."
+msgstr "添加系统和模拟器而不是要打开的应用程序。"
 
 #: internal/retroarch/shader_strings.c
 msgid "Adds the fine RGB pixel grid of a handheld LCD panel."
@@ -482,7 +742,6 @@ msgstr ""
 msgid "Adjust"
 msgstr "调整"
 
-# In-game shader picker. Reviewed by dapass5 in PR #117 review; fuzzy cleared.
 #: cmd/jawaka-menu/main.c
 msgid "Advanced RetroArch menu"
 msgstr "RetroArch 高级菜单"
@@ -511,12 +770,17 @@ msgstr "所有平台"
 msgid "All rights reserved, redistribution permitted"
 msgstr "保留所有权利，允许再分发"
 
-# Now one printf string, so the action name can sit where Chinese wants it:
-# "<action> 已占用" reads as "<action> already has it", rather than the
-# English order the old two-fragment concatenation forced.
+#: internal/settings/settings.c
+msgid "Already on the latest version"
+msgstr "已经是最新版本了"
+
 #: internal/settings/settings.c
 msgid "Already used by %s"
 msgstr "已被 %s 占用"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Also remove retained data for %.180s?\n\nThis separately deletes every declared retained directory on cards that are present now. Absent cards remain unchanged. This cannot be undone."
+msgstr "是否同时删除 %.180s 的保留数据？\n\n这会另外删除当前已插入存储卡上声明的所有保留目录；未插入的存储卡不会改变。此操作无法撤销。"
 
 #: internal/settings/timezones.c
 msgid "American Samoa"
@@ -566,6 +830,14 @@ msgstr "排列"
 msgid "Artwork Priority"
 msgstr "封面优先级"
 
+#: internal/settings/settings.c
+msgid "Artwork scrape failed."
+msgstr "封面刮削失败。"
+
+#: internal/settings/settings.c
+msgid "At least one tab must stay visible"
+msgstr "至少有一个选项卡必须保持可见"
+
 #: internal/launcher/system_names.c
 msgid "Atari 2600"
 msgstr ""
@@ -602,7 +874,7 @@ msgstr "音频输出"
 msgid "Author: %s"
 msgstr "作者：%s"
 
-#: internal/platform/platform_common.c
+#: cmd/jawaka-launcher/main.c
 msgid "Auto"
 msgstr "自动"
 
@@ -666,20 +938,32 @@ msgstr ""
 msgid "Battery"
 msgstr "电池"
 
+#: internal/settings/settings.c
+msgid "Battery Low"
+msgstr "电池电量低"
+
 #: internal/platform/platform_common.c
 msgid "Battery Saver"
 msgstr "省电"
 
+#: internal/update/update.c
+msgid "Battery must be at least %d%% or charging"
+msgstr "电池电量必须至少为 %d%% 或正在充电"
+
+#: internal/update/update.c
+msgid "Battery status is unknown; confirmation required"
+msgstr "电池状态未知；需要确认"
+
 #: internal/retroarch/shader_strings.c
-msgid ""
-"Best at integer or near-integer scaling; the upstream shader can look uneven "
-"at arbitrary scales."
+msgid "Best at integer or near-integer scaling; the upstream shader can look uneven at arbitrary scales."
 msgstr ""
 
 #: internal/settings/settings.c
-msgid ""
-"Beta builds are tester previews and may be unstable or lose data. Switch to "
-"the Beta update channel?"
+msgid "Beta"
+msgstr "贝塔"
+
+#: internal/settings/settings.c
+msgid "Beta builds are tester previews and may be unstable or lose data. Switch to the Beta update channel?"
 msgstr "测试版可能不稳定或导致数据丢失，确认切换到测试版更新通道吗？"
 
 #: cmd/jawaka-launcher/main.c
@@ -699,12 +983,24 @@ msgid "Black Frame Insertion off"
 msgstr "黑帧插入已关闭"
 
 #: internal/settings/settings.c
+msgid "Black Frame Insertion on for %d fps"
+msgstr "黑帧插入开启 %d fps"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Blocked"
+msgstr "被阻止"
+
+#: internal/settings/settings.c
 msgid "Bluetooth"
 msgstr "蓝牙"
 
 #: internal/settings/settings.c
 msgid "Bluetooth Name"
 msgstr "蓝牙名称"
+
+#: internal/platform/bluetooth_unsupported.c
+msgid "Bluetooth unavailable"
+msgstr "蓝牙不可用"
 
 #: internal/settings/settings.c
 msgid "Board"
@@ -787,18 +1083,84 @@ msgid "CRT Sharp"
 msgstr ""
 
 #: internal/retroarch/shader_strings.c
-msgid ""
-"CRT effects reduce brightness; the preset uses a milder mask and scanline "
-"strength than upstream defaults."
+msgid "CRT effects reduce brightness; the preset uses a milder mask and scanline strength than upstream defaults."
 msgstr ""
+
+#: cmd/jawakad/main.c
+msgid "CTL-1 response exceeds 64 KiB"
+msgstr "CTL-1 响应超过 64 KiB"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Cancel"
 msgstr "取消"
 
 #: internal/settings/settings.c
+msgid "Cancel %d%%"
+msgstr "取消%d%%"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Cancel Scraping"
+msgstr "取消刮削"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Cancel failed: daemon unavailable"
+msgstr "取消失败：守护进程不可用"
+
+#: internal/settings/settings.c
 msgid "Cancelled"
 msgstr "已取消"
+
+#: internal/update/update.c
+msgid "Cannot download update artifact"
+msgstr "无法下载更新安装包"
+
+#: internal/update/update.c
+msgid "Cannot fetch Leaf releases"
+msgstr "无法获取 Leaf 版本"
+
+#: internal/update/update.c
+msgid "Cannot fetch release manifest"
+msgstr "无法获取发布清单"
+
+#: internal/update/update.c
+msgid "Cannot move update download into place: %s"
+msgstr "无法将更新下载移至适当位置：%s"
+
+#: internal/update/update.c
+msgid "Cannot prepare update download directory"
+msgstr "无法准备更新下载目录"
+
+#: internal/update/update.c
+msgid "Cannot prepare update state directory"
+msgstr "无法准备更新状态目录"
+
+#: internal/update/update.c
+msgid "Cannot read Leaf releases"
+msgstr "无法读取 Leaf 版本"
+
+#: internal/update/update.c
+msgid "Cannot read update manifest"
+msgstr "无法读取更新清单"
+
+#: internal/update/update.c
+msgid "Cannot start update download"
+msgstr "无法开始更新下载"
+
+#: internal/update/update.c
+msgid "Cannot start update runner: %s"
+msgstr "无法启动更新运行程序：%s"
+
+#: cmd/jawakad/main.c
+msgid "Cannot unmount: service %s could not be verified stopped"
+msgstr "无法卸载：无法验证服务 %s 已停止"
+
+#: internal/update/update.c
+msgid "Cannot verify update artifact"
+msgstr "无法校验更新安装包"
+
+#: internal/update/update.c
+msgid "Cannot write update install request"
+msgstr "无法写入更新安装请求"
 
 #: internal/settings/timezones.c
 msgid "Cape Verde"
@@ -809,10 +1171,12 @@ msgid "Card:"
 msgstr "卡："
 
 #: internal/retroarch/shader_strings.c
-msgid ""
-"Carries a Leaf local patch until upstream fixes its GLSL ES precision "
-"mismatch."
+msgid "Carries a Leaf local patch until upstream fixes its GLSL ES precision mismatch."
 msgstr ""
+
+#: cmd/jawaka-launcher/main.c
+msgid "Catalog version: %s"
+msgstr "目录版本：%s"
 
 #: internal/settings/timezones.c
 msgid "Central Europe"
@@ -829,6 +1193,22 @@ msgstr "检查更新"
 #: internal/settings/storage_ui.c
 msgid "Check SD card"
 msgstr "检查 SD 卡"
+
+#: internal/settings/settings.c
+msgid "Check for updates first"
+msgstr "首先检查更新"
+
+#: internal/settings/settings.c
+msgid "Check releases first"
+msgstr "首先检查版本"
+
+#: internal/update/update.c
+msgid "Checking for updates"
+msgstr "检查更新"
+
+#: internal/settings/settings.c
+msgid "Checking..."
+msgstr "正在检查..."
 
 #: internal/settings/timezones.c
 msgid "China"
@@ -850,9 +1230,25 @@ msgstr "清除"
 msgid "Clear Done"
 msgstr "清除已完成项"
 
+#: cmd/jawaka-launcher/main.c
+msgid "Cleared"
+msgstr "已清除"
+
+#: internal/settings/settings.c
+msgid "Cleared %d"
+msgstr "清除%d"
+
 #: internal/settings/settings.c
 msgid "Clock"
 msgstr "时钟"
+
+#: internal/settings/settings.c
+msgid "Close Apps"
+msgstr "关闭应用程序"
+
+#: internal/update/update.c
+msgid "Close running games or apps before installing"
+msgstr "安装前关闭正在运行的游戏或应用程序"
 
 #: internal/settings/storage_ui.c
 msgid "Close the game or app first, then try again."
@@ -878,6 +1274,10 @@ msgstr "颜色"
 msgid "Comet"
 msgstr "彗星"
 
+#: cmd/jawaka-launcher/main.c
+msgid "Coming soon"
+msgstr "即将推出"
+
 #: cmd/jawaka-menu/main.c
 msgid "Command: %s"
 msgstr "命令：%s"
@@ -885,6 +1285,10 @@ msgstr "命令：%s"
 #: internal/launcher/system_names.c
 msgid "Commodore 64"
 msgstr ""
+
+#: internal/settings/settings.c
+msgid "Compatible releases"
+msgstr "兼容版本"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Confirm"
@@ -902,9 +1306,25 @@ msgstr "要修复此卡，请先将设备连接电源。"
 msgid "Connected"
 msgstr "已连接"
 
+#: internal/settings/settings.c
+msgid "Connected to %s"
+msgstr "连接到%s"
+
+#: internal/settings/settings.c
+msgid "Connected: %s"
+msgstr "已连接：%s"
+
+#: internal/settings/settings.c
+msgid "Connecting to %s…"
+msgstr "正在连接到%s..."
+
 #: cmd/jawaka-menu/main.c
 msgid "Continue"
 msgstr "继续"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Contribution refused — %s"
+msgstr "贡献被拒绝 — %s"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Controller setup failed. Restart Leaf and try again."
@@ -914,9 +1334,53 @@ msgstr ""
 msgid "Core"
 msgstr "核心"
 
+#: cmd/jawaka-launcher/main.c
+msgid "Core metadata unavailable: %.180s"
+msgstr "核心元数据不可用：%.180s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Core update failed"
+msgstr "核心更新失败"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Core: %.160s"
+msgstr "核心：%.160s"
+
+#: internal/settings/settings.c
+msgid "Could not connect to %s"
+msgstr "无法连接到 %s"
+
+#: internal/settings/settings.c
+msgid "Could not disconnect"
+msgstr "无法断开连接"
+
+#: internal/settings/settings.c
+msgid "Could not forget %s"
+msgstr "无法忘记%s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Could not inspect retained data for %.100s"
+msgstr "无法检查 %.100s 的保留数据"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Could not load favorites"
+msgstr "无法加载收藏夹"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Could not load games for %s"
+msgstr "无法加载 %s 的游戏"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Could not load recents"
+msgstr "无法加载最近的内容"
+
 #: internal/settings/settings.c
 msgid "Could not save"
 msgstr "无法保存"
+
+#: internal/settings/settings.c
+msgid "Couldn't connect — check password"
+msgstr "无法连接 — 检查密码"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Couldn't install %s"
@@ -955,6 +1419,10 @@ msgid "Darwin"
 msgstr ""
 
 #: cmd/jawaka-launcher/main.c
+msgid "Declared browser trust and credentials will be revoked.\n"
+msgstr "声明的浏览器信任和凭据将被撤销。"
+
+#: cmd/jawaka-launcher/main.c
 msgid "Default"
 msgstr "默认"
 
@@ -967,8 +1435,7 @@ msgid "Designed for handheld content."
 msgstr ""
 
 #: internal/retroarch/shader_strings.c
-msgid ""
-"Designed for handheld content; the grid is very fine at console resolutions."
+msgid "Designed for handheld content; the grid is very fine at console resolutions."
 msgstr ""
 
 #: cmd/jawaka-launcher/main.c
@@ -991,9 +1458,6 @@ msgstr "禁用"
 msgid "Disable USB ADB and remove Leaf's boot restore marker?"
 msgstr "要禁用 USB ADB 并清除 Leaf 启动恢复标记吗？"
 
-# In-game shortcut bindings.
-# "Game Switcher" follows the existing "Switcher" -> 游戏切换; "Screenshot"
-# follows "Screenshots" -> 截图; "Disabled" pairs with "Enabled" -> 已启用.
 #: internal/platform/input_shortcuts.c
 msgid "Disabled"
 msgstr "已禁用"
@@ -1001,6 +1465,10 @@ msgstr "已禁用"
 #: internal/settings/settings.c
 msgid "Disconnected"
 msgstr "已断开"
+
+#: internal/settings/settings.c
+msgid "Disconnected from %s"
+msgstr "与 %s 断开连接"
 
 #: cmd/jawaka-menu/main.c
 msgid "Disk %d/%d"
@@ -1014,10 +1482,24 @@ msgstr "显示与声音"
 msgid "Display Name"
 msgstr "显示名称"
 
+#: cmd/jawaka-launcher/main.c
+msgid "Display Name: %.160s"
+msgstr "显示名称：%.160s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Display name reset"
+msgstr "显示名称重置"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Display name reset failed"
+msgstr "显示名称重置失败"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Display name update failed"
+msgstr "显示名称更新失败"
+
 #: internal/retroarch/shader_strings.c
-msgid ""
-"Do not combine with BFI when using mGBA: the no-shader mGBA control falls to "
-"38.499 FPS at 120Hz with BFI."
+msgid "Do not combine with BFI when using mGBA: the no-shader mGBA control falls to 38.499 FPS at 120Hz with BFI."
 msgstr ""
 
 #: cmd/jawaka-launcher/main.c
@@ -1029,8 +1511,36 @@ msgid "Download"
 msgstr "下载"
 
 #: internal/settings/settings.c
+msgid "Download First"
+msgstr "首先下载"
+
+#: internal/settings/settings.c
+msgid "Download update first"
+msgstr "先下载更新"
+
+#: internal/settings/settings.c
+msgid "Downloaded"
+msgstr "已下载"
+
+#: internal/update/update.c
+msgid "Downloaded update SHA-256 does not match metadata"
+msgstr "下载的更新 SHA-256 与元数据不匹配"
+
+#: internal/update/update.c
+msgid "Downloaded update artifact is missing"
+msgstr "下载的更新安装包不存在"
+
+#: internal/update/update.c
+msgid "Downloaded update size does not match metadata"
+msgstr "下载的更新大小与元数据不匹配"
+
+#: internal/settings/settings.c
 msgid "Downloading"
 msgstr "下载中"
+
+#: internal/update/update.c
+msgid "Downloading %s"
+msgstr "正在下载%s"
 
 #: internal/launcher/system_names.c
 msgid "Dreamcast"
@@ -1064,6 +1574,10 @@ msgstr "启用"
 msgid "Enable USB ADB and restore it at boot?"
 msgstr "要启用 USB ADB 并设为开机自启吗？"
 
+#: internal/settings/settings.c
+msgid "Enabled"
+msgstr "已启用"
+
 #: cmd/jawaka-launcher/main.c
 msgid "Enter PIN to exit"
 msgstr "输入 PIN 退出"
@@ -1076,6 +1590,10 @@ msgstr "错误"
 msgid "Eucla"
 msgstr ""
 
+#: internal/settings/settings.c
+msgid "Excluded entries cannot be reordered"
+msgstr "排除的条目无法重新排序"
+
 #: cmd/jawaka-launcher/main.c
 msgid "Exit 5-Game Mode?"
 msgstr "退出精选游戏模式？"
@@ -1083,6 +1601,10 @@ msgstr "退出精选游戏模式？"
 #: cmd/jawaka-launcher/main.c
 msgid "Exit to Stock"
 msgstr "退出到原厂系统"
+
+#: cmd/jawaka-menu/main.c
+msgid "Exit to stock failed"
+msgstr "返回原厂系统失败"
 
 #: internal/settings/settings.c
 msgid "Extra Large"
@@ -1101,6 +1623,14 @@ msgid "Favorite"
 msgstr "收藏"
 
 #: cmd/jawaka-launcher/main.c
+msgid "Favorite update failed"
+msgstr "收藏夹更新失败"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Favorited"
+msgstr "已收藏"
+
+#: cmd/jawaka-launcher/main.c
 msgid "Favorites"
 msgstr "收藏"
 
@@ -1111,6 +1641,10 @@ msgstr ""
 #: cmd/jawaka-launcher/main.c
 msgid "Filter"
 msgstr "筛选"
+
+#: internal/settings/settings.c
+msgid "Finish the current update before switching channels"
+msgstr "请先完成当前更新，再切换更新通道"
 
 #: internal/settings/settings.c
 msgid "Flat"
@@ -1137,8 +1671,16 @@ msgid "Forget"
 msgstr "忘记"
 
 #: internal/settings/settings.c
+msgid "Forgot %s"
+msgstr "忘记%s"
+
+#: internal/settings/settings.c
 msgid "Fountain"
 msgstr "喷泉"
+
+#: internal/update/update.c
+msgid "Free space could not be checked; confirmation required"
+msgstr "无法检查可用空间；需要确认"
 
 #: internal/platform/platform_common.c
 msgid "Frontend"
@@ -1201,6 +1743,14 @@ msgid "Game Switcher"
 msgstr "游戏切换"
 
 #: cmd/jawaka-launcher/main.c
+msgid "Game launch blocked.\n\n%.128s may still be writing Saves or States. Play anyway only if you accept possible data corruption."
+msgstr "游戏启动被阻止。\n\n%.128s 可能仍在写入保存或状态。仅当您接受可能的数据损坏时才可以玩。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Game launch blocked.\n\nA previous game may still be writing Saves or States. Restart the device before launching another game."
+msgstr "游戏启动被阻止。\n\n之前的游戏可能仍在写入保存或状态。在启动另一个游戏之前重新启动设备。"
+
+#: cmd/jawaka-launcher/main.c
 msgid "Games"
 msgstr "游戏"
 
@@ -1228,9 +1778,25 @@ msgstr "网格大小"
 msgid "HDMI Output"
 msgstr "HDMI 输出"
 
-#: internal/settings/settings.c
+#: internal/platform/device_mlp1.c
+msgid "HDMI output %s"
+msgstr "HDMI 输出 %s"
+
+#: internal/platform/device_mlp1.c
 msgid "HDMI output change failed"
 msgstr "HDMI 输出切换失败"
+
+#: internal/ipc/ipc_client.c
+msgid "HDMI output failed"
+msgstr "HDMI输出失败"
+
+#: internal/ipc/ipc_client.c
+msgid "HDMI output failed: daemon unavailable"
+msgstr "HDMI 输出失败：守护进程不可用"
+
+#: internal/settings/settings.c
+msgid "HDMI output unavailable"
+msgstr "HDMI输出不可用"
 
 #: internal/settings/settings.c
 msgid "HDMI output unavailable on this platform"
@@ -1243,6 +1809,14 @@ msgstr "HLE"
 #: cmd/jawaka-launcher/main.c
 msgid "HLE, no BIOS file"
 msgstr "HLE，不使用 BIOS 文件"
+
+#: internal/update/update.c
+msgid "HTTPS download failed for %s"
+msgstr "%s 的 HTTPS 下载失败"
+
+#: internal/update/update.c
+msgid "HTTPS downloader wait failed: %s"
+msgstr "HTTPS 下载器等待失败：%s"
 
 #: internal/settings/settings.c
 msgid "Hashing"
@@ -1260,7 +1834,6 @@ msgstr "跳动"
 msgid "Hidden"
 msgstr "隐藏"
 
-# In-game Shortcuts help line.
 #: internal/settings/settings.c
 msgid "Hold Menu, then press the button.   X: Disable"
 msgstr "按住 Menu，再按对应按键。   X：禁用"
@@ -1305,6 +1878,14 @@ msgstr ""
 msgid "Icon"
 msgstr "图标"
 
+#: internal/settings/settings.c
+msgid "Idle"
+msgstr "空闲"
+
+#: internal/settings/settings.c
+msgid "Incompatible"
+msgstr "不兼容"
+
 #: internal/settings/timezones.c
 msgid "India"
 msgstr "印度"
@@ -1317,9 +1898,29 @@ msgstr "信息"
 msgid "Install"
 msgstr "安装"
 
+#: internal/settings/settings.c
+msgid "Install Again"
+msgstr "再次安装"
+
+#: internal/settings/settings.c
+msgid "Install Leaf %s?"
+msgstr "安装 Leaf %s？"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Install cancelled: %.120s"
+msgstr "安装已取消：%.120s"
+
 #: cmd/jawaka-launcher/main.c
 msgid "Install cancelled: %s"
 msgstr "已取消安装：%s"
+
+#: internal/settings/settings.c
+msgid "Install in progress"
+msgstr "安装正在进行中"
+
+#: internal/settings/settings.c
+msgid "Install update even though checks are incomplete?"
+msgstr "即使检查不完整也要安装更新吗？"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Installed"
@@ -1332,6 +1933,14 @@ msgstr "已安装 %s"
 #: cmd/jawaka-launcher/main.c
 msgid "Installed version: %s"
 msgstr "已安装版本：%s"
+
+#: internal/settings/settings.c
+msgid "Installing"
+msgstr "安装中"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Installing Pak Rat app"
+msgstr "安装 Pak Rat 应用程序"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Installing theme"
@@ -1365,23 +1974,29 @@ msgstr "保留原始文件"
 msgid "Keep data"
 msgstr "保留数据"
 
+#: cmd/jawaka-menu/main.c
+msgid "Keep failed"
+msgstr "保留失败"
+
 #: internal/retroarch/shader_strings.c
-msgid ""
-"Keep mGBA BFI off: the no-shader core path already falls below full speed at "
-"120Hz with BFI."
+msgid "Keep mGBA BFI off: the no-shader core path already falls below full speed at 120Hz with BFI."
+msgstr ""
+
+#: cmd/jawaka-launcher/main.c
+msgid "Keep this TV display mode?\n\nSending 1080p120 over HDMI. If your TV stays blank it can't show this mode - leave it and Leaf reverts to a safe picture."
+msgstr "保持此电视显示模式吗？\n\n通过 HDMI 发送 1080p120。如果您的电视保持空白，则无法显示此模式 - 离开它，Leaf 会恢复到安全画面。"
+
+#: internal/retroarch/shader_strings.c
+msgid "Keeps pixel art crisp at integer and non-integer scaling without adding a CRT effect."
 msgstr ""
 
 #: internal/retroarch/shader_strings.c
-msgid ""
-"Keeps pixel art crisp at integer and non-integer scaling without adding a "
-"CRT effect."
+msgid "Keeps rectangular pixels as sharp as possible at awkward non-integer scales while avoiding scrolling shimmer."
 msgstr ""
 
-#: internal/retroarch/shader_strings.c
-msgid ""
-"Keeps rectangular pixels as sharp as possible at awkward non-integer scales "
-"while avoiding scrolling shimmer."
-msgstr ""
+#: cmd/jawaka-menu/main.c
+msgid "Kept as Slot %d"
+msgstr "保留为插槽 %d"
 
 #: internal/settings/settings.c
 msgid "Kernel"
@@ -1412,6 +2027,10 @@ msgid "Last update: %s"
 msgstr "上次更新：%s"
 
 #: internal/settings/settings.c
+msgid "Last: %s"
+msgstr "最后：%s"
+
+#: internal/settings/settings.c
 msgid "Later"
 msgstr "稍后"
 
@@ -1427,9 +2046,45 @@ msgstr "启动"
 msgid "Launch canceled"
 msgstr "已取消启动"
 
+#: internal/platform/device.c
+msgid "Launcher SD"
+msgstr "主 SD 卡"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Launching %.*s..."
+msgstr "正在启动 %.*s..."
+
 #: internal/settings/settings.c
 msgid "Leaf"
 msgstr ""
+
+#: internal/settings/settings.c
+msgid "Leaf  %s"
+msgstr "Leaf%s"
+
+#: internal/update/update.c
+msgid "Leaf %s downloaded and verified"
+msgstr "Leaf %s 已下载并通过验证"
+
+#: internal/update/update.c
+msgid "Leaf %s installed"
+msgstr "Leaf %s 已安装"
+
+#: internal/update/update.c
+msgid "Leaf %s is already installed"
+msgstr "Leaf %s 已经安装"
+
+#: internal/update/update.c
+msgid "Leaf %s is available"
+msgstr "Leaf %s 可用"
+
+#: internal/update/update.c
+msgid "Leaf %s is available; installed release is unknown"
+msgstr "Leaf %s 可用；无法确定当前安装版本"
+
+#: internal/update/update.c
+msgid "Leaf %s selected"
+msgstr "已选择 Leaf %s"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Leaf can't find %s in the Themes folder"
@@ -1440,9 +2095,7 @@ msgid "Leaf couldn't confirm your SD card can be written."
 msgstr "Leaf 无法确认 SD 卡是否可写。"
 
 #: internal/settings/storage_ui.c
-msgid ""
-"Leaf couldn't identify this card safely. Check the card on a computer "
-"instead."
+msgid "Leaf couldn't identify this card safely. Check the card on a computer instead."
 msgstr "Leaf 无法安全识别此卡，请改为在电脑上检查此卡。"
 
 #: internal/settings/storage_ui.c
@@ -1450,10 +2103,16 @@ msgid "Leaf couldn't identify this card."
 msgstr "Leaf 无法识别此卡。"
 
 #: internal/settings/storage_ui.c
-msgid ""
-"Leaf couldn't safely check this card, so nothing was changed. Check the card "
-"on a computer."
+msgid "Leaf couldn't safely check this card, so nothing was changed. Check the card on a computer."
 msgstr "Leaf 无法安全检查此卡，因此未做任何更改。请在电脑上检查此卡。"
+
+#: internal/update/update.c
+msgid "Leaf releases response was not a JSON array"
+msgstr "Leaf 发布响应不是 JSON 数组"
+
+#: internal/settings/settings.c
+msgid "Leaf update"
+msgstr "Leaf更新"
 
 #: cmd/jawaka-menu/main.c
 msgid "Leaf's in-game picker supports GLSL presets (.glslp)."
@@ -1484,6 +2143,10 @@ msgid "Library updating..."
 msgstr "正在更新游戏库…"
 
 #: cmd/jawaka-launcher/main.c
+msgid "Library updating; another scan is queued"
+msgstr "正在更新游戏库；另一次扫描已排队"
+
+#: cmd/jawaka-launcher/main.c
 msgid "License: %s"
 msgstr "许可协议：%s"
 
@@ -1511,6 +2174,10 @@ msgstr "即时读档"
 msgid "Loading preview"
 msgstr "正在加载预览"
 
+#: internal/update/update.c
+msgid "Local manifest artifact URL must use HTTPS"
+msgstr "本地清单中的安装包 URL 必须使用 HTTPS"
+
 #: cmd/jawaka-launcher/main.c
 msgid "Lock"
 msgstr "锁定"
@@ -1531,6 +2198,10 @@ msgstr ""
 msgid "Main SD Card"
 msgstr "主 SD 卡"
 
+#: internal/ipc/ipc_client.c
+msgid "Malformed shader reply"
+msgstr "着色器回复格式错误"
+
 #: cmd/jawaka-launcher/main.c
 msgid "Manual"
 msgstr "手动安装"
@@ -1547,8 +2218,11 @@ msgstr "剩余内存"
 msgid "Menu"
 msgstr "菜单"
 
+#: internal/settings/settings.c
+msgid "Menu + %s"
+msgstr "菜单 + %s"
+
 #: cmd/jawaka-osd/game_launch.c
-#, fuzzy
 msgid "Menu: Start now"
 msgstr "菜单键：立即开始"
 
@@ -1629,7 +2303,6 @@ msgid "New Zealand"
 msgstr ""
 
 #: cmd/jawaka-osd/game_launch.c
-#, fuzzy
 msgid "New saves may fail"
 msgstr "新存档可能无法保存"
 
@@ -1653,6 +2326,10 @@ msgstr ""
 msgid "Nintendo Entertainment System"
 msgstr ""
 
+#: internal/settings/settings.c
+msgid "No"
+msgstr "否"
+
 #: cmd/jawaka-launcher/main.c
 msgid "No BIOS file"
 msgstr "不使用 BIOS 文件"
@@ -1661,9 +2338,41 @@ msgstr "不使用 BIOS 文件"
 msgid "No BIOS file selected"
 msgstr "未选择 BIOS 文件"
 
+#: internal/settings/settings.c
+msgid "No HDMI cable connected"
+msgstr "未连接 HDMI 电缆"
+
+#: cmd/jawaka-launcher/main.c
+msgid "No Pak Rat app selected"
+msgstr "未选择 Pak Rat 应用程序"
+
+#: cmd/jawaka-launcher/main.c
+msgid "No Pak Rat apps found"
+msgstr "未找到 Pak Rat 应用"
+
+#: internal/settings/settings.c
+msgid "No Space"
+msgstr "没有空间"
+
+#: cmd/jawaka-menu/main.c
+msgid "No active RetroArch session"
+msgstr "当前没有运行中的 RetroArch 会话"
+
+#: cmd/jawaka-launcher/main.c
+msgid "No app selected"
+msgstr "未选择应用程序"
+
 #: cmd/jawaka-launcher/main.c
 msgid "No apps found"
 msgstr "未找到应用"
+
+#: internal/update/update.c
+msgid "No compatible Leaf update metadata found"
+msgstr "找不到兼容的 Leaf 更新元数据"
+
+#: internal/update/update.c
+msgid "No downloadable update artifact is selected"
+msgstr "未选择可下载的更新安装包"
 
 #: cmd/jawaka-launcher/main.c
 msgid "No favorites yet — open a game and press Y to add one"
@@ -1674,6 +2383,10 @@ msgid "No favorites yet — press Y on a game to add one"
 msgstr "还没有收藏 — 在游戏上按 Y 添加"
 
 #: cmd/jawaka-launcher/main.c
+msgid "No game selected"
+msgstr "没有选择游戏"
+
+#: cmd/jawaka-launcher/main.c
 msgid "No games available"
 msgstr "没有可用的游戏"
 
@@ -1681,9 +2394,29 @@ msgstr "没有可用的游戏"
 msgid "No games found"
 msgstr "未找到游戏"
 
+#: internal/settings/settings.c
+msgid "No games to scrape"
+msgstr "没有游戏可刮"
+
+#: internal/settings/settings.c
+msgid "No jobs match this filter."
+msgstr "没有职位符合此过滤器。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "No launchable games for %s"
+msgstr "%s 没有可启动的游戏"
+
 #: cmd/jawaka-launcher/main.c
 msgid "No lock"
 msgstr "不锁定"
+
+#: internal/settings/settings.c
+msgid "No missing artwork"
+msgstr "没有丢失的封面"
+
+#: internal/settings/settings.c
+msgid "No new scrape jobs"
+msgstr "没有新的刮削工作"
 
 #: internal/settings/settings.c
 msgid "No playtime recorded yet."
@@ -1694,12 +2427,28 @@ msgid "No preview"
 msgstr "无预览"
 
 #: cmd/jawaka-launcher/main.c
+msgid "No recent games yet"
+msgstr "暂无最近玩过的游戏"
+
+#: cmd/jawaka-launcher/main.c
 msgid "No recent games yet — play something and it'll show up here"
 msgstr "还没有最近游玩 — 玩过的游戏会出现在这里"
+
+#: internal/settings/settings.c
+msgid "No releases available"
+msgstr "无可用版本"
+
+#: cmd/jawaka-launcher/main.c
+msgid "No result selected"
+msgstr "未选择结果"
 
 #: cmd/jawaka-launcher/main.c
 msgid "No results"
 msgstr "无结果"
+
+#: cmd/jawaka-launcher/main.c
+msgid "No retained data directories are declared."
+msgstr "没有声明保留的数据目录。"
 
 #: cmd/jawaka-menu/main.c
 msgid "No save in this slot"
@@ -1721,6 +2470,10 @@ msgstr "没有可读取的存档"
 msgid "No saves yet"
 msgstr "暂无存档"
 
+#: internal/settings/settings.c
+msgid "No scrape jobs."
+msgstr "没有刮削工作。"
+
 #: internal/retroarch/shader_strings.c
 msgid "No screen curvature; use CRT Curved for that."
 msgstr ""
@@ -1737,17 +2490,49 @@ msgstr "暂无即时存档"
 msgid "No themes in Pak Rat yet"
 msgstr "Pak Rat 中暂无主题"
 
+#: internal/update/update.c
+msgid "No update check has been run"
+msgstr "未运行更新检查"
+
+#: internal/update/update.c
+msgid "No update download is active"
+msgstr "没有激活更新下载"
+
+#: internal/update/update.c
+msgid "No update manifest path was provided"
+msgstr "未提供更新清单路径"
+
+#: internal/settings/settings.c
+msgid "No update release selected"
+msgstr "未选择更新版本"
+
 #: cmd/jawaka-menu/main.c
 msgid "None"
 msgstr "无"
+
+#: internal/settings/settings.c
+msgid "None selected"
+msgstr "未选择"
 
 #: internal/settings/settings.c
 msgid "Not Found"
 msgstr "未找到"
 
 #: internal/settings/settings.c
+msgid "Not checked"
+msgstr "未检查"
+
+#: internal/settings/settings.c
 msgid "Not connected"
 msgstr "未连接"
+
+#: internal/update/update.c
+msgid "Not enough free space for update download"
+msgstr "没有足够的可用空间来下载更新"
+
+#: internal/update/update.c
+msgid "Not enough free space to install update"
+msgstr "可用空间不足，无法安装更新"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Not enough memory to open the BIOS picker"
@@ -1765,6 +2550,26 @@ msgstr "未挂载"
 msgid "Not now"
 msgstr "暂不"
 
+#: internal/settings/settings.c
+msgid "Not signed in"
+msgstr "未登录"
+
+#: internal/settings/settings.c
+msgid "Not written"
+msgstr "没写"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Nothing to scrape"
+msgstr "没有什么可刮的"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Nothing to scrape - all games have artwork"
+msgstr "没什么可刮的——所有游戏都有艺术作品"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Nothing to scrape - no games in this system"
+msgstr "没有什么可刮的 - 该系统中没有游戏"
+
 #: cmd/jawaka-launcher/main.c
 msgid "Now"
 msgstr "当前"
@@ -1781,9 +2586,17 @@ msgstr "操作系统"
 msgid "Off"
 msgstr "关闭"
 
+#: cmd/jawaka-launcher/main.c
+msgid "Offline achievements unavailable.\n\nRAOfflineProxy is enabled but not responding. You can play now without offline achievements, or cancel and check the service in Settings > System > Services."
+msgstr "离线成就不可用。\n\nRAOfflineProxy 已启用但没有响应。您现在可以在没有离线成就的情况下进行游戏，或者在“设置”>“系统”>“服务”中取消并检查该服务。"
+
 #: internal/settings/settings.c
 msgid "Offsets are standard time; regions adjust for DST"
 msgstr "偏移为标准时间；各地区会自动调整夏令时"
+
+#: internal/settings/settings.c
+msgid "Older"
+msgstr "年长的"
 
 #: internal/settings/settings.c
 msgid "On"
@@ -1798,6 +2611,10 @@ msgid "Open"
 msgstr "打开"
 
 #: internal/settings/settings.c
+msgid "Open  "
+msgstr "开放  "
+
+#: internal/settings/settings.c
 msgid "Open-source components"
 msgstr "开源组件"
 
@@ -1808,6 +2625,10 @@ msgstr "选项"
 #: internal/settings/settings.c
 msgid "Output"
 msgstr "输出路径"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Overrides reset"
+msgstr "覆盖重置"
 
 #: cmd/jawaka-launcher/main.c
 msgid "PIN"
@@ -1829,9 +2650,25 @@ msgstr ""
 msgid "Pak Rat Themes"
 msgstr "Pak Rat 主题"
 
+#: cmd/jawaka-launcher/main.c
+msgid "Pak Rat action failed"
+msgstr "Pak Rat行动失败"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Pak Rat refreshed"
+msgstr "Pak Rat 焕然一新"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Pak Rat runtime paths unavailable"
+msgstr "Pak Rat 运行时路径不可用"
+
 #: internal/settings/timezones.c
 msgid "Pakistan"
 msgstr ""
+
+#: internal/settings/settings.c
+msgid "Password for %s\nStart: Confirm\nY: Cancel"
+msgstr "%s 的密码\nStart：确认\nY：取消"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Path: Apps/%s"
@@ -1841,13 +2678,21 @@ msgstr "路径：Apps/%s"
 msgid "Percent"
 msgstr "百分比"
 
-#: cmd/jawaka-menu/main.c
+#: cmd/jawaka-launcher/main.c
 msgid "Performance"
 msgstr "性能"
 
 #: cmd/jawaka-menu/main.c
 msgid "Performance unavailable"
 msgstr "性能设置不可用"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Performance update failed"
+msgstr "性能设置更新失败"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Performance: %.160s"
+msgstr "性能：%.160s"
 
 #: internal/settings/settings.c
 msgid "Photographic"
@@ -1870,12 +2715,32 @@ msgid "Pick another Saturn BIOS from the options menu."
 msgstr "请在选项菜单中另选一个 Saturn BIOS。"
 
 #: internal/settings/settings.c
+msgid "Pick installed Leaf %s again?"
+msgstr "再次选择已安装的 Leaf %s？"
+
+#: internal/settings/settings.c
+msgid "Pick older Leaf %s?"
+msgstr "选择较旧的 Leaf %s？"
+
+#: internal/update/update.c
+msgid "Platform artifact metadata is incomplete"
+msgstr "平台安装包元数据不完整"
+
+#: internal/settings/settings.c
 msgid "Play"
 msgstr "播放"
 
 #: cmd/jawaka-launcher/main.c
+msgid "Play Anyway"
+msgstr "无论如何都可以玩"
+
+#: cmd/jawaka-launcher/main.c
 msgid "Play anyway"
 msgstr "仍要启动"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Play without achievements"
+msgstr "玩游戏没有成就"
 
 #: internal/launcher/system_names.c
 msgid "PlayStation"
@@ -1894,7 +2759,6 @@ msgid "Playtime"
 msgstr "游玩时长"
 
 #: cmd/jawaka-osd/game_launch.c
-#, fuzzy
 msgid "Please wait"
 msgstr "请稍候"
 
@@ -1910,17 +2774,27 @@ msgstr "电源"
 msgid "Power Off"
 msgstr "关机"
 
+#: cmd/jawaka-menu/main.c
+msgid "Power off failed"
+msgstr "断电失败"
+
 #: internal/retroarch/shader_strings.c
-msgid ""
-"Prefer this over Sharp Pixels when non-integer scrolling visibly shimmers."
+msgid "Prefer this over Sharp Pixels when non-integer scrolling visibly shimmers."
 msgstr ""
+
+#: internal/update/update.c
+msgid "Preparing update install"
+msgstr "准备更新安装"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Press L1 then R1 to keep"
+msgstr "按 L1 再按 R1 保持"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Press MENU to exit"
 msgstr "按菜单键退出"
 
 #: cmd/jawaka-osd/game_launch.c
-#, fuzzy
 msgid "Press Menu again"
 msgstr "再次按菜单键"
 
@@ -1928,21 +2802,53 @@ msgstr "再次按菜单键"
 msgid "Previous page"
 msgstr "上一页"
 
+#: internal/settings/settings.c
+msgid "Primary Slot"
+msgstr "主插槽"
+
 #: cmd/jawaka-menu/main.c
 msgid "Profile"
 msgstr "配置"
 
 #: internal/settings/settings.c
+msgid "Queue full: queued %d of %d"
+msgstr "队列已满：已排队 %d（共 %d）"
+
+#: internal/settings/settings.c
 msgid "Queued"
 msgstr "排队中"
+
+#: internal/settings/settings.c
+msgid "Queued %d artwork job"
+msgstr "已排队的 %d 图稿作业"
+
+#: internal/settings/settings.c
+msgid "Queued %d artwork jobs"
+msgstr "排队的 %d 个封面作业"
+
+#: internal/settings/settings.c
+msgid "Queued %d, %d already queued"
+msgstr "已排队 %d，%d 已排队"
 
 #: cmd/jawaka-menu/main.c
 msgid "Quit"
 msgstr "退出"
 
 #: internal/settings/settings.c
+msgid "Quota paused"
+msgstr "配额已暂停"
+
+#: internal/settings/settings.c
+msgid "Quota paused, "
+msgstr "配额暂停，"
+
+#: internal/settings/settings.c
 msgid "RAM"
 msgstr "内存"
+
+#: internal/settings/settings.c
+msgid "ROM"
+msgstr "ROM"
 
 #: internal/settings/settings.c
 msgid "Rainbow"
@@ -1952,6 +2858,10 @@ msgstr "彩虹"
 msgid "Re-enter PIN"
 msgstr "再次输入 PIN"
 
+#: cmd/jawaka-launcher/main.c
+msgid "Re-scrape all artwork anonymously? ScreenScraper can be slow and quota-limited without an account."
+msgstr "要匿名重新刮削全部封面吗？未登录账号时，ScreenScraper 速度可能较慢且有配额限制。"
+
 #: internal/settings/storage_ui.c
 msgid "Read-only"
 msgstr "只读"
@@ -1959,6 +2869,10 @@ msgstr "只读"
 #: cmd/jawaka-launcher/main.c
 msgid "Reading folder..."
 msgstr "正在读取文件夹…"
+
+#: internal/settings/settings.c
+msgid "Ready Check"
+msgstr "准备检查"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Reboot"
@@ -2017,12 +2931,44 @@ msgid "Reinstall"
 msgstr "重新安装"
 
 #: cmd/jawaka-launcher/main.c
+msgid "Reinstall %.180s?\n\nThe app package will be replaced. User data is preserved."
+msgstr "重新安装 %.180s？\n\n应用包将被替换，用户数据会保留。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Reinstall cancelled: %.120s"
+msgstr "重新安装已取消：%.120s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Reinstalled"
+msgstr "重新安装"
+
+#: cmd/jawaka-launcher/main.c
 msgid "Reinstalled %s"
 msgstr "已重新安装 %s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Reinstalling Pak Rat app"
+msgstr "重新安装 Pak Rat 应用程序"
+
+#: internal/settings/settings.c
+msgid "Rejected - wrong username or password"
+msgstr "被拒绝 - 用户名或密码错误"
 
 #: internal/settings/settings.c
 msgid "Release"
 msgstr "版本"
+
+#: internal/update/update.c
+msgid "Release %s does not support %s"
+msgstr "版本 %s 不支持 %s"
+
+#: internal/update/update.c
+msgid "Release %s requires a newer updater"
+msgstr "版本 %s 需要更新的更新程序"
+
+#: internal/update/update.c
+msgid "Release is missing an update asset"
+msgstr "版本缺少更新资产"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Release-managed path"
@@ -2036,9 +2982,21 @@ msgstr "版本"
 msgid "Remove"
 msgstr "移除"
 
+#: cmd/jawaka-launcher/main.c
+msgid "Remove failed"
+msgstr "删除失败"
+
 #: cmd/jawaka-menu/main.c
 msgid "Remove the saved preset at the selected scope and turn shaders off."
 msgstr "移除所选作用范围内已保存的预设，并关闭着色器。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Removed %.200s"
+msgstr "已删除%.200s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Removed from favorites"
+msgstr "已从收藏夹中删除"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Removing retained Pak Rat data"
@@ -2072,6 +3030,14 @@ msgstr "替换"
 msgid "Replace All"
 msgstr "全部替换"
 
+#: internal/settings/settings.c
+msgid "Request failed"
+msgstr "请求失败"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Requires Leaf v%s"
+msgstr "需要 Leaf v%s"
+
 #: cmd/jawaka-launcher/main.c
 msgid "Rescan"
 msgstr "重新扫描"
@@ -2096,6 +3062,14 @@ msgstr "重置设置"
 msgid "Reset RetroArch Config"
 msgstr "重置 RetroArch 配置"
 
+#: cmd/jawaka-launcher/main.c
+msgid "Reset System Overrides"
+msgstr "重置系统覆盖"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Reset failed"
+msgstr "重置失败"
+
 #: internal/settings/settings.c
 msgid "Reset shared RetroArch config to packaged defaults?"
 msgstr "要将 RetroArch 全局配置恢复为默认吗？"
@@ -2103,6 +3077,10 @@ msgstr "要将 RetroArch 全局配置恢复为默认吗？"
 #: internal/settings/settings.c
 msgid "Restart"
 msgstr "重启"
+
+#: internal/settings/settings.c
+msgid "Restart Needed"
+msgstr "需要重新启动"
 
 #: internal/settings/storage_ui.c
 msgid "Restart and check"
@@ -2113,8 +3091,28 @@ msgid "Restart and repair"
 msgstr "重启并修复"
 
 #: internal/settings/settings.c
+msgid "Restart canceled"
+msgstr "重新启动已取消"
+
+#: internal/settings/settings.c
+msgid "Restart failed"
+msgstr "重启失败"
+
+#: internal/settings/settings.c
+msgid "Restart needed"
+msgstr "需要重启"
+
+#: internal/settings/settings.c
 msgid "Restart now to finish installing?"
 msgstr "安装完成，是否立即重启？"
+
+#: internal/update/update.c
+msgid "Restart to finish installing"
+msgstr "重启完成安装"
+
+#: internal/settings/settings.c
+msgid "Restarting"
+msgstr "正在重启"
 
 #: internal/settings/storage_ui.c
 msgid "Restarting to check your SD card"
@@ -2125,6 +3123,18 @@ msgid "Restarting to repair your SD card"
 msgstr "正在重启以修复 SD 卡"
 
 #: cmd/jawaka-launcher/main.c
+msgid "Restore"
+msgstr "恢复"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Restored"
+msgstr "已恢复"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Restoring Pak Rat app"
+msgstr "恢复 Pak Rat 应用程序"
+
+#: cmd/jawaka-launcher/main.c
 msgid "Resume"
 msgstr "继续游戏"
 
@@ -2132,14 +3142,49 @@ msgstr "继续游戏"
 msgid "RetroAchievements"
 msgstr "RetroAchievements"
 
+#: internal/settings/settings.c
+msgid "RetroAchievements password\nStart: Confirm\nY: Cancel"
+msgstr "RetroAchievements 密码\nStart：确认\nY：取消"
+
+#: internal/settings/settings.c
+msgid "RetroAchievements username\nStart: Confirm\nY: Cancel"
+msgstr "RetroAchievements 用户名\nStart：确认\nY：取消"
+
 #: cmd/jawaka-menu/main.c
 msgid "RetroArch Settings"
 msgstr "RetroArch 设置"
 
+#: internal/ipc/ipc_client.c
+msgid "RetroArch action failed"
+msgstr "RetroArch 操作失败"
+
+#: internal/ipc/ipc_client.c
+msgid "RetroArch action failed: %s"
+msgstr "RetroArch 操作失败：%s"
+
+#: internal/ipc/ipc_client.c
+msgid "RetroArch action failed: daemon unavailable"
+msgstr "RetroArch 操作失败：守护进程不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "RetroArch action missing"
+msgstr "RetroArch 动作缺失"
+
+#: internal/ipc/ipc_client.c
+msgid "RetroArch action requested"
+msgstr "请求 RetroArch 操作"
+
+#: internal/ipc/ipc_client.c
+msgid "RetroArch config reset"
+msgstr "RetroArch 配置重置"
+
 #: cmd/jawaka-menu/main.c
-msgid ""
-"RetroArch did not confirm the shader. Reopen Shader or restart the game."
+msgid "RetroArch did not confirm the shader. Reopen Shader or restart the game."
 msgstr "RetroArch 未确认着色器。请重新打开“着色器”或重启游戏。"
+
+#: internal/ipc/ipc_client.c
+msgid "RetroArch is not available"
+msgstr "RetroArch 不可用"
 
 #: cmd/jawaka-menu/main.c
 msgid "RetroArch is not available. Shader unchanged."
@@ -2149,8 +3194,35 @@ msgstr "RetroArch 不可用。着色器未更改。"
 msgid "RetroArch reset canceled"
 msgstr "RetroArch 重置已取消"
 
+#: internal/ipc/ipc_client.c
+msgid "RetroArch reset failed"
+msgstr "RetroArch 重置失败"
+
+#: internal/ipc/ipc_client.c
+msgid "RetroArch reset failed: %s"
+msgstr "RetroArch 重置失败：%s"
+
+#: internal/ipc/ipc_client.c
+msgid "RetroArch reset failed: daemon unavailable"
+msgstr "RetroArch 重置失败：守护进程不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "RetroArch session active"
+msgstr "RetroArch 会话处于活动状态"
+
+#: internal/ipc/ipc_client.c
+msgid "RetroArch session failed"
+msgstr "RetroArch 会话失败"
+
+#: internal/ipc/ipc_client.c
+msgid "RetroArch session failed: %s"
+msgstr "RetroArch 会话失败：%s"
+
+#: cmd/jawaka-menu/main.c
+msgid "RetroArch session unavailable"
+msgstr "RetroArch 会话不可用"
+
 #: cmd/jawaka-osd/game_launch.c
-#, fuzzy
 msgid "RetroArch settings not saved"
 msgstr "RetroArch 设置未保存"
 
@@ -2159,13 +3231,20 @@ msgid "Return to Launcher"
 msgstr "返回启动器"
 
 #: cmd/jawaka-osd/game_launch.c
-#, fuzzy
 msgid "Return to Leaf?"
 msgstr "返回 Leaf？"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Revert"
 msgstr "还原"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Reverting in %d second"
+msgstr "在 %d 秒后恢复"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Reverting in %d seconds"
+msgstr "在 %d 秒内恢复"
 
 #: internal/settings/settings.c
 msgid "Rounded"
@@ -2216,6 +3295,10 @@ msgid "Save & Quit"
 msgstr "保存并退出"
 
 #: cmd/jawaka-menu/main.c
+msgid "Save & Quit quicksave \\xe2\\x80\\x94 A resumes, Y keeps it as a slot"
+msgstr "保存并退出快速保存 \\xe2\\x80\\x94 A 恢复，Y 将其保留为插槽"
+
+#: cmd/jawaka-menu/main.c
 msgid "Save State"
 msgstr "即时存档"
 
@@ -2231,10 +3314,29 @@ msgstr "全局保存"
 msgid "Save your edits in RetroArch before you leave."
 msgstr "离开前，请在 RetroArch 中保存修改。"
 
-# Shown when the binding persisted but the daemon push failed.
+#: internal/settings/settings.c
+msgid "Saved - RetroArch signs in at game launch"
+msgstr "已保存 - RetroArch 在游戏启动时登录"
+
+#: internal/settings/settings.c
+msgid "Saved - could not verify: %s"
+msgstr "已保存 - 无法验证：%s"
+
+#: internal/settings/settings.c
+msgid "Saved: %s"
+msgstr "已保存：%s"
+
+#: internal/settings/settings.c
+msgid "Saved: %s (unverified)"
+msgstr "已保存：%s（未经验证）"
+
 #: internal/settings/settings.c
 msgid "Saved; active after restart"
 msgstr "已保存；重启后生效"
+
+#: cmd/jawaka-menu/main.c
+msgid "Savestates are not available"
+msgstr "保存状态不可用"
 
 #: internal/settings/settings.c
 msgid "Saving"
@@ -2253,18 +3355,24 @@ msgid "Scanlines and an aperture mask with a flat screen and crisp scaling."
 msgstr ""
 
 #: internal/retroarch/shader_strings.c
-msgid ""
-"Scanlines and aperture mask with screen curvature, rounded corners and "
-"vignetting."
+msgid "Scanlines and aperture mask with screen curvature, rounded corners and vignetting."
 msgstr ""
 
 #: internal/retroarch/shader_strings.c
 msgid "Scanlines reduce brightness, especially when combined with BFI."
 msgstr ""
 
+#: cmd/jawaka-launcher/main.c
+msgid "Scanned"
+msgstr "已扫描"
+
 #: internal/settings/settings.c
 msgid "Scanning"
 msgstr "扫描中"
+
+#: internal/settings/settings.c
+msgid "Scanning Wi-Fi…"
+msgstr "正在扫描 Wi-Fi..."
 
 #: cmd/jawaka-launcher/main.c
 msgid "Scanning library..."
@@ -2282,9 +3390,13 @@ msgstr "作用范围"
 msgid "Scrape"
 msgstr "刮削"
 
-#: internal/settings/settings.c
+#: cmd/jawaka-launcher/main.c
 msgid "Scrape Artwork"
 msgstr "刮削封面"
+
+#: internal/settings/settings.c
+msgid "Scrape Artwork - %s"
+msgstr "刮削封面 - %s"
 
 #: internal/settings/settings.c
 msgid "Scrape Queue"
@@ -2299,6 +3411,18 @@ msgid "Scrape Result"
 msgstr "刮削结果"
 
 #: cmd/jawaka-launcher/main.c
+msgid "Scrape cancelled"
+msgstr "已取消刮削"
+
+#: internal/settings/settings.c
+msgid "Scrape failed"
+msgstr "刮削失败"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Scrape failed: %.180s"
+msgstr "刮削失败：%.180s"
+
+#: cmd/jawaka-launcher/main.c
 msgid "Scrape finished: %d found"
 msgstr "刮削完成：找到 %d 个"
 
@@ -2307,8 +3431,48 @@ msgid "Scrape missing artwork"
 msgstr "刮削缺失封面"
 
 #: cmd/jawaka-launcher/main.c
+msgid "Scrape missing artwork anonymously? ScreenScraper can be slow and quota-limited without an account."
+msgstr "要匿名刮削缺失的封面吗？未登录账号时，ScreenScraper 速度可能较慢且有配额限制。"
+
+#: internal/settings/settings.c
+msgid "Scrape queue is full"
+msgstr "刮削队列已满"
+
+#: internal/settings/settings.c
+msgid "Scrape was cancelled before completion."
+msgstr "刮削在完成之前被取消。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Scraping %d game in %.140s"
+msgstr "正在刮削 %d 个游戏（%.140s）"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Scraping %d games"
+msgstr "正在刮削 %d 个游戏"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Scraping %d games in %.140s"
+msgstr "正在刮削 %d 个游戏（%.140s）"
+
+#: cmd/jawaka-launcher/main.c
 msgid "Scraping %s · %d/%d"
 msgstr "正在刮削 %s · %d/%d"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Scraping %s: %d/%d - %.160s"
+msgstr "正在刮削 %s：%d/%d - %.160s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Scraping artwork: %.180s"
+msgstr "正在刮削封面：%.180s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Scraping cancelled (%d item stopped)"
+msgstr "已取消刮削（停止 %d 项）"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Scraping cancelled (%d items stopped)"
+msgstr "已取消刮削（停止 %d 项）"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Scraping paused: %.200s"
@@ -2317,6 +3481,14 @@ msgstr "刮削已暂停：%.200s"
 #: cmd/jawaka-launcher/main.c
 msgid "Scraping: %d/%d"
 msgstr "正在刮削：%d/%d"
+
+#: internal/settings/settings.c
+msgid "ScreenScraper password\nStart: Confirm\nY: Cancel"
+msgstr "ScreenScraper 密码\nStart：确认\nY：取消"
+
+#: internal/settings/settings.c
+msgid "ScreenScraper username\nStart: Confirm\nY: Cancel"
+msgstr "ScreenScraper 用户名\nStart：确认\nY：取消"
 
 #: internal/settings/settings.c
 msgid "ScreenScraper.fr"
@@ -2342,6 +3514,26 @@ msgstr "搜索"
 msgid "Search This System"
 msgstr "搜索此游戏平台"
 
+#: cmd/jawaka-launcher/main.c
+msgid "Search library\nStart: Confirm\nY: Cancel"
+msgstr "搜索游戏库\nStart：确认\nY：取消"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Search: %s"
+msgstr "搜索：%s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Search: %s  (%d result)"
+msgstr "搜索：%s（%d 结果）"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Search: %s  (%d results)"
+msgstr "搜索：%s（%d 结果）"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Search: (empty)"
+msgstr "搜索：（空）"
+
 #: internal/settings/settings.c
 msgid "Searching"
 msgstr "搜索中"
@@ -2349,6 +3541,34 @@ msgstr "搜索中"
 #: cmd/jawaka-launcher/main.c
 msgid "Second SD Card"
 msgstr "副 SD 卡"
+
+#: internal/platform/device.c
+msgid "Secondary SD"
+msgstr "第二张 SD 卡"
+
+#: internal/platform/device_mlp1.c
+msgid "Secondary SD is busy"
+msgstr "辅助 SD 正忙"
+
+#: internal/platform/device_mlp1.c
+msgid "Secondary SD is not mounted"
+msgstr "辅助 SD 未安装"
+
+#: internal/platform/device_mlp1.c
+msgid "Secondary SD unmount failed"
+msgstr "辅助 SD 卸载失败"
+
+#: internal/ipc/ipc_client.c
+msgid "Secondary SD unmounted"
+msgstr "辅助 SD 已卸载"
+
+#: cmd/jawakad/main.c
+msgid "Secondary SD unmounted; library rescan queued"
+msgstr "辅助 SD 已卸载；库重新扫描已排队"
+
+#: cmd/jawakad/main.c
+msgid "Secondary SD unmounted; library update started"
+msgstr "辅助 SD 已卸载；库更新开始"
 
 #: internal/settings/settings.c
 msgid "Secondary Text"
@@ -2382,6 +3602,10 @@ msgstr ""
 msgid "Select"
 msgstr "选择"
 
+#: internal/settings/settings.c
+msgid "Selected"
+msgstr "已选择"
+
 #: internal/launcher/bios.c
 msgid "Selected BIOS card is not mounted"
 msgstr "所选 BIOS 所在的卡未挂载"
@@ -2414,9 +3638,29 @@ msgstr "所选 BIOS 文件已不在 BIOS 文件夹内"
 msgid "Selected BIOS path is not usable"
 msgstr "所选 BIOS 路径不可用"
 
+#: internal/update/update.c
+msgid "Selected update is no longer available"
+msgstr "所选更新不再可用"
+
 #: internal/settings/settings.c
 msgid "Selection"
 msgstr "选中项"
+
+#: cmd/jawakad/main.c
+msgid "Service quiesce failed: %s"
+msgstr "暂停服务失败：%s"
+
+#: cmd/jawakad/main.c
+msgid "Service quiesce failed: %s (%s)"
+msgstr "暂停服务失败：%s（%s）"
+
+#: internal/settings/settings.c
+msgid "Service status unavailable"
+msgstr "服务状态不可用"
+
+#: cmd/jawakad/main.c
+msgid "Service supervisor unavailable; update not started"
+msgstr "服务主管不在；更新未开始"
 
 #: internal/settings/settings.c
 msgid "Services"
@@ -2435,8 +3679,7 @@ msgid "Shader"
 msgstr "着色器"
 
 #: cmd/jawaka-menu/main.c
-msgid ""
-"Shader failed and the previous shader could not be restored. Reopen the game."
+msgid "Shader failed and the previous shader could not be restored. Reopen the game."
 msgstr "着色器应用失败，且无法恢复之前的着色器。请重新打开游戏。"
 
 #: cmd/jawaka-menu/main.c
@@ -2474,6 +3717,34 @@ msgstr "关机？"
 #: internal/settings/settings.c
 msgid "Signal: %s"
 msgstr "信号：%s"
+
+#: internal/settings/settings.c
+msgid "Signed in - %d thread%s, quota %d/%d today"
+msgstr "今天已登录 - %d 线程 %s，配额 %d/%d"
+
+#: internal/settings/settings.c
+msgid "Signed in as %s"
+msgstr "以 %s 身份登录"
+
+#: internal/settings/settings.c
+msgid "Signed in as %s - %d thread%s"
+msgstr "以 %s - %d 线程 %s 身份登录"
+
+#: internal/settings/settings.c
+msgid "Signed in as %s - %d threads%s"
+msgstr "以 %s - %d 线程 %s 身份登录"
+
+#: internal/settings/settings.c
+msgid "Signed in as %s%s"
+msgstr "以 %s%s 身份登录"
+
+#: internal/settings/settings.c
+msgid "Signed out of RetroAchievements"
+msgstr "退出 RetroAchievements"
+
+#: internal/settings/settings.c
+msgid "Signed out of ScreenScraper"
+msgstr "已退出 ScreenScraper"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Size is not proof that a file is a Saturn BIOS."
@@ -2540,7 +3811,6 @@ msgid "Split Over 10MB"
 msgstr "超过 10MB 时分割"
 
 #: cmd/jawaka-osd/game_launch.c
-#, fuzzy
 msgid "Splore import incomplete"
 msgstr "Splore 导入未完成"
 
@@ -2551,6 +3821,10 @@ msgstr "方角"
 #: internal/settings/settings.c
 msgid "Stable"
 msgstr "稳定版"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Stale"
+msgstr "陈旧的"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Start"
@@ -2568,6 +3842,14 @@ msgstr "开启精选游戏模式？"
 msgid "Start with Leaf"
 msgstr "随 Leaf 启动"
 
+#: cmd/jawaka-launcher/main.c
+msgid "Start: Confirm\nY: Cancel\nLeave empty to reset"
+msgstr "开始：确认\n是：取消\n留空以重置"
+
+#: internal/settings/settings.c
+msgid "Starting"
+msgstr "正在启动"
+
 #: internal/settings/settings.c
 msgid "Startup Tab"
 msgstr "启动标签"
@@ -2577,6 +3859,10 @@ msgid "Static"
 msgstr "常亮"
 
 #: internal/settings/settings.c
+msgid "Status"
+msgstr "状态"
+
+#: internal/settings/settings.c
 msgid "Status Bar"
 msgstr "状态栏"
 
@@ -2584,21 +3870,41 @@ msgstr "状态栏"
 msgid "Status: %s"
 msgstr "状态：%s"
 
-#: internal/settings/settings.c
+#: cmd/jawaka-launcher/main.c
 msgid "Stop"
 msgstr "停止"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Stop & Play"
+msgstr "停止和播放"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Stop All"
 msgstr "全部停止"
 
 #: internal/settings/settings.c
+msgid "Stopped %d job%s"
+msgstr "已停止 %d 作业%s"
+
+#: internal/settings/settings.c
 msgid "Stopped test sound"
 msgstr "已停止测试音"
 
 #: internal/settings/settings.c
+msgid "Stopping"
+msgstr "正在停止"
+
+#: internal/settings/settings.c
 msgid "Storage free"
 msgstr "剩余存储"
+
+#: internal/settings/settings.c
+msgid "Storage paused"
+msgstr "存储已暂停"
+
+#: internal/settings/settings.c
+msgid "Storage paused, "
+msgstr "存储暂停，"
 
 #: internal/settings/settings.c
 msgid "Strength"
@@ -2641,14 +3947,8 @@ msgid "Switch"
 msgstr "切换"
 
 #: internal/settings/settings.c
-msgid ""
-"Switch Leaf to %s?\n"
-"\n"
-"Leaf restarts to apply it."
-msgstr ""
-"切换 Leaf 到 %s？\n"
-"\n"
-"Leaf 将重启以应用。"
+msgid "Switch Leaf to %s?\n\nLeaf restarts to apply it."
+msgstr "切换 Leaf 到 %s？\n\nLeaf 将重启以应用。"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Switcher"
@@ -2658,25 +3958,43 @@ msgstr "游戏切换"
 msgid "Sydney"
 msgstr "悉尼"
 
-# In-game OSD banners (Syncthing, settings, SD card, PICO-8). MACHINE SEED,
-# marked fuzzy until a reviewer confirms them; untranslated they render English.
+#: cmd/jawaka-launcher/main.c
+msgid "Sync before play - %d item, %s"
+msgstr "播放前同步 - %d 项目，%s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Sync before play - %d items, %s"
+msgstr "播放前同步 - %d 项，%s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Sync needs attention.\n\n%d items (%s) remained when waiting ended. Play anyway will stop Syncthing first; Cancel leaves syncing active."
+msgstr "同步需要注意。\n\n等待结束时仍保留 %d 个项目 (%s)。无论如何玩都会先停止Syncthing；取消使同步保持活动状态。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Sync needs attention.\n\nSyncthing could not be verified stopped. Play anyway will retry the safe stop; Leaf will not launch until Syncthing is stopped."
+msgstr "同步需要注意。\n\n无法验证同步已停止。无论如何玩都会重试安全停止；在 Syncthing 停止之前，Leaf 不会启动。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Syncthing card setup needs attention.\n\nLeaf could not match this game's card to its Saves and States folders. Review Cards and Folders in Syncthing."
+msgstr "同步卡设置需要注意。\n\nLeaf 无法将该游戏的卡与其 Saves 和 States 文件夹相匹配。查看 Syncthing 中的卡片和文件夹。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Syncthing still has Saves or States to transfer. Wait keeps syncing for up to 15 seconds. Play anyway stops Syncthing first. Cancel leaves syncing active."
+msgstr "Syncthing 仍有保存或状态需要传输。等待最多保持同步 15 秒。无论如何，播放都会首先停止同步。取消使同步保持活动状态。"
+
 #: cmd/jawaka-osd/game_launch.c
-#, fuzzy
 msgid "Syncthing: Checking saves"
 msgstr "Syncthing：正在检查存档"
 
 #: cmd/jawaka-osd/game_launch.c
-#, fuzzy
 msgid "Syncthing: Stopping"
 msgstr "Syncthing：正在停止"
 
 #: cmd/jawaka-osd/game_launch.c
-#, fuzzy
 msgid "Syncthing: Syncing %d item"
 msgstr "Syncthing：正在同步 %d 项"
 
 #: cmd/jawaka-osd/game_launch.c
-#, fuzzy
 msgid "Syncthing: Syncing %d items"
 msgstr "Syncthing：正在同步 %d 项"
 
@@ -2687,6 +4005,10 @@ msgstr "系统"
 #: internal/settings/settings.c
 msgid "System Icons"
 msgstr "系统图标"
+
+#: cmd/jawaka-launcher/main.c
+msgid "System Options: %s"
+msgstr "系统选项：%s"
 
 #: cmd/jawaka-launcher/main.c
 msgid "System Update"
@@ -2741,17 +4063,11 @@ msgid "That folder name is too long to open."
 msgstr "该文件夹名过长，无法打开。"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"The Themes folder already has %d themes, the most Leaf can list. Remove one "
-"to install this theme."
-msgstr ""
-"Themes 文件夹中已有 %d 个主题，已达 Leaf 可显示的上限。请删除一个主题后再安装"
-"此主题。"
+msgid "The Themes folder already has %d themes, the most Leaf can list. Remove one to install this theme."
+msgstr "Themes 文件夹中已有 %d 个主题，已达 Leaf 可显示的上限。请删除一个主题后再安装此主题。"
 
 #: internal/settings/storage_ui.c
-msgid ""
-"The card passed the check but couldn't be made writable. Restart your "
-"device, then try Check SD card."
+msgid "The card passed the check but couldn't be made writable. Restart your device, then try Check SD card."
 msgstr "此卡通过了检查，但无法恢复写入。请重启设备，然后再试“检查 SD 卡”。"
 
 #: internal/settings/storage_ui.c
@@ -2759,8 +4075,7 @@ msgid "The repair couldn't be started. Check the card on a computer instead."
 msgstr "无法启动修复。请改为在电脑上检查此卡。"
 
 #: internal/settings/storage_ui.c
-msgid ""
-"The repair did not finish. The log may include changes that were attempted."
+msgid "The repair did not finish. The log may include changes that were attempted."
 msgstr "修复未完成。日志中可能包含已尝试的更改。"
 
 #: internal/settings/storage_ui.c
@@ -2768,9 +4083,7 @@ msgid "The repair log on your device has the details."
 msgstr "设备上的修复日志中有详细信息。"
 
 #: internal/settings/storage_ui.c
-msgid ""
-"The repair log on your device lists the files that were changed. The list "
-"may not be complete."
+msgid "The repair log on your device lists the files that were changed. The list may not be complete."
 msgstr "设备上的修复日志列出了已更改的文件。列表可能不完整。"
 
 #: cmd/jawaka-menu/main.c
@@ -2861,6 +4174,10 @@ msgstr "主题颜色"
 msgid "Themes"
 msgstr "主题"
 
+#: cmd/jawaka-launcher/main.c
+msgid "These retained data directories will be preserved:\n"
+msgstr "将保留以下数据目录：\n"
+
 #: cmd/jawaka-menu/main.c
 msgid "This RetroArch build does not support Leaf's shader picker."
 msgstr "当前 RetroArch 版本不支持 Leaf 的着色器选择器。"
@@ -2890,8 +4207,7 @@ msgid "This is a scaling filter, not a CRT simulation."
 msgstr ""
 
 #: internal/retroarch/shader_strings.c
-msgid ""
-"This is a stronger display simulation than the simpler GBC Color preset."
+msgid "This is a stronger display simulation than the simpler GBC Color preset."
 msgstr ""
 
 #: cmd/jawaka-launcher/main.c
@@ -2899,26 +4215,24 @@ msgid "This is your current theme."
 msgstr "这是当前主题。"
 
 #: cmd/jawaka-menu/main.c
-msgid ""
-"This replaces the shader for every RetroArch game and can replace Fugazi. "
-"Continue?"
+msgid "This replaces the shader for every RetroArch game and can replace Fugazi. Continue?"
 msgstr "这会替换所有 RetroArch 游戏的着色器，也可能替换 Fugazi。是否继续？"
 
 #: cmd/jawaka-menu/main.c
-msgid ""
-"This shader could not compile or link on this video driver. Previous shader "
-"restored."
+msgid "This shader could not compile or link on this video driver. Previous shader restored."
 msgstr "此着色器无法在当前视频驱动下编译或链接。已恢复之前的着色器。"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"This theme is no longer available in Pak Rat. Your installed copy keeps "
-"working."
+msgid "This theme is no longer available in Pak Rat. Your installed copy keeps working."
 msgstr "此主题已不再在 Pak Rat 中提供。已安装的副本仍可继续使用。"
 
 #: internal/settings/settings.c
 msgid "Time Zone"
 msgstr "时区"
+
+#: internal/settings/settings.c
+msgid "Time zone: %s"
+msgstr "时区：%s"
 
 #: internal/settings/storage_ui.c
 msgid "To repair it, turn off your device and check the card on a computer."
@@ -2928,12 +4242,15 @@ msgstr "要修复此卡，请关闭设备并在电脑上检查此卡。"
 msgid "Tonga"
 msgstr ""
 
+#: cmd/jawaka-launcher/main.c
+msgid "Tools"
+msgstr "工具"
+
 #: internal/settings/settings.c
 msgid "Total"
 msgstr "总计"
 
 #: cmd/jawaka-osd/game_launch.c
-#, fuzzy
 msgid "Try Splore again"
 msgstr "请再次打开 Splore"
 
@@ -2949,11 +4266,18 @@ msgstr ""
 msgid "Turn off your device and check the card on a computer."
 msgstr "请关闭设备并在电脑上检查此卡。"
 
+#: internal/settings/settings.c
+msgid "Turning Wi-Fi off…"
+msgstr "正在关闭 Wi-Fi..."
+
+#: internal/settings/settings.c
+msgid "Turning Wi-Fi on…"
+msgstr "正在打开 Wi-Fi..."
+
 #: cmd/jawaka-launcher/main.c
 msgid "Type to search"
 msgstr "输入以搜索"
 
-# Rumble split into UI Rumble and Game Rumble (Controls & Feedback).
 #: internal/settings/settings.c
 msgid "UI Rumble"
 msgstr "界面震动"
@@ -2998,34 +4322,49 @@ msgstr "UTC"
 msgid "Unavailable"
 msgstr "不可用"
 
+#: internal/settings/settings.c
+msgid "Unavailable services cannot be enabled"
+msgstr "无法启用不可用的服务"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Unfavorited"
+msgstr "不喜欢的"
+
 #: cmd/jawaka-launcher/main.c
 msgid "Uninstall"
 msgstr "卸载"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"Uninstall %s?\n"
-"\n"
-"This deletes Themes/%s from your SD card."
-msgstr ""
-"卸载 %s？\n"
-"\n"
-"这将从 SD 卡中删除 Themes/%s。"
+msgid "Uninstall %.180s?\n\n"
+msgstr "卸载 %.180s？\n\n"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"Uninstall %s?\n"
-"\n"
-"This deletes Themes/%s from your SD card. It is your current theme, so Leaf "
-"will switch to no theme."
-msgstr ""
-"卸载 %s？\n"
-"\n"
-"这将从 SD 卡中删除 Themes/%s。它是当前主题，因此 Leaf 将切换为无主题。"
+msgid "Uninstall %s?\n\nThis deletes Themes/%s from your SD card."
+msgstr "卸载 %s？\n\n这将从 SD 卡中删除 Themes/%s。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Uninstall %s?\n\nThis deletes Themes/%s from your SD card. It is your current theme, so Leaf will switch to no theme."
+msgstr "卸载 %s？\n\n这将从 SD 卡中删除 Themes/%s。它是当前主题，因此 Leaf 将切换为无主题。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Uninstall cancelled: %.120s"
+msgstr "卸载已取消：%.120s"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Uninstall cancelled: %s"
 msgstr "已取消卸载：%s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Uninstalled"
+msgstr "已卸载"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Uninstalled %.100s and removed retained data"
+msgstr "已卸载 %.100s 并删除保留的数据"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Uninstalled %.100s; retained-data removal failed"
+msgstr "已卸载%.100s；保留数据删除失败"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Uninstalled %s"
@@ -3036,10 +4375,18 @@ msgid "Uninstalled %s. Switched to no theme."
 msgstr "已卸载 %s，已切换为无主题。"
 
 #: cmd/jawaka-launcher/main.c
+msgid "Uninstalling Pak Rat app"
+msgstr "卸载 Pak Rat 应用程序"
+
+#: cmd/jawaka-launcher/main.c
 msgid "Uninstalling theme"
 msgstr "正在卸载主题"
 
-#: internal/platform/platform_common.c
+#: cmd/jawakad/main.c
+msgid "Unix peer pid unavailable"
+msgstr "Unix 对等 pid 不可用"
+
+#: cmd/jawaka-menu/main.c
 msgid "Unknown"
 msgstr "未知"
 
@@ -3060,12 +4407,36 @@ msgid "Unpair"
 msgstr "取消配对"
 
 #: internal/settings/settings.c
+msgid "Unpair %s?"
+msgstr "取消配对 %s？"
+
+#: internal/update/update.c
+msgid "Unsafe stock update trigger: %s"
+msgstr "原厂更新触发器不安全：%s"
+
+#: internal/settings/settings.c
 msgid "Unsupported"
 msgstr "不支持"
+
+#: internal/update/update.c
+msgid "Unsupported stock update method for %s"
+msgstr "%s 不支持此原厂更新方式"
+
+#: internal/update/update.c
+msgid "Unsupported update artifact kind: %s"
+msgstr "不支持的更新安装包类型：%s"
+
+#: internal/update/update.c
+msgid "Unsupported update install method: %s"
+msgstr "不支持的更新安装方法：%s"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Up one level"
 msgstr "返回上一级"
+
+#: internal/settings/settings.c
+msgid "Up to date"
+msgstr "最新"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Up/Down"
@@ -3080,12 +4451,164 @@ msgid "Update Channel"
 msgstr "更新通道"
 
 #: internal/settings/settings.c
+msgid "Update already downloaded"
+msgstr "更新已下载"
+
+#: internal/update/update.c
+msgid "Update artifact has not been downloaded"
+msgstr "更新神器尚未下载"
+
+#: internal/settings/settings.c
+msgid "Update check failed"
+msgstr "更新检查失败"
+
+#: internal/update/update.c
+msgid "Update download already in progress"
+msgstr "更新下载已在进行中"
+
+#: internal/update/update.c
+msgid "Update download cancelled"
+msgstr "更新下载已取消"
+
+#: internal/settings/settings.c
+msgid "Update download failed"
+msgstr "更新下载失败"
+
+#: internal/update/update.c
+msgid "Update download is still in progress"
+msgstr "更新下载仍在进行中"
+
+#: internal/update/update.c
+msgid "Update download path is too long"
+msgstr "更新下载路径太长"
+
+#: internal/update/update.c
+msgid "Update download process disappeared"
+msgstr "更新下载过程消失了"
+
+#: cmd/jawakad/main.c
+msgid "Update finished but service restore failed: %s"
+msgstr "更新已完成，但服务恢复失败：%s"
+
+#: internal/settings/settings.c
+msgid "Update install canceled"
+msgstr "更新安装已取消"
+
+#: internal/update/update.c
+msgid "Update install could not be prepared"
+msgstr "无法准备更新安装"
+
+#: internal/settings/settings.c
+msgid "Update install failed"
+msgstr "更新安装失败"
+
+#: internal/update/update.c
+msgid "Update install is already in progress"
+msgstr "更新安装已在进行中"
+
+#: internal/update/update.c
+msgid "Update install state path is too long"
+msgstr "更新安装状态路径太长"
+
+#: internal/settings/settings.c
+msgid "Update is not ready to install"
+msgstr "更新尚未准备好安装"
+
+#: internal/update/update.c
+msgid "Update is ready to install"
+msgstr "更新已准备好安装"
+
+#: internal/update/update.c
+msgid "Update manifest is missing platforms"
+msgstr "更新清单缺少平台"
+
+#: internal/update/update.c
+msgid "Update manifest is missing release_id"
+msgstr "更新清单缺少release_id"
+
+#: internal/update/update.c
+msgid "Update manifest is missing schema"
+msgstr "更新清单缺少架构"
+
+#: internal/update/update.c
+msgid "Update manifest is not valid JSON"
+msgstr "更新清单不是有效的 JSON"
+
+#: internal/update/update.c
+msgid "Update manifest path is too long"
+msgstr "更新清单路径太长"
+
+#: internal/update/update.c
+msgid "Update manifest product is not leaf"
+msgstr "更新清单中的产品不是 Leaf"
+
+#: internal/settings/settings.c
+msgid "Update ready check failed"
+msgstr "更新就绪检查失败"
+
+#: internal/update/update.c
+msgid "Update release path is too long"
+msgstr "更新发布路径太长"
+
+#: internal/update/update.c
+msgid "Update runner did not write a result file"
+msgstr "更新运行程序未写入结果文件"
+
+#: internal/update/update.c
+msgid "Update runner is not available"
+msgstr "更新运行器不可用"
+
+#: cmd/jawakad/main.c
+msgid "Update runner path is too long"
+msgstr "更新运行路径太长"
+
+#: internal/update/update.c
+msgid "Update runner process disappeared"
+msgstr "更新运行程序进程消失"
+
+#: internal/update/update.c
+msgid "Update runner result was not valid JSON"
+msgstr "更新运行程序结果不是有效的 JSON"
+
+#: internal/settings/settings.c
+msgid "Update selection canceled"
+msgstr "更新选择已取消"
+
+#: internal/settings/settings.c
+msgid "Update selection failed"
+msgstr "更新选择失败"
+
+#: internal/settings/settings.c
+msgid "Update service unavailable"
+msgstr "更新服务不可用"
+
+#: internal/settings/settings.c
+msgid "Update status refreshed"
+msgstr "更新状态已刷新"
+
+#: internal/settings/settings.c
 msgid "Update status unavailable"
 msgstr "无法获取更新状态"
+
+#: internal/update/update.c
+msgid "Update temporary path is too long"
+msgstr "更新临时路径太长"
+
+#: internal/update/update.c
+msgid "Update was prepared on the other SD slot; install again"
+msgstr "已在另一个 SD 插槽上准备更新；再次安装"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Updated"
+msgstr "已更新"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Updated %s to version %s"
 msgstr "已将 %s 更新到版本 %s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Updating Pak Rat app"
+msgstr "更新 Pak Rat 应用程序"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Updating theme"
@@ -3123,9 +4646,29 @@ msgstr "使用系统设置"
 msgid "Vectrex"
 msgstr ""
 
+#: internal/settings/settings.c
+msgid "Verified"
+msgstr "已验证"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Version %.40s is missing from catalog history"
+msgstr "目录历史记录中缺少版本 %.40s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Version %.40s requires Leaf v%.40s"
+msgstr "版本 %.40s 需要 Leaf v%.40s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Version %s"
+msgstr "版本 %s"
+
 #: cmd/jawaka-launcher/main.c
 msgid "Version %s needs Leaf %s or newer."
 msgstr "版本 %s 需要 Leaf %s 或更高版本。"
+
+#: cmd/jawaka-launcher/main.c
+msgid "Version %s requires Leaf v%s — update Leaf in Settings to get it."
+msgstr "版本 %s 需要 Leaf v%s — 在“设置”中更新 Leaf 以获取它。"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Version: %s"
@@ -3143,6 +4686,14 @@ msgstr "显示"
 msgid "Volume"
 msgstr "音量"
 
+#: cmd/jawaka-launcher/main.c
+msgid "Wait for sync"
+msgstr "等待同步"
+
+#: internal/settings/settings.c
+msgid "Wait for the release check to finish before switching channels"
+msgstr "等待释放检查完成后再切换通道"
+
 #: internal/settings/settings.c
 msgid "Weak"
 msgstr "弱"
@@ -3150,6 +4701,14 @@ msgstr "弱"
 #: internal/settings/settings.c
 msgid "Wi-Fi"
 msgstr ""
+
+#: cmd/jawakad/main.c
+msgid "Wi-Fi is not connected"
+msgstr "Wi-Fi 未连接"
+
+#: internal/settings/settings.c
+msgid "Wi-Fi unavailable on this platform"
+msgstr "该平台无法使用 Wi-Fi"
 
 #: internal/launcher/system_names.c
 msgid "WonderSwan"
@@ -3163,6 +4722,10 @@ msgstr ""
 msgid "Wrong PIN, try again"
 msgstr "PIN码错误，请重试"
 
+#: internal/settings/settings.c
+msgid "Wrong password"
+msgstr "密码错误"
+
 #: cmd/jawaka-launcher/main.c
 msgid "X: Drop   D-pad: Move"
 msgstr "X: 放下   方向键: 移动"
@@ -3171,26 +4734,24 @@ msgstr "X: 放下   方向键: 移动"
 msgid "X: Grab   Y: Remove   B: Back   A: Next"
 msgstr "X: 抓取   Y: 移除   B: 返回   A: 下一步"
 
+#: internal/settings/settings.c
+msgid "Yes"
+msgstr "是的"
+
 #: cmd/jawaka-osd/game_launch.c
 msgid "Your SD card is read-only"
 msgstr "SD 卡为只读"
 
 #: internal/settings/storage_ui.c
-msgid ""
-"Your SD card is read-only after a file system error. You can't save new "
-"files or changes to this card. This can happen after an unexpected shutdown."
-msgstr ""
-"SD 卡在出现文件系统错误后变为只读。无法在此卡上保存新文件或更改。意外关机后可"
-"能出现这种情况。"
+msgid "Your SD card is read-only after a file system error. You can't save new files or changes to this card. This can happen after an unexpected shutdown."
+msgstr "SD 卡在出现文件系统错误后变为只读。无法在此卡上保存新文件或更改。意外关机后可能出现这种情况。"
 
 #: cmd/jawaka-launcher/main.c
 msgid "Your SD card is read-only. Nothing new can be saved to it."
 msgstr "SD 卡为只读，无法保存任何新内容。"
 
 #: internal/settings/storage_ui.c
-msgid ""
-"Your SD card is read-only. The cause couldn't be determined. You can't save "
-"new files or changes to this card."
+msgid "Your SD card is read-only. The cause couldn't be determined. You can't save new files or changes to this card."
 msgstr "SD 卡为只读，原因无法确定。无法在此卡上保存新文件或更改。"
 
 #: cmd/jawaka-launcher/main.c
@@ -3210,9 +4771,7 @@ msgid "Your SD card needs repair"
 msgstr "SD 卡需要修复"
 
 #: internal/settings/storage_ui.c
-msgid ""
-"Your card is still read-only. Check the card on a computer, then choose "
-"Check SD card in Settings."
+msgid "Your card is still read-only. Check the card on a computer, then choose Check SD card in Settings."
 msgstr "此卡仍为只读。请在电脑上检查此卡，然后在设置中选择“检查 SD 卡”。"
 
 #: internal/settings/storage_ui.c
@@ -3224,72 +4783,256 @@ msgid "Your device can't write to this card, so it can't be repaired here."
 msgstr "设备无法写入此卡，因此无法在此修复。"
 
 #: internal/settings/storage_ui.c
-msgid ""
-"Your device can't write to this card. If you use an adapter with a lock "
-"switch, check that it isn't set to lock."
-msgstr ""
-"设备无法写入此卡。如果使用了带锁定开关的卡套，请检查开关是否处于锁定状态。"
+msgid "Your device can't write to this card. If you use an adapter with a lock switch, check that it isn't set to lock."
+msgstr "设备无法写入此卡。如果使用了带锁定开关的卡套，请检查开关是否处于锁定状态。"
 
 #: internal/settings/storage_ui.c
-msgid ""
-"Your device will restart to check and repair this card. Damaged files may be "
-"shortened, renamed, or recovered under new names. Back up important files on "
-"a computer first if you need to recover them. Keep your device connected to "
-"power until the check finishes."
-msgstr ""
-"设备将重启以检查并修复此卡。受损文件可能被截断、重命名，或以新名称恢复。如需"
-"找回重要文件，请先在电脑上备份。检查完成前，请保持设备连接电源。"
+msgid "Your device will restart to check and repair this card. Damaged files may be shortened, renamed, or recovered under new names. Back up important files on a computer first if you need to recover them. Keep your device connected to power until the check finishes."
+msgstr "设备将重启以检查并修复此卡。受损文件可能被截断、重命名，或以新名称恢复。如需找回重要文件，请先在电脑上备份。检查完成前，请保持设备连接电源。"
 
 #: internal/settings/storage_ui.c
-msgid ""
-"Your device will restart to check this card. If the check passes, the card "
-"can be written to again. Keep your device connected to power until the check "
-"finishes."
-msgstr ""
-"设备将重启以检查此卡。检查通过后，此卡即可恢复写入。检查完成前，请保持设备连"
-"接电源。"
+msgid "Your device will restart to check this card. If the check passes, the card can be written to again. Keep your device connected to power until the check finishes."
+msgstr "设备将重启以检查此卡。检查通过后，此卡即可恢复写入。检查完成前，请保持设备连接电源。"
 
 #: internal/settings/storage_ui.c
-msgid ""
-"Your device's internal storage can't record the repair. Check the card on a "
-"computer instead."
+msgid "Your device's internal storage can't record the repair. Check the card on a computer instead."
 msgstr "设备的内部存储无法记录修复过程。请改为在电脑上检查此卡。"
 
 #: internal/settings/storage_ui.c
-msgid ""
-"Your other SD card is still read-only, so your library can't update yet."
+msgid "Your other SD card is still read-only, so your library can't update yet."
 msgstr "另一张 SD 卡仍为只读，游戏库暂时无法更新。"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"Your saves and save states may not be kept while this SD card is read-only."
+msgid "Your saves and save states may not be kept while this SD card is read-only."
 msgstr "此 SD 卡为只读期间，存档和即时存档可能无法保留。"
 
 #: cmd/jawaka-launcher/main.c
-msgid ""
-"Your saves and save states may not be kept while this SD card is waiting for "
-"repair."
+msgid "Your saves and save states may not be kept while this SD card is waiting for repair."
 msgstr "此 SD 卡等待修复期间，存档和即时存档可能无法保留。"
 
-#: internal/settings/settings.c
+#: internal/ipc/ipc_client.c
+msgid "app launch requested"
+msgstr "请求启动应用程序"
+
+#: internal/ipc/ipc_client.c
 msgid "audio output failed"
 msgstr "音频输出失败"
+
+#: internal/ipc/ipc_client.c
+msgid "audio output failed: daemon unavailable"
+msgstr "音频输出失败：守护进程不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "audio output invalid"
+msgstr "音频输出无效"
+
+#: internal/platform/device_mlp1.c
+msgid "audio output route failed"
+msgstr "音频输出路由失败"
+
+#: internal/ipc/ipc_client.c
+msgid "audio output set"
+msgstr "音频输出设置"
+
+#: internal/platform/device_mlp1.c
+msgid "audio output: %s"
+msgstr "音频输出：%s"
+
+#: internal/platform/device_mlp1.c
+msgid "backlight blank write failed"
+msgstr "背光空白写入失败"
+
+#: internal/platform/device_mlp1.c
+msgid "backlight brightness write failed"
+msgstr "背光亮度写入失败"
+
+#: internal/platform/device_mlp1.c
+msgid "backlight max brightness unavailable"
+msgstr "背光最大亮度不可用"
+
+#: internal/update/update.c
+msgid "battery_low"
+msgstr "电池电量低"
+
+#: internal/update/update.c
+msgid "battery_unknown"
+msgstr "电池_未知"
+
+#: cmd/jawakad/main.c
+msgid "blocked game launch is not overrideable"
+msgstr "被阻止的游戏启动不可覆盖"
+
+#: internal/platform/device_mlp1.c
+msgid "bluetooth disable failed"
+msgstr "蓝牙禁用失败"
+
+#: internal/platform/device_mlp1.c
+msgid "bluetooth disabled"
+msgstr "蓝牙已禁用"
+
+#: internal/platform/device_mlp1.c
+msgid "bluetooth enable failed"
+msgstr "蓝牙启用失败"
+
+#: internal/platform/device_mlp1.c
+msgid "bluetooth enabled"
+msgstr "蓝牙已启用"
+
+#: internal/platform/device_mlp1.c
+msgid "boot splash disable failed"
+msgstr "禁用启动画面失败"
+
+#: internal/ipc/ipc_client.c
+msgid "boot splash disabled"
+msgstr "启动画面已禁用"
+
+#: internal/platform/device_mlp1.c
+msgid "boot splash enable failed"
+msgstr "启用启动画面失败"
+
+#: internal/ipc/ipc_client.c
+msgid "boot splash enabled"
+msgstr "启动画面已启用"
+
+#: internal/ipc/ipc_client.c
+msgid "boot splash failed"
+msgstr "启动画面操作失败"
+
+#: internal/ipc/ipc_client.c
+msgid "boot splash failed: daemon unavailable"
+msgstr "启动画面操作失败：守护进程不可用"
 
 #: internal/settings/settings.c
 msgid "boot splash unavailable on this platform"
 msgstr "此平台不支持开机动画"
 
-#: internal/settings/settings.c
+#: internal/ipc/ipc_client.c
 msgid "brightness failed"
 msgstr "亮度调整失败"
+
+#: internal/ipc/ipc_client.c
+msgid "brightness failed: %s"
+msgstr "亮度失败：%s"
+
+#: internal/ipc/ipc_client.c
+msgid "brightness failed: daemon unavailable"
+msgstr "亮度失败：守护进程不可用"
+
+#: internal/platform/device_mlp1.c
+msgid "brightness set to %d%%"
+msgstr "亮度设置为%d%%"
+
+#: internal/ipc/ipc_client.c
+msgid "brightness: %d%%"
+msgstr "亮度：%d%%"
+
+#: cmd/jawakad/main.c
+msgid "busy"
+msgstr "忙"
+
+#: internal/update/update.c
+msgid "cannot allocate libcurl header list"
+msgstr "无法分配 libcurl 标头列表"
+
+#: internal/update/update.c
+msgid "cannot finish download output: %s"
+msgstr "无法完成下载输出：%s"
+
+#: internal/update/update.c
+msgid "cannot move download into place: %s"
+msgstr "无法将下载移至适当位置：%s"
+
+#: internal/update/update.c
+msgid "cannot open %s: %s"
+msgstr "无法打开 %s：%s"
+
+#: internal/update/update.c
+msgid "cannot open download output: %s"
+msgstr "无法打开下载输出：%s"
+
+#: internal/update/update.c
+msgid "cannot read %s"
+msgstr "无法读取%s"
+
+#: internal/update/update.c
+msgid "cannot start HTTPS downloader: %s"
+msgstr "无法启动 HTTPS 下载程序：%s"
+
+#: internal/update/update.c
+msgid "cannot stat %s: %s"
+msgstr "无法统计 %s：%s"
+
+#: cmd/jawaka-launcher/main.c
+msgid "card absent; not inventoried"
+msgstr "卡缺席；没有库存"
+
+#: cmd/jawakad/main.c
+msgid "could not compute missing counts"
+msgstr "无法计算缺失计数"
+
+#: cmd/jawakad/main.c
+msgid "could not record acknowledgement"
+msgstr "无法记录确认"
+
+#: cmd/jawakad/main.c
+msgid "could not save language"
+msgstr "无法保存语言"
+
+#: cmd/jawakad/main.c
+msgid "could not serialize service status"
+msgstr "无法序列化服务状态"
+
+#: cmd/jawaka-osd/main.c
+msgid "could not show brightness"
+msgstr "无法显示亮度"
+
+#: cmd/jawaka-osd/main.c
+msgid "could not show game launch status"
+msgstr "无法显示游戏启动状态"
+
+#: cmd/jawaka-osd/main.c
+msgid "could not show volume"
+msgstr "无法显示音量"
 
 #: internal/settings/settings.c
 msgid "count|Systems"
 msgstr "平台数"
 
 #: cmd/jawaka-launcher/main.c
+msgid "daemon unavailable"
+msgstr "后台服务不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "daemon unreachable"
+msgstr "无法连接后台服务"
+
+#: cmd/jawaka-launcher/main.c
 msgid "daily quota exceeded"
 msgstr "已达每日配额"
+
+#: cmd/jawaka-launcher/main.c
+msgid "default"
+msgstr "默认"
+
+#: internal/settings/settings.c
+msgid "device"
+msgstr "装置"
+
+#: cmd/jawaka-launcher/main.c
+msgid "display name keyboard failed"
+msgstr "显示名称键盘失败"
+
+#: internal/update/update.c
+msgid "download path is too long"
+msgstr "下载路径太长"
+
+#: internal/update/update.c
+msgid "download_active"
+msgstr "下载活动"
+
+#: internal/update/update.c
+msgid "download_missing"
+msgstr "下载缺失"
 
 #: cmd/jawaka-menu/main.c
 msgid "empty"
@@ -3299,6 +5042,18 @@ msgstr "空"
 msgid "exFAT cards can't be repaired on this device yet."
 msgstr "此设备暂不支持修复 exFAT 卡。"
 
+#: cmd/jawaka-osd/main.c
+msgid "expired"
+msgstr "过期了"
+
+#: cmd/jawakad/main.c
+msgid "failed"
+msgstr "失败了"
+
+#: internal/update/update.c
+msgid "file too large: %s"
+msgstr "文件太大：%s"
+
 #: internal/settings/settings.c
 msgid "font is fixed while a CJK language is selected"
 msgstr "中日韩语言下字体不可更改"
@@ -3307,57 +5062,885 @@ msgstr "中日韩语言下字体不可更改"
 msgid "font load failed"
 msgstr "字体加载失败"
 
+#: cmd/jawakad/main.c
+msgid "foreground or update operation in progress"
+msgstr "前台或更新操作正在进行中"
+
+#: internal/platform/device.c
+msgid "frontend ready noted"
+msgstr "注意到前端已准备好"
+
+#: cmd/jawaka-launcher/main.c
+msgid "game"
+msgstr "游戏"
+
+#: internal/platform/device_mlp1.c
+msgid "home ready already sent"
+msgstr "回家准备好已经发送"
+
+#: internal/platform/device_mlp1.c
+msgid "home ready sent"
+msgstr "回家准备好发送"
+
+#: internal/update/update.c
+msgid "install_active"
+msgstr "安装活动"
+
+#: internal/update/update.c
+msgid "install_again"
+msgstr "再次安装"
+
+#: cmd/jawakad/main.c
+msgid "installed package metadata is unavailable"
+msgstr "已安装的包元数据不可用"
+
+#: internal/update/update.c
+msgid "installing"
+msgstr "安装"
+
+#: cmd/jawakad/main.c
+msgid "internal-error"
+msgstr "内部错误"
+
+#: cmd/jawakad/main.c
+msgid "invalid CTL-1 request"
+msgstr "无效的 CTL-1 请求"
+
+#: internal/update/update.c
+msgid "invalid HTTPS download request"
+msgstr "无效的 HTTPS 下载请求"
+
+#: cmd/jawakad/main.c
+msgid "invalid cancel scope"
+msgstr "取消范围无效"
+
+#: cmd/jawakad/main.c
+msgid "invalid core id"
+msgstr "无效的核心 ID"
+
+#: cmd/jawaka-osd/main.c
+msgid "invalid game launch status"
+msgstr "游戏启动状态无效"
+
+#: cmd/jawaka-osd/main.c
+msgid "invalid hide game launch request"
+msgstr "隐藏游戏启动请求无效"
+
+#: cmd/jawakad/main.c
+msgid "invalid input shortcuts"
+msgstr "无效的输入快捷键"
+
+#: cmd/jawaka-osd/main.c
+msgid "invalid json"
+msgstr "无效的 JSON"
+
+#: cmd/jawakad/main.c
+msgid "invalid language code"
+msgstr "无效的语言代码"
+
+#: cmd/jawakad/main.c
+msgid "invalid refresh-osd-appearance request"
+msgstr "无效的刷新 osd 外观请求"
+
+#: cmd/jawakad/main.c
+msgid "invalid repair mode"
+msgstr "修复模式无效"
+
+#: cmd/jawakad/main.c
+msgid "invalid request id"
+msgstr "请求 ID 无效"
+
+#: internal/ipc/ipc_client.c
+msgid "invalid service id"
+msgstr "无效的服务 ID"
+
+#: cmd/jawakad/main.c
+msgid "invalid shader scope"
+msgstr "无效的着色器范围"
+
+#: cmd/jawakad/main.c
+msgid "invalid title groups"
+msgstr "无效的标题组"
+
 #: cmd/jawaka-menu/main.c
 msgid "just now"
 msgstr "刚刚"
+
+#: internal/ipc/ipc_client.c
+msgid "language change failed"
+msgstr "语言更改失败"
+
+#: internal/ipc/ipc_client.c
+msgid "language change failed: daemon unavailable"
+msgstr "语言更改失败：守护进程不可用"
+
+#: cmd/jawakad/main.c
+msgid "language code too long"
+msgstr "语言代码太长"
+
+#: internal/ipc/ipc_client.c
+msgid "launch failed"
+msgstr "启动失败"
+
+#: internal/ipc/ipc_client.c
+msgid "launch failed: %s"
+msgstr "启动失败：%s"
+
+#: internal/ipc/ipc_client.c
+msgid "launch failed: daemon unavailable"
+msgstr "启动失败：后台服务不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "launch failed: missing app"
+msgstr "启动失败：缺少应用程序"
+
+#: internal/ipc/ipc_client.c
+msgid "launch failed: missing game"
+msgstr "启动失败：缺少游戏"
+
+#: internal/launcher/launch_notice_ui_test.c
+msgid "launch failed: standalone emulator missing"
+msgstr "启动失败：缺少独立模拟器"
+
+#: internal/ipc/ipc_client.c
+msgid "launch requested"
+msgstr "请求启动"
+
+#: cmd/jawakad/main.c
+msgid "launch-app failed"
+msgstr "启动应用程序失败"
+
+#: cmd/jawakad/main.c
+msgid "launch-game failed"
+msgstr "启动游戏失败"
 
 #: internal/settings/storage_ui.c
 msgid "launcher SD card"
 msgstr "主 SD 卡"
 
+#: internal/platform/device_mlp1.c
+msgid "leaf boot transition dismissed"
+msgstr "Leaf 启动过渡已关闭"
+
+#: internal/ipc/ipc_client.c
+msgid "led applied"
+msgstr "LED 应用"
+
+#: internal/platform/device_mlp1.c
+msgid "led cfg write failed"
+msgstr "led cfg写入失败"
+
+#: internal/platform/device_mlp1.c
+msgid "led cfg written (daemon not signalled)"
+msgstr "led cfg 已写入（守护进程未发出信号）"
+
+#: internal/platform/device_mlp1.c
+msgid "led cfg written (leaf driver owns live state)"
+msgstr "LED 配置已写入（实时状态由 Leaf 驱动管理）"
+
+#: internal/ipc/ipc_client.c
+msgid "led failed"
+msgstr "领导失败"
+
+#: internal/ipc/ipc_client.c
+msgid "led failed: daemon unavailable"
+msgstr "led 失败：守护进程不可用"
+
+#: internal/platform/device.c
+msgid "led not supported"
+msgstr "不支持 LED"
+
+#: internal/update/update.c
+msgid "libcurl download failed: %s"
+msgstr "libcurl 下载失败：%s"
+
+#: internal/update/update.c
+msgid "libcurl easy init failed"
+msgstr "libcurl easy 句柄初始化失败"
+
+#: internal/update/update.c
+msgid "libcurl global init failed: %s"
+msgstr "libcurl 全局初始化失败：%s"
+
+#: internal/update/update.c
+msgid "libcurl option failed: %s"
+msgstr "libcurl 选项失败：%s"
+
+#: internal/update/update.c
+msgid "libcurl support is not built in"
+msgstr "未内置 libcurl 支持"
+
+#: cmd/jawaka-launcher/main.c
+msgid "library cache unavailable"
+msgstr "库缓存不可用"
+
+#: cmd/jawaka-launcher/main.c
+msgid "loading library..."
+msgstr "正在加载库..."
+
+#: internal/platform/device_mlp1.c
+msgid "loong SDK EventOpend unavailable"
+msgstr "loong SDK EventOpend 不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "malformed response"
+msgstr "后台服务响应格式错误"
+
+#: cmd/jawakad/main.c
+msgid "missing RetroArch action"
+msgstr "缺少 RetroArch 动作"
+
+#: cmd/jawaka-osd/main.c
+msgid "missing brightness percent"
+msgstr "缺少亮度百分比"
+
+#: cmd/jawakad/main.c
+msgid "missing credentials"
+msgstr "缺少凭据"
+
+#: internal/update/update.c
+msgid "missing file path"
+msgstr "缺少文件路径"
+
+#: cmd/jawakad/main.c
+msgid "missing frontend role"
+msgstr "缺少前端角色"
+
+#: cmd/jawakad/main.c
+msgid "missing language"
+msgstr "缺少语言"
+
+#: cmd/jawakad/main.c
+msgid "missing performance profile"
+msgstr "缺少性能配置文件"
+
+#: internal/platform/device.c
+msgid "missing performance request"
+msgstr "缺少性能请求"
+
+#: cmd/jawakad/main.c
+msgid "missing platform action"
+msgstr "缺少平台行动"
+
+#: cmd/jawakad/main.c
+msgid "missing rom_path"
+msgstr "缺少 rom_path"
+
+#: cmd/jawakad/main.c
+msgid "missing scope"
+msgstr "缺少范围"
+
+#: cmd/jawakad/main.c
+msgid "missing shader operation"
+msgstr "缺少着色器操作"
+
+#: cmd/jawakad/main.c
+msgid "missing shader path"
+msgstr "缺少着色器路径"
+
+#: cmd/jawakad/main.c
+msgid "missing storage action"
+msgstr "缺少存储操作"
+
+#: cmd/jawakad/main.c
+msgid "missing suspend inhibitor scope or reason"
+msgstr "缺少暂停抑制剂范围或原因"
+
+#: cmd/jawakad/main.c
+msgid "missing suspend inhibitor token"
+msgstr "缺少暂停抑制器令牌"
+
+#: cmd/jawakad/main.c
+msgid "missing system"
+msgstr "缺失系统"
+
+#: cmd/jawaka-osd/main.c
+msgid "missing type"
+msgstr "缺失类型"
+
+#: cmd/jawaka-osd/main.c
+msgid "missing volume percent"
+msgstr "缺失体积百分比"
+
+#: cmd/jawakad/main.c
+msgid "mutation lock is not held"
+msgstr "未持有变更锁"
+
 #: cmd/jawaka-menu/main.c
 msgid "newest"
 msgstr "最新"
+
+#: cmd/jawakad/main.c
+msgid "no active RetroArch session"
+msgstr "没有活动的 RetroArch 会话"
+
+#: cmd/jawakad/main.c
+msgid "no blocked game launch"
+msgstr "没有阻止游戏启动"
+
+#: internal/ipc/ipc_client.c
+msgid "no language given"
+msgstr "没有给出语言"
+
+#: internal/platform/device_mlp1.c
+msgid "no led config"
+msgstr "无 LED 配置"
+
+#: cmd/jawakad/main.c
+msgid "no package mutation in progress"
+msgstr "当前没有正在进行的软件包变更"
+
+#: cmd/jawakad/main.c
+msgid "no pending sync check"
+msgstr "没有待处理的同步检查"
+
+#: cmd/jawakad/main.c
+msgid "no waiting game launch"
+msgstr "无需等待游戏启动"
+
+#: internal/update/update.c
+msgid "not a regular file: %s"
+msgstr "不是常规文件：%s"
+
+#: cmd/jawakad/main.c
+msgid "not-found"
+msgstr "未找到"
+
+#: internal/update/update.c
+msgid "not_downloaded"
+msgstr "未下载"
+
+#: internal/update/update.c
+msgid "not_idle"
+msgstr "不空闲"
+
+#: internal/platform/device_mlp1.c
+msgid "off"
+msgstr "关闭"
 
 #: cmd/jawaka-menu/main.c
 msgid "oldest"
 msgstr "最早"
 
+#: internal/platform/device_mlp1.c
+msgid "only secondary SD can be unmounted"
+msgstr "仅可卸载辅助 SD"
+
+#: cmd/jawakad/main.c
+msgid "open-menu failed"
+msgstr "打开菜单失败"
+
+#: cmd/jawakad/main.c
+msgid "open-switcher failed"
+msgstr "打开切换器失败"
+
+#: internal/ipc/ipc_client.c
+msgid "open-switcher failed: %s"
+msgstr "打开切换器失败：%s"
+
+#: internal/ipc/ipc_client.c
+msgid "open-switcher failed: daemon unavailable"
+msgstr "打开切换器失败：守护进程不可用"
+
+#: cmd/jawakad/main.c
+msgid "operation-failed"
+msgstr "操作失败"
+
+#: cmd/jawakad/main.c
+msgid "out of memory"
+msgstr "内存不足"
+
+#: cmd/jawakad/main.c
+msgid "overridden game launch still failed"
+msgstr "覆盖的游戏启动仍然失败"
+
 #: cmd/jawaka-menu/main.c
 msgid "overwrites"
 msgstr "覆盖"
+
+#: cmd/jawakad/main.c
+msgid "package mutation failed: %.127s"
+msgstr "软件包变更失败：%.127s"
+
+#: cmd/jawakad/main.c
+msgid "package mutation failed: %.127s (%.127s)"
+msgstr "包变更失败：%.127s (%.127s)"
+
+#: cmd/jawakad/main.c
+msgid "package mutation operation mismatch"
+msgstr "软件包变更操作不匹配"
+
+#: cmd/jawakad/main.c
+msgid "package mutation release failed: %.127s"
+msgstr "结束软件包变更失败：%.127s"
+
+#: cmd/jawakad/main.c
+msgid "package quiesce failed: %.127s"
+msgstr "暂停软件包相关服务失败：%.127s"
+
+#: cmd/jawakad/main.c
+msgid "package quiesce failed: %.127s (%.127s)"
+msgstr "暂停软件包相关服务失败：%.127s（%.127s）"
+
+#: cmd/jawakad/main.c
+msgid "package quiesce release failed: %.127s"
+msgstr "恢复软件包相关服务失败：%.127s"
+
+#: internal/platform/device_mlp1.c
+msgid "performance applied"
+msgstr "应用性能"
+
+#: internal/platform/device_mlp1.c
+msgid "performance apply failed"
+msgstr "应用性能设置失败"
+
+#: internal/ipc/ipc_client.c
+msgid "performance custom failed"
+msgstr "自定义性能参数设置失败"
+
+#: internal/ipc/ipc_client.c
+msgid "performance custom failed: daemon unavailable"
+msgstr "性能自定义失败：守护进程不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "performance custom missing"
+msgstr "性能自定义缺失"
+
+#: internal/ipc/ipc_client.c
+msgid "performance custom set"
+msgstr "已设置自定义性能参数"
+
+#: internal/settings/settings.c
+msgid "performance failed"
+msgstr "表演失败"
+
+#: internal/platform/device_mock.c
+msgid "performance preview applied"
+msgstr "应用性能预览"
+
+#: internal/ipc/ipc_client.c
+msgid "performance profile failed"
+msgstr "性能配置设置失败"
+
+#: internal/ipc/ipc_client.c
+msgid "performance profile failed: daemon unavailable"
+msgstr "性能配置文件失败：守护进程不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "performance profile missing"
+msgstr "缺少性能配置"
+
+#: internal/ipc/ipc_client.c
+msgid "performance profile set"
+msgstr "已设置性能配置"
+
+#: internal/ipc/ipc_client.c
+msgid "performance reset"
+msgstr "已重置性能设置"
+
+#: internal/ipc/ipc_client.c
+msgid "performance reset failed"
+msgstr "性能重置失败"
+
+#: internal/ipc/ipc_client.c
+msgid "performance reset failed: daemon unavailable"
+msgstr "性能重置失败：守护进程不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "performance status failed"
+msgstr "性能状态失败"
+
+#: internal/ipc/ipc_client.c
+msgid "performance status ready"
+msgstr "性能状态就绪"
+
+#: internal/ipc/ipc_client.c
+msgid "performance status unavailable"
+msgstr "性能状态不可用"
 
 #: internal/settings/settings.c
 msgid "performance unavailable"
 msgstr "性能设置不可用"
 
+#: internal/platform/device.c
+msgid "performance unsupported"
+msgstr "性能不受支持"
+
+#: cmd/jawakad/main.c
+msgid "platform action failed"
+msgstr "平台操作失败"
+
+#: internal/platform/device.c
+msgid "platform not initialized"
+msgstr "平台未初始化"
+
 #: internal/settings/settings.c
 msgid "platform|System"
 msgstr "平台"
 
-#: internal/settings/settings.c
+#: internal/platform/device_mlp1.c
+msgid "playing test sound"
+msgstr "播放测试声音"
+
+#: cmd/jawakad/main.c
+msgid "power-required"
+msgstr "需要电源"
+
+#: internal/platform/device_mlp1.c
+msgid "powering off"
+msgstr "关闭电源"
+
+#: internal/platform/device_mlp1.c
+msgid "poweroff failed"
+msgstr "关机失败"
+
+#: cmd/jawakad/main.c
+msgid "profile cannot be a session override"
+msgstr "配置文件不能覆盖会话"
+
+#: cmd/jawakad/main.c
+msgid "profile cannot be global"
+msgstr "配置文件不能是全局的"
+
+#: internal/update/update.c
+msgid "ready"
+msgstr "准备好了"
+
+#: internal/platform/device_mlp1.c
+msgid "reboot failed"
+msgstr "重启失败"
+
+#: internal/platform/device_mlp1.c
+msgid "rebooting"
+msgstr "重新启动"
+
+#: internal/platform/device_mlp1.c
 msgid "refresh rate change failed"
 msgstr "刷新率切换失败"
+
+#: internal/ipc/ipc_client.c
+msgid "refresh rate failed"
+msgstr "刷新率失败"
+
+#: internal/ipc/ipc_client.c
+msgid "refresh rate failed: daemon unavailable"
+msgstr "刷新率失败：守护进程不可用"
 
 #: internal/settings/settings.c
 msgid "refresh rate unavailable on this platform"
 msgstr "此平台不支持刷新率切换"
 
+#: internal/settings/settings.c
+msgid "release"
+msgstr "释放"
+
+#: cmd/jawaka-launcher/main.c
+msgid "rescanning..."
+msgstr "正在重新扫描..."
+
+#: cmd/jawakad/main.c
+msgid "reset failed"
+msgstr "重置失败"
+
+#: cmd/jawakad/main.c
+msgid "response-too-large"
+msgstr "响应太大"
+
+#: internal/update/update.c
+msgid "restart_needed"
+msgstr "需要重新启动"
+
+#: internal/ipc/ipc_client.c
+msgid "restarting"
+msgstr "重新启动"
+
+#: internal/update/update.c
+msgid "result_invalid"
+msgstr "结果无效"
+
+#: internal/update/update.c
+msgid "result_missing"
+msgstr "结果缺失"
+
+#: internal/update/update.c
+msgid "runner_missing"
+msgstr "跑步者失踪"
+
+#: internal/settings/settings.c
+msgid "s"
+msgstr "s"
+
+#: cmd/jawakad/main.c
+msgid "savestate namespace unavailable"
+msgstr "savestate命名空间不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "scan already running; queued rescan"
+msgstr "扫描已在运行；排队重新扫描"
+
+#: internal/ipc/ipc_client.c
+msgid "scan complete: %d games, %d apps"
+msgstr "扫描完成：%d 个游戏、%d 个应用程序"
+
+#: internal/ipc/ipc_client.c
+msgid "scan failed: daemon returned error"
+msgstr "扫描失败：守护程序返回错误"
+
+#: internal/ipc/ipc_client.c
+msgid "scan failed: daemon unavailable"
+msgstr "扫描失败：守护进程不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "scan started"
+msgstr "扫描开始"
+
+#: cmd/jawakad/main.c
+msgid "scan-library could not start"
+msgstr "扫描库无法启动"
+
+#: cmd/jawaka-launcher/main.c
+msgid "scanning library..."
+msgstr "扫描游戏库..."
+
+#: internal/ipc/ipc_client.c
+msgid "scrape failed"
+msgstr "刮削失败"
+
+#: internal/ipc/ipc_client.c
+msgid "scrape failed: daemon unavailable"
+msgstr "刮削失败：后台服务不可用"
+
+#: cmd/jawakad/main.c
+msgid "scrape-start failed"
+msgstr "启动刮削失败"
+
+#: cmd/jawakad/main.c
+msgid "scraping unavailable in this build"
+msgstr "在此版本中无法进行刮削"
+
+#: internal/platform/device_mlp1.c
+msgid "screen off"
+msgstr "屏幕关闭"
+
+#: internal/platform/device_mlp1.c
+msgid "screen on"
+msgstr "屏幕打开"
+
+#: cmd/jawaka-launcher/main.c
+msgid "search failed"
+msgstr "搜索失败"
+
+#: cmd/jawaka-launcher/main.c
+msgid "search keyboard failed"
+msgstr "搜索键盘失败"
+
 #: internal/settings/storage_ui.c
 msgid "second SD card"
 msgstr "副 SD 卡"
+
+#: cmd/jawakad/main.c
+msgid "server supports CTL-1 v1 only"
+msgstr "服务器仅支持 CTL-1 v1"
+
+#: cmd/jawakad/main.c
+msgid "service supervisor is unavailable"
+msgstr "服务主管不在"
+
+#: cmd/jawakad/main.c
+msgid "service supervisor unavailable"
+msgstr "服务主管不在"
+
+#: cmd/jawakad/main.c
+msgid "services-unavailable"
+msgstr "服务不可用"
+
+#: cmd/jawakad/main.c
+msgid "shader path not permitted"
+msgstr "不允许着色器路径"
+
+#: internal/platform/device_mlp1.c
+msgid "sleep failed"
+msgstr "睡眠失败"
 
 #: cmd/jawaka-launcher/main.c
 msgid "space"
 msgstr "空格"
 
+#: internal/update/update.c
+msgid "space_low"
+msgstr "空间低"
+
+#: internal/update/update.c
+msgid "space_unknown"
+msgstr "空间_未知"
+
 #: cmd/jawaka-launcher/main.c
 msgid "status|Update"
 msgstr "有更新"
 
+#: internal/platform/device_mlp1.c
+msgid "stock auto-sleep disabled"
+msgstr "已禁用原厂自动休眠"
+
+#: internal/platform/device_mlp1.c
+msgid "stock auto-sleep set to %ds"
+msgstr "原厂自动休眠已设为 %d 秒"
+
+#: internal/platform/device_mlp1.c
+msgid "stock auto-sleep sync failed"
+msgstr "原厂系统自动休眠同步失败"
+
+#: cmd/jawakad/main.c
+msgid "storage source unavailable"
+msgstr "存储源不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "storage status failed"
+msgstr "存储状态失败"
+
+#: internal/ipc/ipc_client.c
+msgid "storage status ready"
+msgstr "存储状态就绪"
+
+#: internal/ipc/ipc_client.c
+msgid "storage status unavailable"
+msgstr "存储状态不可用"
+
+#: internal/platform/device_mlp1.c
+msgid "stretch"
+msgstr "伸展"
+
+#: internal/platform/device_mlp1.c
+msgid "suspended"
+msgstr "暂停"
+
+#: internal/ipc/ipc_client.c
+msgid "switch failed"
+msgstr "切换失败"
+
+#: internal/ipc/ipc_client.c
+msgid "switch failed: %s"
+msgstr "切换失败：%s"
+
+#: internal/ipc/ipc_client.c
+msgid "switch failed: daemon unavailable"
+msgstr "切换失败：守护进程不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "switch failed: missing game"
+msgstr "切换失败：缺少游戏"
+
+#: internal/ipc/ipc_client.c
+msgid "switch requested"
+msgstr "请求切换"
+
+#: cmd/jawakad/main.c
+msgid "switch-game failed"
+msgstr "切换游戏失败"
+
+#: internal/ipc/ipc_client.c
+msgid "switcher requested"
+msgstr "请求切换器"
+
+#: internal/ipc/ipc_client.c
+msgid "switching HDMI output"
+msgstr "切换 HDMI 输出"
+
+#: internal/platform/device_mlp1.c
+msgid "switching to %d Hz"
+msgstr "切换到 %d Hz"
+
+#: internal/ipc/ipc_client.c
+msgid "switching to 60 Hz"
+msgstr "切换至 60 Hz"
+
+#: internal/ipc/ipc_client.c
+msgid "switching to 90 Hz"
+msgstr "切换至 90 Hz"
+
+#: cmd/jawakad/main.c
+msgid "sync check could not safely proceed"
+msgstr "同步检查无法安全进行"
+
+#: cmd/jawaka-launcher/main.c
+msgid "system"
+msgstr "系统"
+
+#: internal/platform/device_mlp1.c
+msgid "test sound file missing"
+msgstr "测试声音文件丢失"
+
+#: internal/platform/device_mlp1.c
+msgid "test sound spawn failed"
+msgstr "测试声音生成失败"
+
+#: internal/platform/device_mlp1.c
+msgid "test sound stopped"
+msgstr "测试声音停止"
+
 #: cmd/jawaka-menu/main.c
 msgid "that scope"
 msgstr "该作用范围"
+
+#: internal/update/update.c
+msgid "this platform"
+msgstr "这个平台"
+
+#: internal/settings/settings.c
+msgid "today"
+msgstr "今天"
+
+#: cmd/jawaka-launcher/main.c
+msgid "unknown"
+msgstr "未知"
+
+#: internal/ipc/ipc_client.c
+msgid "unknown operation"
+msgstr "未知操作"
+
+#: cmd/jawakad/main.c
+msgid "unknown performance profile"
+msgstr "未知的性能概况"
+
+#: cmd/jawakad/main.c
+msgid "unknown performance scope"
+msgstr "未知的性能范围"
+
+#: cmd/jawakad/main.c
+msgid "unknown resume policy"
+msgstr "未知的恢复政策"
+
+#: cmd/jawakad/main.c
+msgid "unknown scope"
+msgstr "范围未知"
+
+#: cmd/jawakad/main.c
+msgid "unknown service id"
+msgstr "未知的服务 ID"
+
+#: cmd/jawakad/main.c
+msgid "unknown shader operation"
+msgstr "未知的着色器操作"
+
+#: cmd/jawaka-launcher/main.c
+msgid "unknown size"
+msgstr "尺寸未知"
+
+#: cmd/jawaka-osd/main.c
+msgid "unknown type"
+msgstr "未知类型"
+
+#: cmd/jawakad/main.c
+msgid "unknown-service"
+msgstr "未知服务"
+
+#: internal/ipc/ipc_client.c
+msgid "unmount failed"
+msgstr "卸载失败"
+
+#: internal/ipc/ipc_client.c
+msgid "unmount failed: daemon unavailable"
+msgstr "卸载失败：守护进程不可用"
 
 #: cmd/jawaka-menu/main.c
 msgid "unsaved · %d of %d"
@@ -3367,50 +5950,130 @@ msgstr "未保存 · %d / %d"
 msgid "unsaved · %s · %d of %d"
 msgstr "未保存 · %s · %d / %d"
 
+#: cmd/jawakad/main.c
+msgid "unsupported-platform"
+msgstr "不支持的平台"
+
+#: cmd/jawakad/main.c
+msgid "unsupported-version"
+msgstr "不支持的版本"
+
+#: internal/update/update.c
+msgid "unsupported_artifact"
+msgstr "不支持的安装包"
+
+#: internal/update/update.c
+msgid "unsupported_handoff"
+msgstr "不支持的_切换"
+
 #: internal/settings/settings.c
+msgid "update"
+msgstr "更新"
+
+#: internal/ipc/ipc_client.c
+msgid "update cancel failed"
+msgstr "更新取消失败"
+
+#: internal/ipc/ipc_client.c
+msgid "update cancel unavailable"
+msgstr "更新取消不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "update download cancelled"
+msgstr "更新下载已取消"
+
+#: internal/ipc/ipc_client.c
+msgid "update download failed"
+msgstr "更新下载失败"
+
+#: internal/ipc/ipc_client.c
+msgid "update download finished"
+msgstr "更新下载完成"
+
+#: internal/ipc/ipc_client.c
+msgid "update download unavailable"
+msgstr "更新下载不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "update install failed"
+msgstr "更新安装失败"
+
+#: internal/ipc/ipc_client.c
+msgid "update install started"
+msgstr "更新安装开始"
+
+#: internal/ipc/ipc_client.c
+msgid "update install unavailable"
+msgstr "更新安装不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "update ready check complete"
+msgstr "更新准备检查完成"
+
+#: internal/ipc/ipc_client.c
+msgid "update ready check failed"
+msgstr "更新就绪检查失败"
+
+#: internal/ipc/ipc_client.c
+msgid "update ready check unavailable"
+msgstr "更新就绪检查不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "update selected"
+msgstr "更新选定的"
+
+#: internal/ipc/ipc_client.c
+msgid "update selection failed"
+msgstr "更新选择失败"
+
+#: internal/ipc/ipc_client.c
+msgid "update selection unavailable"
+msgstr "更新选择不可用"
+
+#: internal/ipc/ipc_client.c
+msgid "update status failed"
+msgstr "更新状态失败"
+
+#: internal/ipc/ipc_client.c
+msgid "update status ready"
+msgstr "更新状态准备就绪"
+
+#: internal/ipc/ipc_client.c
+msgid "update status unavailable"
+msgstr "更新状态不可用"
+
+#: cmd/jawakad/main.c
+msgid "validation failed"
+msgstr "验证失败"
+
+#: internal/ipc/ipc_client.c
 msgid "volume failed"
 msgstr "音量调节失败"
+
+#: internal/ipc/ipc_client.c
+msgid "volume failed: %s"
+msgstr "音量调节失败：%s"
+
+#: internal/ipc/ipc_client.c
+msgid "volume failed: daemon unavailable"
+msgstr "音量调节失败：后台服务不可用"
+
+#: internal/platform/device_mlp1.c
+msgid "volume set failed"
+msgstr "音量设置失败"
+
+#: internal/platform/device_mlp1.c
+msgid "volume set to %d%%"
+msgstr "音量设置为 %d%%"
+
+#: internal/ipc/ipc_client.c
+msgid "volume: %d%%"
+msgstr "体积：%d%%"
+
+#: internal/settings/settings.c
+msgid "yesterday"
+msgstr "昨天"
 
 #: internal/settings/settings.c
 msgid "—"
 msgstr ""
-
-#~ msgid "2 x 2"
-#~ msgstr "2 x 2"
-
-#~ msgid "3 x 2"
-#~ msgstr "3 x 2"
-
-#~ msgid "4 x 3"
-#~ msgstr "4 x 3"
-
-#~ msgid "Controls & Feedback"
-#~ msgstr "控制与反馈"
-
-# In-game Shortcuts page.
-# 保存 follows the existing "Save & Quit" -> 保存并退出 / "Saving" -> 保存中.
-# 快捷键 is the usual term for a shortcut key binding.
-#~ msgid "In-game Shortcuts"
-#~ msgstr "游戏内快捷键"
-
-#~ msgid "Recording Shortcut"
-#~ msgstr "录制快捷键"
-
-#~ msgid "Screenshot Shortcut"
-#~ msgstr "截图快捷键"
-
-# Header fallback when the action name is unavailable; "Shortcut" alone.
-#~ msgid "Shortcut"
-#~ msgstr "快捷键"
-
-#~ msgid "Network"
-#~ msgstr "网络"
-
-#~ msgid "Game Art"
-#~ msgstr "游戏封面"
-
-#~ msgid "General"
-#~ msgstr "通用"
-
-#~ msgid "Layout"
-#~ msgstr "布局"

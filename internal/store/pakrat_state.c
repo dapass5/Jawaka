@@ -1,6 +1,7 @@
 #include "internal/store/pakrat_state.h"
 
 #include "internal/db/db.h"
+#include "internal/i18n/i18n.h"
 #include "internal/platform/leaf_version.h"
 #include "internal/store/catalog_source.h"
 #include "internal/store/managed_apps.h"
@@ -369,20 +370,26 @@ static void jw__summarize_provides(const cJSON *provides, char *out,
         cJSON_IsArray(extensions) ? cJSON_GetArraySize(extensions) : 0;
 
     if (system_count > 0 && core_count > 0) {
-        snprintf(out, out_size, "%s and %d core%s", ids, core_count,
-                 core_count == 1 ? "" : "s");
+        snprintf(out, out_size,
+                 core_count == 1 ? T("%s and %d core") : T("%s and %d cores"),
+                 ids, core_count);
     } else if (system_count > 0) {
         snprintf(out, out_size, "%s", ids);
     } else if (core_count > 0 && extension_count > 0) {
-        snprintf(out, out_size, "%d core%s for %d existing system%s",
-                 core_count, core_count == 1 ? "" : "s",
-                 extension_count, extension_count == 1 ? "" : "s");
+        const char *fmt = core_count == 1
+            ? (extension_count == 1 ? T("%d core for %d existing system")
+                                    : T("%d core for %d existing systems"))
+            : (extension_count == 1 ? T("%d cores for %d existing system")
+                                    : T("%d cores for %d existing systems"));
+        snprintf(out, out_size, fmt, core_count, extension_count);
     } else if (core_count > 0) {
-        snprintf(out, out_size, "%d core%s", core_count,
-                 core_count == 1 ? "" : "s");
+        snprintf(out, out_size,
+                 core_count == 1 ? T("%d core") : T("%d cores"), core_count);
     } else if (extension_count > 0) {
-        snprintf(out, out_size, "%d system extension%s", extension_count,
-                 extension_count == 1 ? "" : "s");
+        snprintf(out, out_size,
+                 extension_count == 1 ? T("%d system extension")
+                                      : T("%d system extensions"),
+                 extension_count);
     }
 }
 

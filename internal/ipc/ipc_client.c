@@ -1,14 +1,31 @@
 #include "internal/ipc/ipc_client.h"
 #include "internal/ipc/ctl1.h"
 #include "internal/ipc/ipc.h"
+#include "internal/i18n/i18n.h"
 
 #include "cJSON.h"
 
 #include <limits.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <stdatomic.h>
 #include <string.h>
 #include <stdio.h>
+
+static void ipc__status(char *out, int out_len, const char *fmt, ...) {
+    if (!out || out_len <= 0 || !fmt) {
+        return;
+    }
+    va_list args;
+    va_start(args, fmt);
+    if (strcmp(fmt, "%s") == 0) {
+        const char *value = va_arg(args, const char *);
+        snprintf(out, (size_t)out_len, "%s", T(value ? value : ""));
+    } else {
+        vsnprintf(out, (size_t)out_len, T(fmt), args);
+    }
+    va_end(args);
+}
 
 /* Send request (takes ownership of req), parse the JSON response.
  * Caller must cJSON_Delete(*out_response) on success. */
@@ -426,7 +443,7 @@ static bool ipc__ctl1_error_message(const cJSON *response,
         return false;
     }
     if (status && status_len > 0) {
-        snprintf(status, (size_t)status_len, "%s", message->valuestring);
+        ipc__status(status, status_len, "%s", message->valuestring);
     }
     return true;
 }
@@ -501,7 +518,7 @@ int jw_ipc_service_ctl(const char *socket_path, const char *op,
          strcmp(op, "restart") == 0);
     if (!socket_path || !known_op || !ipc__service_id_is_valid(service_id)) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      known_op ? "invalid service id" : "unknown operation");
         }
         return -1;
@@ -529,7 +546,7 @@ int jw_ipc_service_ctl(const char *socket_path, const char *op,
     if (ipc__request_max(socket_path, request, &response,
                          JW_CTL1_MAX_PAYLOAD, true, 2000) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "daemon unreachable");
+            ipc__status(status, status_len, "%s", "daemon unreachable");
         }
         return -1;
     }
@@ -546,7 +563,7 @@ int jw_ipc_service_ctl(const char *socket_path, const char *op,
     (void)ipc__ctl1_error_message(response, status, status_len);
     cJSON_Delete(response);
     if (status && status_len > 0 && !status[0]) {
-        snprintf(status, (size_t)status_len, "%s", "malformed response");
+        ipc__status(status, status_len, "%s", "malformed response");
     }
     return -1;
 }
@@ -647,12 +664,12 @@ int jw_ipc_scan_library(const char *socket_path, char *status, int status_len) {
 
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
-        if (status) snprintf(status, (size_t)status_len, "%s", "scan failed: daemon unavailable");
+        if (status) ipc__status(status, status_len, "%s", "scan failed: daemon unavailable");
         return -1;
     }
 
     if (!ipc__type_is(resp, "ok")) {
-        if (status) snprintf(status, (size_t)status_len, "%s", "scan failed: daemon returned error");
+        if (status) ipc__status(status, status_len, "%s", "scan failed: daemon returned error");
         cJSON_Delete(resp);
         return -1;
     }
@@ -661,15 +678,15 @@ int jw_ipc_scan_library(const char *socket_path, char *status, int status_len) {
         const cJSON *gc = cJSON_GetObjectItemCaseSensitive(resp, "game_count");
         const cJSON *ac = cJSON_GetObjectItemCaseSensitive(resp, "app_count");
         if (cJSON_IsNumber(gc) && cJSON_IsNumber(ac))
-            snprintf(status, (size_t)status_len,
+            ipc__status(status, status_len,
                      "scan complete: %d games, %d apps", gc->valueint, ac->valueint);
         else {
             const cJSON *action = cJSON_GetObjectItemCaseSensitive(resp, "action");
             if (cJSON_IsString(action) && action->valuestring &&
                 strstr(action->valuestring, "queued")) {
-                snprintf(status, (size_t)status_len, "%s", "scan already running; queued rescan");
+                ipc__status(status, status_len, "%s", "scan already running; queued rescan");
             } else {
-                snprintf(status, (size_t)status_len, "%s", "scan started");
+                ipc__status(status, status_len, "%s", "scan started");
             }
         }
     }
@@ -815,11 +832,11 @@ int jw_ipc_get_storage_status(const char *socket_path, const char *source,
 
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
-        if (status) snprintf(status, (size_t)status_len, "%s", "storage status unavailable");
+        if (status) ipc__status(status, status_len, "%s", "storage status unavailable");
         return -1;
     }
     if (!ipc__type_is(resp, "storage-status")) {
-        if (status) snprintf(status, (size_t)status_len, "%s", "storage status failed");
+        if (status) ipc__status(status, status_len, "%s", "storage status failed");
         cJSON_Delete(resp);
         return -1;
     }
@@ -883,9 +900,9 @@ int jw_ipc_get_storage_status(const char *socket_path, const char *source,
     if (status) {
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s", "storage status ready");
+            ipc__status(status, status_len, "%s", "storage status ready");
         }
     }
 
@@ -897,7 +914,7 @@ static int ipc__storage_simple_request(const char *socket_path, cJSON *req,
                                        char *status, int status_len) {
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
-        if (status) snprintf(status, (size_t)status_len, "%s", "daemon unavailable");
+        if (status) ipc__status(status, status_len, "%s", "daemon unavailable");
         return -1;
     }
     int rc = ipc__type_is(resp, "ok") ? 0 : -1;
@@ -906,7 +923,7 @@ static int ipc__storage_simple_request(const char *socket_path, cJSON *req,
         if (!cJSON_IsString(message)) {
             message = cJSON_GetObjectItemCaseSensitive(resp, "error");
         }
-        snprintf(status, (size_t)status_len, "%s",
+        ipc__status(status, status_len, "%s",
                  cJSON_IsString(message) && message->valuestring ? message->valuestring : "");
     }
     cJSON_Delete(resp);
@@ -945,7 +962,7 @@ int jw_ipc_safe_unmount_storage(const char *socket_path, const char *source,
 
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
-        if (status) snprintf(status, (size_t)status_len, "%s", "unmount failed: daemon unavailable");
+        if (status) ipc__status(status, status_len, "%s", "unmount failed: daemon unavailable");
         return -1;
     }
 
@@ -953,9 +970,9 @@ int jw_ipc_safe_unmount_storage(const char *socket_path, const char *source,
     const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
     if (status) {
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      ok ? "Secondary SD unmounted" : "unmount failed");
         }
     }
@@ -976,7 +993,7 @@ static int ipc__launch_game(const char *socket_path, const char *system,
                             const char *rom_path, const char *resume_policy,
                             char *status, int status_len) {
     if (!system || !system[0] || !rom_path || !rom_path[0]) {
-        if (status) snprintf(status, (size_t)status_len, "%s", "launch failed: missing game");
+        if (status) ipc__status(status, status_len, "%s", "launch failed: missing game");
         return -1;
     }
 
@@ -990,7 +1007,7 @@ static int ipc__launch_game(const char *socket_path, const char *system,
 
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
-        if (status) snprintf(status, (size_t)status_len, "%s", "launch failed: daemon unavailable");
+        if (status) ipc__status(status, status_len, "%s", "launch failed: daemon unavailable");
         return -1;
     }
 
@@ -998,16 +1015,16 @@ static int ipc__launch_game(const char *socket_path, const char *system,
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (status) {
             if (cJSON_IsString(message) && message->valuestring) {
-                snprintf(status, (size_t)status_len, "launch failed: %s", message->valuestring);
+                ipc__status(status, status_len, "launch failed: %s", message->valuestring);
             } else {
-                snprintf(status, (size_t)status_len, "%s", "launch failed");
+                ipc__status(status, status_len, "%s", "launch failed");
             }
         }
         cJSON_Delete(resp);
         return -1;
     }
 
-    if (status) snprintf(status, (size_t)status_len, "%s", "launch requested");
+    if (status) ipc__status(status, status_len, "%s", "launch requested");
     cJSON_Delete(resp);
     return 0;
 }
@@ -1030,7 +1047,7 @@ int jw_ipc_open_switcher(const char *socket_path, char *status, int status_len) 
 
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
-        if (status) snprintf(status, (size_t)status_len, "%s",
+        if (status) ipc__status(status, status_len, "%s",
                              "open-switcher failed: daemon unavailable");
         return -1;
     }
@@ -1039,17 +1056,17 @@ int jw_ipc_open_switcher(const char *socket_path, char *status, int status_len) 
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (status) {
             if (cJSON_IsString(message) && message->valuestring) {
-                snprintf(status, (size_t)status_len, "open-switcher failed: %s",
+                ipc__status(status, status_len, "open-switcher failed: %s",
                          message->valuestring);
             } else {
-                snprintf(status, (size_t)status_len, "%s", "open-switcher failed");
+                ipc__status(status, status_len, "%s", "open-switcher failed");
             }
         }
         cJSON_Delete(resp);
         return -1;
     }
 
-    if (status) snprintf(status, (size_t)status_len, "%s", "switcher requested");
+    if (status) ipc__status(status, status_len, "%s", "switcher requested");
     cJSON_Delete(resp);
     return 0;
 }
@@ -1057,7 +1074,7 @@ int jw_ipc_open_switcher(const char *socket_path, char *status, int status_len) 
 int jw_ipc_switch_game(const char *socket_path, const char *system,
                        const char *rom_path, char *status, int status_len) {
     if (!system || !system[0] || !rom_path || !rom_path[0]) {
-        if (status) snprintf(status, (size_t)status_len, "%s",
+        if (status) ipc__status(status, status_len, "%s",
                              "switch failed: missing game");
         return -1;
     }
@@ -1069,7 +1086,7 @@ int jw_ipc_switch_game(const char *socket_path, const char *system,
 
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
-        if (status) snprintf(status, (size_t)status_len, "%s",
+        if (status) ipc__status(status, status_len, "%s",
                              "switch failed: daemon unavailable");
         return -1;
     }
@@ -1078,17 +1095,17 @@ int jw_ipc_switch_game(const char *socket_path, const char *system,
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (status) {
             if (cJSON_IsString(message) && message->valuestring) {
-                snprintf(status, (size_t)status_len, "switch failed: %s",
+                ipc__status(status, status_len, "switch failed: %s",
                          message->valuestring);
             } else {
-                snprintf(status, (size_t)status_len, "%s", "switch failed");
+                ipc__status(status, status_len, "%s", "switch failed");
             }
         }
         cJSON_Delete(resp);
         return -1;
     }
 
-    if (status) snprintf(status, (size_t)status_len, "%s", "switch requested");
+    if (status) ipc__status(status, status_len, "%s", "switch requested");
     cJSON_Delete(resp);
     return 0;
 }
@@ -1096,7 +1113,7 @@ int jw_ipc_switch_game(const char *socket_path, const char *system,
 int jw_ipc_launch_app(const char *socket_path, const char *pak_dir,
                       char *status, int status_len) {
     if (!pak_dir || !pak_dir[0]) {
-        if (status) snprintf(status, (size_t)status_len, "%s", "launch failed: missing app");
+        if (status) ipc__status(status, status_len, "%s", "launch failed: missing app");
         return -1;
     }
 
@@ -1106,7 +1123,7 @@ int jw_ipc_launch_app(const char *socket_path, const char *pak_dir,
 
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
-        if (status) snprintf(status, (size_t)status_len, "%s", "launch failed: daemon unavailable");
+        if (status) ipc__status(status, status_len, "%s", "launch failed: daemon unavailable");
         return -1;
     }
 
@@ -1114,16 +1131,16 @@ int jw_ipc_launch_app(const char *socket_path, const char *pak_dir,
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (status) {
             if (cJSON_IsString(message) && message->valuestring) {
-                snprintf(status, (size_t)status_len, "launch failed: %s", message->valuestring);
+                ipc__status(status, status_len, "launch failed: %s", message->valuestring);
             } else {
-                snprintf(status, (size_t)status_len, "%s", "launch failed");
+                ipc__status(status, status_len, "%s", "launch failed");
             }
         }
         cJSON_Delete(resp);
         return -1;
     }
 
-    if (status) snprintf(status, (size_t)status_len, "%s", "app launch requested");
+    if (status) ipc__status(status, status_len, "%s", "app launch requested");
     cJSON_Delete(resp);
     return 0;
 }
@@ -1147,7 +1164,7 @@ int jw_ipc_get_retroarch_session(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "RetroArch session unavailable");
+            ipc__status(status, status_len, "%s", "RetroArch session unavailable");
         }
         return -1;
     }
@@ -1156,10 +1173,10 @@ int jw_ipc_get_retroarch_session(const char *socket_path,
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (status && status_len > 0) {
             if (cJSON_IsString(message) && message->valuestring) {
-                snprintf(status, (size_t)status_len, "RetroArch session failed: %s",
+                ipc__status(status, status_len, "RetroArch session failed: %s",
                          message->valuestring);
             } else {
-                snprintf(status, (size_t)status_len, "%s", "RetroArch session failed");
+                ipc__status(status, status_len, "%s", "RetroArch session failed");
             }
         }
         cJSON_Delete(resp);
@@ -1216,7 +1233,7 @@ int jw_ipc_get_retroarch_session(const char *socket_path,
     }
 
     if (status && status_len > 0) {
-        snprintf(status, (size_t)status_len, "%s",
+        ipc__status(status, status_len, "%s",
                  out->active ? "RetroArch session active" : "No active RetroArch session");
     }
 
@@ -1228,7 +1245,7 @@ int jw_ipc_retroarch_action(const char *socket_path, const char *action,
                             int value, char *status, int status_len) {
     if (!action || !action[0]) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "RetroArch action missing");
+            ipc__status(status, status_len, "%s", "RetroArch action missing");
         }
         return -1;
     }
@@ -1241,7 +1258,7 @@ int jw_ipc_retroarch_action(const char *socket_path, const char *action,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "RetroArch action failed: daemon unavailable");
+            ipc__status(status, status_len, "%s", "RetroArch action failed: daemon unavailable");
         }
         return -1;
     }
@@ -1250,10 +1267,10 @@ int jw_ipc_retroarch_action(const char *socket_path, const char *action,
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (status && status_len > 0) {
             if (cJSON_IsString(message) && message->valuestring) {
-                snprintf(status, (size_t)status_len, "RetroArch action failed: %s",
+                ipc__status(status, status_len, "RetroArch action failed: %s",
                          message->valuestring);
             } else {
-                snprintf(status, (size_t)status_len, "%s", "RetroArch action failed");
+                ipc__status(status, status_len, "%s", "RetroArch action failed");
             }
         }
         cJSON_Delete(resp);
@@ -1263,9 +1280,9 @@ int jw_ipc_retroarch_action(const char *socket_path, const char *action,
     if (status && status_len > 0) {
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s", "RetroArch action requested");
+            ipc__status(status, status_len, "%s", "RetroArch action requested");
         }
     }
 
@@ -1339,7 +1356,7 @@ static int ipc__retroarch_shader(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0)
-            snprintf(status, (size_t)status_len, "%s", "RetroArch is not available");
+            ipc__status(status, status_len, "%s", "RetroArch is not available");
         return -1;
     }
 
@@ -1362,14 +1379,14 @@ static int ipc__retroarch_shader(const char *socket_path,
     if (!valid) {
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (status && status_len > 0)
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      cJSON_IsString(message) ? message->valuestring
                                              : "Malformed shader reply");
         cJSON_Delete(resp);
         return -1;
     }
     if (status && status_len > 0) {
-        snprintf(status, (size_t)status_len, "%s",
+        ipc__status(status, status_len, "%s",
                  ipc__shader_result_name(out->result));
     }
     cJSON_Delete(resp);
@@ -1434,7 +1451,7 @@ int jw_ipc_reset_retroarch_config(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "RetroArch reset failed: daemon unavailable");
+            ipc__status(status, status_len, "%s", "RetroArch reset failed: daemon unavailable");
         }
         return -1;
     }
@@ -1443,9 +1460,9 @@ int jw_ipc_reset_retroarch_config(const char *socket_path,
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (status && status_len > 0) {
             if (cJSON_IsString(message) && message->valuestring) {
-                snprintf(status, (size_t)status_len, "RetroArch reset failed: %s", message->valuestring);
+                ipc__status(status, status_len, "RetroArch reset failed: %s", message->valuestring);
             } else {
-                snprintf(status, (size_t)status_len, "%s", "RetroArch reset failed");
+                ipc__status(status, status_len, "%s", "RetroArch reset failed");
             }
         }
         cJSON_Delete(resp);
@@ -1453,7 +1470,7 @@ int jw_ipc_reset_retroarch_config(const char *socket_path,
     }
 
     if (status && status_len > 0) {
-        snprintf(status, (size_t)status_len, "%s", "RetroArch config reset");
+        ipc__status(status, status_len, "%s", "RetroArch config reset");
     }
     cJSON_Delete(resp);
     return 0;
@@ -1588,7 +1605,7 @@ int jw_ipc_set_brightness(const char *socket_path, int percent,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "brightness failed: daemon unavailable");
+            ipc__status(status, status_len, "%s", "brightness failed: daemon unavailable");
         }
         return -1;
     }
@@ -1597,9 +1614,9 @@ int jw_ipc_set_brightness(const char *socket_path, int percent,
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (status && status_len > 0) {
             if (cJSON_IsString(message) && message->valuestring) {
-                snprintf(status, (size_t)status_len, "brightness failed: %s", message->valuestring);
+                ipc__status(status, status_len, "brightness failed: %s", message->valuestring);
             } else {
-                snprintf(status, (size_t)status_len, "%s", "brightness failed");
+                ipc__status(status, status_len, "%s", "brightness failed");
             }
         }
         cJSON_Delete(resp);
@@ -1612,7 +1629,7 @@ int jw_ipc_set_brightness(const char *socket_path, int percent,
         *out_percent = resolved;
     }
     if (status && status_len > 0) {
-        snprintf(status, (size_t)status_len, "brightness: %d%%", resolved);
+        ipc__status(status, status_len, "brightness: %d%%", resolved);
     }
 
     cJSON_Delete(resp);
@@ -1693,7 +1710,7 @@ int jw_ipc_set_volume(const char *socket_path, int percent,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "volume failed: daemon unavailable");
+            ipc__status(status, status_len, "%s", "volume failed: daemon unavailable");
         }
         return -1;
     }
@@ -1702,9 +1719,9 @@ int jw_ipc_set_volume(const char *socket_path, int percent,
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (status && status_len > 0) {
             if (cJSON_IsString(message) && message->valuestring) {
-                snprintf(status, (size_t)status_len, "volume failed: %s", message->valuestring);
+                ipc__status(status, status_len, "volume failed: %s", message->valuestring);
             } else {
-                snprintf(status, (size_t)status_len, "%s", "volume failed");
+                ipc__status(status, status_len, "%s", "volume failed");
             }
         }
         cJSON_Delete(resp);
@@ -1717,7 +1734,7 @@ int jw_ipc_set_volume(const char *socket_path, int percent,
         *out_percent = resolved;
     }
     if (status && status_len > 0) {
-        snprintf(status, (size_t)status_len, "volume: %d%%", resolved);
+        ipc__status(status, status_len, "volume: %d%%", resolved);
     }
 
     cJSON_Delete(resp);
@@ -1805,7 +1822,7 @@ int jw_ipc_set_audio_output(const char *socket_path,
                             char *status, int status_len) {
     if (output < 0 || output >= JW_PLATFORM_AUDIO_OUTPUT_COUNT) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "audio output invalid");
+            ipc__status(status, status_len, "%s", "audio output invalid");
         }
         return -1;
     }
@@ -1819,7 +1836,7 @@ int jw_ipc_set_audio_output(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "audio output failed: daemon unavailable");
+            ipc__status(status, status_len, "%s", "audio output failed: daemon unavailable");
         }
         return -1;
     }
@@ -1828,9 +1845,9 @@ int jw_ipc_set_audio_output(const char *socket_path,
     const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
     if (status && status_len > 0) {
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      ok ? "audio output set" : "audio output failed");
         }
     }
@@ -1894,14 +1911,14 @@ int jw_ipc_get_performance_status(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      "performance status unavailable");
         }
         return -1;
     }
     if (!ipc__type_is(resp, "performance-status")) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      "performance status failed");
         }
         cJSON_Delete(resp);
@@ -1938,9 +1955,9 @@ int jw_ipc_get_performance_status(const char *socket_path,
     if (status && status_len > 0) {
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s", "performance status ready");
+            ipc__status(status, status_len, "%s", "performance status ready");
         }
     }
     cJSON_Delete(resp);
@@ -1953,7 +1970,7 @@ int jw_ipc_set_performance_profile(const char *socket_path,
                                    char *status, int status_len) {
     if (!profile || !profile[0]) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "performance profile missing");
+            ipc__status(status, status_len, "%s", "performance profile missing");
         }
         return -1;
     }
@@ -1966,7 +1983,7 @@ int jw_ipc_set_performance_profile(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      "performance profile failed: daemon unavailable");
         }
         return -1;
@@ -1975,9 +1992,9 @@ int jw_ipc_set_performance_profile(const char *socket_path,
     const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
     if (status && status_len > 0) {
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      ok ? "performance profile set" : "performance profile failed");
         }
     }
@@ -2007,7 +2024,7 @@ int jw_ipc_set_performance_custom(const char *socket_path,
                                   char *status, int status_len) {
     if (!request) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "performance custom missing");
+            ipc__status(status, status_len, "%s", "performance custom missing");
         }
         return -1;
     }
@@ -2024,7 +2041,7 @@ int jw_ipc_set_performance_custom(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      "performance custom failed: daemon unavailable");
         }
         return -1;
@@ -2033,9 +2050,9 @@ int jw_ipc_set_performance_custom(const char *socket_path,
     const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
     if (status && status_len > 0) {
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      ok ? "performance custom set" : "performance custom failed");
         }
     }
@@ -2051,7 +2068,7 @@ int jw_ipc_reset_performance_session(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      "performance reset failed: daemon unavailable");
         }
         return -1;
@@ -2060,9 +2077,9 @@ int jw_ipc_reset_performance_session(const char *socket_path,
     const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
     if (status && status_len > 0) {
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      ok ? "performance reset" : "performance reset failed");
         }
     }
@@ -2085,14 +2102,14 @@ static int ipc__update_request(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "update status unavailable");
+            ipc__status(status, status_len, "%s", "update status unavailable");
         }
         return -1;
     }
 
     if (!ipc__type_is(resp, "update-status")) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "update status failed");
+            ipc__status(status, status_len, "%s", "update status failed");
         }
         cJSON_Delete(resp);
         return -1;
@@ -2102,9 +2119,9 @@ static int ipc__update_request(const char *socket_path,
     if (status && status_len > 0) {
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s", "update status ready");
+            ipc__status(status, status_len, "%s", "update status ready");
         }
     }
 
@@ -2139,14 +2156,14 @@ int jw_ipc_update_select(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "update selection unavailable");
+            ipc__status(status, status_len, "%s", "update selection unavailable");
         }
         return -1;
     }
 
     if (!ipc__type_is(resp, "update-status")) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "update selection failed");
+            ipc__status(status, status_len, "%s", "update selection failed");
         }
         cJSON_Delete(resp);
         return -1;
@@ -2156,9 +2173,9 @@ int jw_ipc_update_select(const char *socket_path,
     if (status && status_len > 0) {
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s", "update selected");
+            ipc__status(status, status_len, "%s", "update selected");
         }
     }
 
@@ -2177,14 +2194,14 @@ int jw_ipc_update_download(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "update download unavailable");
+            ipc__status(status, status_len, "%s", "update download unavailable");
         }
         return -1;
     }
 
     if (!ipc__type_is(resp, "update-status")) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "update download failed");
+            ipc__status(status, status_len, "%s", "update download failed");
         }
         cJSON_Delete(resp);
         return -1;
@@ -2194,9 +2211,9 @@ int jw_ipc_update_download(const char *socket_path,
     const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
     if (status && status_len > 0) {
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s", "update download finished");
+            ipc__status(status, status_len, "%s", "update download finished");
         }
     }
 
@@ -2221,14 +2238,14 @@ int jw_ipc_update_cancel(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "update cancel unavailable");
+            ipc__status(status, status_len, "%s", "update cancel unavailable");
         }
         return -1;
     }
 
     if (!ipc__type_is(resp, "update-status")) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "update cancel failed");
+            ipc__status(status, status_len, "%s", "update cancel failed");
         }
         cJSON_Delete(resp);
         return -1;
@@ -2238,9 +2255,9 @@ int jw_ipc_update_cancel(const char *socket_path,
     const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
     if (status && status_len > 0) {
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s", "update download cancelled");
+            ipc__status(status, status_len, "%s", "update download cancelled");
         }
     }
 
@@ -2265,14 +2282,14 @@ int jw_ipc_update_install_preflight(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "update ready check unavailable");
+            ipc__status(status, status_len, "%s", "update ready check unavailable");
         }
         return -1;
     }
 
     if (!ipc__type_is(resp, "update-status")) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "update ready check failed");
+            ipc__status(status, status_len, "%s", "update ready check failed");
         }
         cJSON_Delete(resp);
         return -1;
@@ -2283,9 +2300,9 @@ int jw_ipc_update_install_preflight(const char *socket_path,
         const cJSON *install = cJSON_GetObjectItemCaseSensitive(resp, "install");
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(install, "message");
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s", "update ready check complete");
+            ipc__status(status, status_len, "%s", "update ready check complete");
         }
     }
 
@@ -2310,14 +2327,14 @@ int jw_ipc_update_install(const char *socket_path,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "update install unavailable");
+            ipc__status(status, status_len, "%s", "update install unavailable");
         }
         return -1;
     }
 
     if (!ipc__type_is(resp, "update-status")) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "update install failed");
+            ipc__status(status, status_len, "%s", "update install failed");
         }
         cJSON_Delete(resp);
         return -1;
@@ -2329,11 +2346,11 @@ int jw_ipc_update_install(const char *socket_path,
         const cJSON *message = cJSON_GetObjectItemCaseSensitive(install, "message");
         const cJSON *top_message = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else if (cJSON_IsString(top_message) && top_message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", top_message->valuestring);
+            ipc__status(status, status_len, "%s", top_message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s", "update install started");
+            ipc__status(status, status_len, "%s", "update install started");
         }
     }
 
@@ -2399,7 +2416,7 @@ int jw_ipc_set_adb(const char *socket_path, int enabled,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s", "ADB failed: daemon unavailable");
+            ipc__status(status, status_len, "%s", "ADB failed: daemon unavailable");
         }
         return -1;
     }
@@ -2408,9 +2425,9 @@ int jw_ipc_set_adb(const char *socket_path, int enabled,
     const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
     if (status && status_len > 0) {
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      ok ? (enabled ? "ADB enabled" : "ADB disabled") : "ADB failed");
         }
     }
@@ -2467,7 +2484,7 @@ int jw_ipc_set_boot_splash(const char *socket_path, int enabled,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      "boot splash failed: daemon unavailable");
         }
         return -1;
@@ -2477,9 +2494,9 @@ int jw_ipc_set_boot_splash(const char *socket_path, int enabled,
     const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
     if (status && status_len > 0) {
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      ok ? (enabled ? "boot splash enabled" : "boot splash disabled")
                         : "boot splash failed");
         }
@@ -2537,7 +2554,7 @@ int jw_ipc_set_refresh_rate(const char *socket_path, int hz,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      "refresh rate failed: daemon unavailable");
         }
         return -1;
@@ -2547,9 +2564,9 @@ int jw_ipc_set_refresh_rate(const char *socket_path, int hz,
     const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
     if (status && status_len > 0) {
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      ok ? (hz >= 90 ? "switching to 90 Hz" : "switching to 60 Hz")
                         : "refresh rate failed");
         }
@@ -2568,7 +2585,7 @@ int jw_ipc_set_language_ex(const char *socket_path, const char *lang,
                            bool keep_running, char *status, int status_len) {
     if (!lang || !lang[0]) {
         if (status && status_len > 0)
-            snprintf(status, (size_t)status_len, "%s", "no language given");
+            ipc__status(status, status_len, "%s", "no language given");
         return -1;
     }
 
@@ -2580,7 +2597,7 @@ int jw_ipc_set_language_ex(const char *socket_path, const char *lang,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      "language change failed: daemon unavailable");
         }
         return -1;
@@ -2590,12 +2607,12 @@ int jw_ipc_set_language_ex(const char *socket_path, const char *lang,
     const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
     if (status && status_len > 0) {
         if (cJSON_IsString(message) && message->valuestring) {
-            snprintf(status, (size_t)status_len, "%s", message->valuestring);
+            ipc__status(status, status_len, "%s", message->valuestring);
         } else {
             /* On success the launcher is already being torn down, so this string
                rarely survives long enough to be read. Set it anyway: if the
                restart does not happen, this is the only thing the user sees. */
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      ok ? "restarting" : "language change failed");
         }
     }
@@ -2641,7 +2658,7 @@ int jw_ipc_set_hdmi_output(const char *socket_path, int mode,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      "HDMI output failed: daemon unavailable");
         }
         return -1;
@@ -2650,7 +2667,7 @@ int jw_ipc_set_hdmi_output(const char *socket_path, int mode,
     bool ok = ipc__type_is(resp, "ok");
     const cJSON *message = cJSON_GetObjectItemCaseSensitive(resp, "message");
     if (status && status_len > 0) {
-        snprintf(status, (size_t)status_len, "%s",
+        ipc__status(status, status_len, "%s",
                  (cJSON_IsString(message) && message->valuestring)
                      ? message->valuestring
                      : (ok ? "switching HDMI output" : "HDMI output failed"));
@@ -2717,7 +2734,7 @@ int jw_ipc_scrape_start_full(const char *socket_path, const char *scope,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      "scrape failed: daemon unavailable");
         }
         return -1;
@@ -2725,7 +2742,7 @@ int jw_ipc_scrape_start_full(const char *socket_path, const char *scope,
     if (!ipc__type_is(resp, "ok")) {
         const cJSON *msg = cJSON_GetObjectItemCaseSensitive(resp, "message");
         if (status && status_len > 0) {
-            snprintf(status, (size_t)status_len, "%s",
+            ipc__status(status, status_len, "%s",
                      cJSON_IsString(msg) ? msg->valuestring
                                          : "scrape failed");
         }
@@ -3024,12 +3041,12 @@ int jw_ipc_set_led(const char *socket_path, int enabled, const char *mode,
     cJSON *resp = NULL;
     if (ipc__request(socket_path, req, &resp) != 0) {
         if (status && status_len > 0)
-            snprintf(status, (size_t)status_len, "%s", "led failed: daemon unavailable");
+            ipc__status(status, status_len, "%s", "led failed: daemon unavailable");
         return -1;
     }
     int rc = ipc__type_is(resp, "ok") ? 0 : -1;
     if (status && status_len > 0)
-        snprintf(status, (size_t)status_len, "%s", rc == 0 ? "led applied" : "led failed");
+        ipc__status(status, status_len, "%s", rc == 0 ? "led applied" : "led failed");
     cJSON_Delete(resp);
     return rc;
 }

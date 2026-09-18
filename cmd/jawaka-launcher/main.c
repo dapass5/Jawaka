@@ -491,6 +491,19 @@ typedef struct {
     bool                haptics_muted;
 } jw_launcher_state;
 
+static void jw__status(jw_launcher_state *state, const char *fmt, ...) {
+    if (!state || !fmt) return;
+    va_list args;
+    va_start(args, fmt);
+    if (strcmp(fmt, "%s") == 0) {
+        const char *value = va_arg(args, const char *);
+        snprintf(state->status, sizeof(state->status), "%s", T(value ? value : ""));
+    } else {
+        vsnprintf(state->status, sizeof(state->status), T(fmt), args);
+    }
+    va_end(args);
+}
+
 /* Forward declarations: shared preview helper used by Tabs games-tab and the
  * Vertical preview pane. Defined alongside jw__load_system_icon below; it takes
  * the launcher state because the system-icon pack is a setting. */
@@ -1244,7 +1257,7 @@ static void jw__set_launching_status(jw_launcher_state *state,
         max_name_len = (size_t)INT_MAX;
     }
 
-    snprintf(state->status, sizeof(state->status), "Launching %.*s...",
+    jw__status(state, "Launching %.*s...",
              (int)max_name_len, display);
 }
 
@@ -1253,7 +1266,7 @@ static void jw__set_launching_status(jw_launcher_state *state,
    feedback (menu navigation clears that). */
 static void jw__launch_notice(jw_launcher_state *state, const char *text) {
     if (!state || !text || !text[0]) return;
-    jw_launch_notice_show(&state->launch_notice, text, SDL_GetTicks());
+    jw_launch_notice_show(&state->launch_notice, T(text), SDL_GetTicks());
     cat_request_frame();
 }
 
@@ -1307,12 +1320,12 @@ static const char *jw__flat_label(const jw_launcher_state *state, int idx) {
     if (idx < 0 || idx >= state->flat_count) return "";
     const jw_flat_item *it = &state->flat_items[idx];
     switch (it->kind) {
-        case JW_FLAT_RECENTLY_PLAYED: return "Recently Played";
-        case JW_FLAT_FAVORITES:       return "Favorites";
+        case JW_FLAT_RECENTLY_PLAYED: return T("Recently Played");
+        case JW_FLAT_FAVORITES:       return T("Favorites");
         case JW_FLAT_SYSTEM:          return state->systems[it->system_idx].display_name;
-        case JW_FLAT_APPS:            return "Apps";
-        case JW_FLAT_SETTINGS:        return "Settings";
-        case JW_FLAT_TOOLS:           return "Tools";
+        case JW_FLAT_APPS:            return T("Apps");
+        case JW_FLAT_SETTINGS:        return T("Settings");
+        case JW_FLAT_TOOLS:           return T("Tools");
         default:                      return "";
     }
 }
@@ -1588,7 +1601,7 @@ static int jw__scan_library(const char *socket_path, const char *db_path,
         state->library_generation = -1;
     }
     if (state->scan_running) {
-        snprintf(state->status, sizeof(state->status), "%s", "Library updating...");
+        jw__status(state, "%s", "Library updating...");
     }
     return 0;
 }
@@ -1596,7 +1609,7 @@ static int jw__scan_library(const char *socket_path, const char *db_path,
 static int jw__load_library_cache(const char *socket_path, const char *db_path,
                                   jw_launcher_state *state) {
     if (jw__reload_library_from_db(db_path, state) != 0) {
-        snprintf(state->status, sizeof(state->status), "%s",
+        jw__status(state, "%s",
                  "library cache unavailable");
         return -1;
     }
@@ -1610,7 +1623,7 @@ static int jw__load_library_cache(const char *socket_path, const char *db_path,
     } else {
         state->library_generation = -1;
     }
-    snprintf(state->status, sizeof(state->status), T("%d games, %d systems, %d apps"),
+    jw__status(state, T("%d games, %d systems, %d apps"),
         state->summary.game_count, state->system_count, state->summary.app_count);
     return 0;
 }
@@ -1909,7 +1922,7 @@ static void jw__poll_library_generation(const char *socket_path,
         state->scan_ready = library_populated || !scan_running;
         state->menu_scanning = scan_running;
         if (scan_running) {
-            snprintf(state->status, sizeof(state->status), "%s",
+            jw__status(state, "%s",
                      pending_rescan ? "Library updating; another scan is queued"
                                     : "Library updating...");
         }
@@ -1943,7 +1956,7 @@ static void jw__poll_library_generation(const char *socket_path,
         cat_cache_clear();
         /* A rescan is also how the user retries art that failed to decode. */
         jw_cover_loader_forget_failures(jw__covers());
-        snprintf(state->status, sizeof(state->status), T("%d games, %d systems, %d apps"),
+        jw__status(state, T("%d games, %d systems, %d apps"),
                  state->summary.game_count, state->system_count, state->summary.app_count);
         cat_request_frame();
     }
@@ -2003,20 +2016,20 @@ static void jw__poll_scrape_status(jw_launcher_state *state) {
             if (dot && dot != item) *dot = '\0';
         }
         if (paused_storage) {
-            snprintf(state->status, sizeof(state->status),
+            jw__status(state,
                      "Scraping paused: %.200s",
                      s.message[0] ? s.message : "SD card is read-only");
         } else if (strcmp(s.state, "paused-quota") == 0) {
-            snprintf(state->status, sizeof(state->status),
+            jw__status(state,
                      "Scraping paused: %.200s",
                      s.message[0] ? s.message : "daily quota exceeded");
         } else if (item[0]) {
             int shown = s.done + 1 > s.total ? s.total : s.done + 1;
-            snprintf(state->status, sizeof(state->status),
+            jw__status(state,
                      "Scraping %s: %d/%d - %.160s",
                      s.current_system, shown, s.total, item);
         } else {
-            snprintf(state->status, sizeof(state->status),
+            jw__status(state,
                      "Scraping: %d/%d", s.done, s.total);
         }
         cat_request_frame();
@@ -2033,11 +2046,11 @@ static void jw__poll_scrape_status(jw_launcher_state *state) {
             }
             if (s.failed > 0 && n > 0 && (size_t)n < cap) {
                 n += snprintf(state->status + n, cap - (size_t)n,
-                              ", %d failed", s.failed);
+                              T(", %d failed"), s.failed);
             }
             if (s.cancelled > 0 && n > 0 && (size_t)n < cap) {
                 snprintf(state->status + n, cap - (size_t)n,
-                         ", %d cancelled", s.cancelled);
+                          T(", %d cancelled"), s.cancelled);
             }
             jw_system_notice_set(&activity->completion, state->status, SDL_GetTicks());
             cat_request_frame();
@@ -2362,7 +2375,7 @@ static void jw__pakrat_switch_section(jw_launcher_state *state) {
     cat_list_state_jump(&state->pakrat_list,
                         state->pakrat_section_cursor[themes ? 0 : 1],
                         state->pakrat_view_count);
-    snprintf(state->status, sizeof(state->status), "%s", state->pakrat_message);
+    jw__status(state, "%s", state->pakrat_message);
     cat_ui_feedback_emit(CAT_UI_MOVED);
 }
 
@@ -2491,35 +2504,35 @@ static void jw__draw_app_item(int idx, int ix, int iy, int iw, int ih,
 
 static const char *jw__pakrat_status_label(jw_pakrat_app_status status) {
     switch (status) {
-        case JW_PAKRAT_APP_AVAILABLE:        return "Available";
-        case JW_PAKRAT_APP_INSTALLED:        return "Installed";
-        case JW_PAKRAT_APP_UPDATE_AVAILABLE: return "Update";
-        case JW_PAKRAT_APP_STALE:            return "Stale";
-        case JW_PAKRAT_APP_UNMANAGED:        return "Manual";
+        case JW_PAKRAT_APP_AVAILABLE:        return T("Available");
+        case JW_PAKRAT_APP_INSTALLED:        return T("Installed");
+        case JW_PAKRAT_APP_UPDATE_AVAILABLE: return T("Update");
+        case JW_PAKRAT_APP_STALE:            return T("Stale");
+        case JW_PAKRAT_APP_UNMANAGED:        return T("Manual");
         default:                             return "";
     }
 }
 
 static const char *jw__pakrat_primary_action_label(const jw_pakrat_app_state *app) {
     if (!app) {
-        return "Select";
+        return T("Select");
     }
     if (app->managed) {
-        return "Blocked";
+        return T("Blocked");
     }
     if (jw_pakrat_primary_action_opens(app)) {
-        return "Open";
+        return T("Open");
     }
     if (!app->primary_action_allowed) {
-        return "Unavailable";
+        return T("Unavailable");
     }
     switch (app->status) {
-        case JW_PAKRAT_APP_AVAILABLE:        return "Install";
-        case JW_PAKRAT_APP_INSTALLED:        return "Reinstall";
-        case JW_PAKRAT_APP_UPDATE_AVAILABLE: return "Update";
-        case JW_PAKRAT_APP_STALE:            return "Restore";
-        case JW_PAKRAT_APP_UNMANAGED:        return "Install";
-        default:                             return "Select";
+        case JW_PAKRAT_APP_AVAILABLE:        return T("Install");
+        case JW_PAKRAT_APP_INSTALLED:        return T("Reinstall");
+        case JW_PAKRAT_APP_UPDATE_AVAILABLE: return T("Update");
+        case JW_PAKRAT_APP_STALE:            return T("Restore");
+        case JW_PAKRAT_APP_UNMANAGED:        return T("Install");
+        default:                             return T("Select");
     }
 }
 
@@ -2530,17 +2543,17 @@ static const char *jw__pakrat_primary_action_label(const jw_pakrat_app_state *ap
 static void jw__pakrat_provides_line(const jw_pakrat_app_state *app,
                                      char *out, size_t out_size) {
     if (app->provides_summary[0]) {
-        snprintf(out, out_size, "Adds %s%s", app->provides_summary,
-                 app->content_only ? " — no app to open" : "");
+        snprintf(out, out_size, T("Adds %s%s"), app->provides_summary,
+                 app->content_only ? T(" — no app to open") : "");
     } else {
         snprintf(out, out_size,
-                 "Adds systems and emulators rather than an app to open.");
+                 "%s", T("Adds systems and emulators rather than an app to open."));
     }
 }
 
 static void jw__pakrat_diagnostic_line(const jw_pakrat_app_state *app,
                                        char *out, size_t out_size) {
-    snprintf(out, out_size, "Contribution refused — %s",
+    snprintf(out, out_size, T("Contribution refused — %s"),
              app->content_diagnostic);
 }
 
@@ -3137,7 +3150,7 @@ static int jw__pakrat_detail_content_h(const jw_pakrat_app_state *app,
     if (app->gated_version[0] && app->gated_min_leaf_version[0]) {
         char gate[256];
         snprintf(gate, sizeof(gate),
-                 "Version %s requires Leaf v%s — update Leaf in Settings to get it.",
+                 T("Version %s requires Leaf v%s — update Leaf in Settings to get it."),
                  app->gated_version, app->gated_min_leaf_version);
         h += cat_measure_wrapped_text_height(body, gate, w) + CAT_S(18);
     }
@@ -3145,8 +3158,8 @@ static int jw__pakrat_detail_content_h(const jw_pakrat_app_state *app,
         app->installed_version[0]) {
         char missing[256];
         snprintf(missing, sizeof(missing),
-                 "%s unavailable: version %s is missing from catalog history.",
-                 app->status == JW_PAKRAT_APP_STALE ? "Restore" : "Reinstall",
+                 T("%s unavailable: version %s is missing from catalog history."),
+                 app->status == JW_PAKRAT_APP_STALE ? T("Restore") : T("Reinstall"),
                  app->installed_version);
         h += cat_measure_wrapped_text_height(body, missing, w) + CAT_S(18);
     }
@@ -3180,7 +3193,7 @@ static void jw__draw_pakrat_detail_content(int x, int y, int w, void *user) {
     int cy = y;
 
     const char *status = jw__pakrat_status_label(app->status);
-    cat_draw_text(c->small, status, x, cy,
+    cat_draw_text(c->small, T(status), x, cy,
                   app->status == JW_PAKRAT_APP_STALE ? theme->highlight : theme->hint);
     cy += TTF_FontHeight(c->small) + CAT_S(14);
 
@@ -3194,7 +3207,7 @@ static void jw__draw_pakrat_detail_content(int x, int y, int w, void *user) {
     char line[768];
     if (app->gated_version[0] && app->gated_min_leaf_version[0]) {
         snprintf(line, sizeof(line),
-                 "Version %s requires Leaf v%s — update Leaf in Settings to get it.",
+                 T("Version %s requires Leaf v%s — update Leaf in Settings to get it."),
                  app->gated_version, app->gated_min_leaf_version);
         cat_draw_text_wrapped(c->body, line, x, cy, w,
                               theme->highlight, CAT_ALIGN_LEFT);
@@ -3203,8 +3216,8 @@ static void jw__draw_pakrat_detail_content(int x, int y, int w, void *user) {
     if (app->installed_version_missing_from_history &&
         app->installed_version[0]) {
         snprintf(line, sizeof(line),
-                 "%s unavailable: version %s is missing from catalog history.",
-                 app->status == JW_PAKRAT_APP_STALE ? "Restore" : "Reinstall",
+                 T("%s unavailable: version %s is missing from catalog history."),
+                 app->status == JW_PAKRAT_APP_STALE ? T("Restore") : T("Reinstall"),
                  app->installed_version);
         cat_draw_text_wrapped(c->body, line, x, cy, w,
                               theme->highlight, CAT_ALIGN_LEFT);
@@ -3229,10 +3242,10 @@ static void jw__draw_pakrat_detail_content(int x, int y, int w, void *user) {
     }
 
     int row_h = TTF_FontHeight(c->small) + CAT_S(8);
-    snprintf(line, sizeof(line), "Catalog version: %s", app->package.version);
+    snprintf(line, sizeof(line), T("Catalog version: %s"), app->package.version);
     cat_draw_text_ellipsized(c->small, line, x, cy, theme->hint, w);
     cy += row_h;
-    snprintf(line, sizeof(line), "Installed version: %s",
+    snprintf(line, sizeof(line), T("Installed version: %s"),
              app->installed_version[0] ? app->installed_version : "-");
     cat_draw_text_ellipsized(c->small, line, x, cy, theme->hint, w);
     cy += row_h;
@@ -3308,7 +3321,7 @@ static void jw__render_pakrat_store(const jw_launcher_state *state) {
                 ? (state->pakrat_load_rc == 0 ? T("No themes in Pak Rat yet")
                                               : state->pakrat_message)
                 : (state->pakrat_message[0] ? state->pakrat_message
-                                            : "No Pak Rat apps found");
+                                            : T("No Pak Rat apps found"));
             cat_draw_text_wrapped(body, msg,
                 list.x + CAT_S(8), list.y + CAT_S(8),
                 list.w - margin * 2, theme->hint, CAT_ALIGN_LEFT);
@@ -5249,7 +5262,7 @@ static void jw__draw_app_detail(const jw_launcher_state *state,
 
     char metadata[160];
     if (app->pak_version[0]) {
-        snprintf(metadata, sizeof(metadata), "Version %s",
+        snprintf(metadata, sizeof(metadata), T("Version %s"),
                  app->pak_version);
         int metadata_w = cat_measure_text(small, metadata);
         if (metadata_w > max_w) metadata_w = max_w;
@@ -5259,7 +5272,7 @@ static void jw__draw_app_detail(const jw_launcher_state *state,
         label_y += sub_h + line_gap;
     }
     if (app->min_leaf_version[0]) {
-        snprintf(metadata, sizeof(metadata), "Requires Leaf v%s",
+        snprintf(metadata, sizeof(metadata), T("Requires Leaf v%s"),
                  app->min_leaf_version);
         int metadata_w = cat_measure_text(small, metadata);
         if (metadata_w > max_w) metadata_w = max_w;
@@ -5653,7 +5666,7 @@ static void jw__render_game_browser(const jw_launcher_state *state) {
         snprintf(title, sizeof(title), "%s   %d / %d", state->game_system_display,
                  state->focus_setup_count, JW_FOCUS_SCREEN_MAX_TILES);
     else if (state->games_are_favorites)
-        snprintf(title, sizeof(title), "%s", "Favorites");
+        snprintf(title, sizeof(title), "%s", T("Favorites"));
     else
         snprintf(title, sizeof(title), "%s", state->game_system_display);
 
@@ -5912,10 +5925,13 @@ static void jw__render_search(const jw_launcher_state *state) {
 
     char title[320];
     if (state->search_query[0])
-        snprintf(title, sizeof(title), "Search: %s  (%d %s)", state->search_query,
-                 state->search_count, state->search_count == 1 ? "result" : "results");
+        snprintf(title, sizeof(title),
+                 state->search_count == 1
+                       ? T("Search: %s  (%d result)")
+                       : T("Search: %s  (%d results)"),
+                 state->search_query, state->search_count);
     else
-        snprintf(title, sizeof(title), "%s", "Search: (empty)");
+        snprintf(title, sizeof(title), "%s", T("Search: (empty)"));
     cat_draw_text_ellipsized(large, title, margin, title_y, theme->text, sw - margin * 2);
 
     SDL_Rect list, image;
@@ -6288,9 +6304,9 @@ static void jw__render_search_cf(jw_launcher_state *state) {
 
     char hdr[320];
     if (state->search_query[0])
-        snprintf(hdr, sizeof(hdr), "Search: %s", state->search_query);
+        snprintf(hdr, sizeof(hdr), T("Search: %s"), state->search_query);
     else
-        snprintf(hdr, sizeof(hdr), "%s", "Search");
+        snprintf(hdr, sizeof(hdr), "%s", T("Search"));
     int maxhw = sw - CAT_S(40);
     int hw = cat_measure_text(small, hdr);
     int hx = (sw - (hw < maxhw ? hw : maxhw)) / 2;
@@ -6352,10 +6368,10 @@ static const char *jw__bios_basename(const char *rel_path) {
    effective value came from, not where the file is stored. */
 static const char *jw__bios_origin_suffix(jw_bios_origin origin) {
     switch (origin) {
-        case JW_BIOS_ORIGIN_GAME:   return "game";
-        case JW_BIOS_ORIGIN_SYSTEM: return "system";
+        case JW_BIOS_ORIGIN_GAME:   return T("game");
+        case JW_BIOS_ORIGIN_SYSTEM: return T("system");
         case JW_BIOS_ORIGIN_DEFAULT:
-        default:                    return "default";
+        default:                    return T("default");
     }
 }
 
@@ -6389,23 +6405,23 @@ static void jw__action_row_strings(const jw_launcher_state *state,
     switch (row) {
         case JW_ACTION_ROW_SEARCH:
             snprintf(title, title_size, "%s", T("Search This System"));
-            snprintf(value, value_size, "%s", "Open");
+            snprintf(value, value_size, "%s", T("Open"));
             break;
         case JW_ACTION_ROW_DISPLAY_NAME: {
             snprintf(title, title_size, "%s", T("Display Name"));
             if (state->action_scope == JW_ACTION_SYSTEM) {
                 const char *label = state->action_system_display[0]
                     ? state->action_system_display
-                    : "Default";
+                    : T("Default");
                 if (state->action_system_display_override[0]) {
-                    snprintf(value, value_size, "%s (custom)", label);
+                    snprintf(value, value_size, T("%s (custom)"), label);
                 } else {
                     snprintf(value, value_size, "%s", label);
                 }
             } else {
                 char name[256];
                 jw__clean_rom_name(state->action_game.name, name, sizeof(name));
-                jw__str_copy(value, value_size, name[0] ? name : "Scanned");
+                jw__str_copy(value, value_size, name[0] ? name : T("Scanned"));
             }
             break;
         }
@@ -6414,17 +6430,17 @@ static void jw__action_row_strings(const jw_launcher_state *state,
             if (state->action_scope == JW_ACTION_GAME &&
                 jw__action_find_core(
                     state, state->action_core_game_override) >= 0) {
-                snprintf(value, value_size, "%s (game)",
+                snprintf(value, value_size, T("%s (game)"),
                          jw__action_core_label(state, state->action_core_game_override));
             } else if (jw__action_find_core(
                            state, state->action_core_system_override) >= 0) {
-                snprintf(value, value_size, "%s (system)",
+                snprintf(value, value_size, T("%s (system)"),
                          jw__action_core_label(state, state->action_core_system_override));
             } else if (state->action_core_effective[0]) {
-                snprintf(value, value_size, "%s (default)",
+                snprintf(value, value_size, T("%s (default)"),
                          jw__action_core_label(state, state->action_core_effective));
             } else {
-                snprintf(value, value_size, "%s", "Unavailable");
+                snprintf(value, value_size, "%s", T("Unavailable"));
             }
             break;
         case JW_ACTION_ROW_BIOS:
@@ -6432,32 +6448,32 @@ static void jw__action_row_strings(const jw_launcher_state *state,
             jw__bios_row_value(state, value, value_size);
             break;
         case JW_ACTION_ROW_PERFORMANCE:
-            snprintf(title, title_size, "%s", "Performance");
+            snprintf(title, title_size, "%s", T("Performance"));
             if (state->action_scope == JW_ACTION_GAME &&
                 state->action_perf_game_override[0]) {
-                snprintf(value, value_size, "%s (game)",
+                snprintf(value, value_size, T("%s (game)"),
                          jw__action_perf_label(state->action_perf_game_override));
             } else if (state->action_perf_system_override[0]) {
-                snprintf(value, value_size, "%s (system)",
+                snprintf(value, value_size, T("%s (system)"),
                          jw__action_perf_label(state->action_perf_system_override));
             } else {
-                snprintf(value, value_size, "%s", "Auto");
+                snprintf(value, value_size, "%s", T("Auto"));
             }
             break;
         case JW_ACTION_ROW_SCRAPE:
-            snprintf(title, title_size, "%s", "Scrape Artwork");
-            snprintf(value, value_size, "%s", "Replace");
+            snprintf(title, title_size, "%s", T("Scrape Artwork"));
+            snprintf(value, value_size, "%s", T("Replace"));
             break;
         case JW_ACTION_ROW_SCRAPE_CANCEL:
-            snprintf(title, title_size, "%s", "Cancel Scraping");
-            snprintf(value, value_size, "%s", "Stop");
+            snprintf(title, title_size, "%s", T("Cancel Scraping"));
+            snprintf(value, value_size, "%s", T("Stop"));
             break;
         case JW_ACTION_ROW_RESET:
             snprintf(title, title_size, "%s",
                      state->action_scope == JW_ACTION_GAME
                          ? T("Reset Game Overrides")
-                         : "Reset System Overrides");
-            snprintf(value, value_size, "%s", "Clear");
+                         : T("Reset System Overrides"));
+            snprintf(value, value_size, "%s", T("Clear"));
             break;
         default:
             break;
@@ -6635,7 +6651,7 @@ static void jw__render_actions(const jw_launcher_state *state) {
         jw__clean_rom_name(state->action_game.name, name, sizeof(name));
         snprintf(title, sizeof(title), "%s", name);
     } else {
-        snprintf(title, sizeof(title), "System Options: %s",
+        snprintf(title, sizeof(title), T("System Options: %s"),
                  state->action_system_display);
     }
 
@@ -6912,7 +6928,7 @@ static void jw__open_pakrat_store(jw_launcher_state *state) {
     jw__load_pakrat_store(state);
     cat_list_state_init(&state->pakrat_list, jw__pakrat_visible_rows(state));
     cat_list_state_jump(&state->pakrat_list, old_cursor, state->pakrat_view_count);
-    snprintf(state->status, sizeof(state->status), "%s",
+    jw__status(state, "%s",
              state->pakrat_message[0] ? state->pakrat_message : "Pak Rat");
 }
 
@@ -8228,7 +8244,7 @@ static void jw__bios_picker_open(jw_launcher_state *state) {
     jw__bios_picker_close(state);
     jw_bios_picker *picker = calloc(1, sizeof(*picker));
     if (!picker) {
-        snprintf(state->status, sizeof(state->status), "%s",
+        jw__status(state, "%s",
                  T("Not enough memory to open the BIOS picker"));
         return;
     }
@@ -8344,7 +8360,7 @@ static void jw__bios_apply_choice(const char *db_path, jw_launcher_state *state,
     char value[JW_BIOS_VALUE_MAX];
     if (choice) {
         if (!jw_bios_choice_format(choice, value, sizeof(value))) {
-            snprintf(state->status, sizeof(state->status), "%s",
+            jw__status(state, "%s",
                      T("That BIOS file cannot be saved as a selection."));
             return;
         }
@@ -8361,7 +8377,7 @@ static void jw__bios_apply_choice(const char *db_path, jw_launcher_state *state,
                                           JW_CONTENT_SETTING_SATURN_BIOS);
     }
     if (rc != 0) {
-        snprintf(state->status, sizeof(state->status), "%s",
+        jw__status(state, "%s",
                  T("Saturn BIOS update failed"));
         return;
     }
@@ -8369,7 +8385,7 @@ static void jw__bios_apply_choice(const char *db_path, jw_launcher_state *state,
     jw__refresh_after_action_write(db_path, state);
     char shown[192];
     jw__bios_row_value(state, shown, sizeof(shown));
-    snprintf(state->status, sizeof(state->status), "%s: %.160s",
+    jw__status(state, "%s: %.160s",
              T("Saturn BIOS"), shown);
 }
 
@@ -8841,7 +8857,7 @@ static void jw__action_refresh_core_choices(const char *db_path,
     const jw_ra_catalog *catalog =
         jw_ra_catalog_get(state->sdcard_root, error, sizeof(error));
     if (!catalog) {
-        snprintf(state->status, sizeof(state->status), "Core metadata unavailable: %.180s",
+        jw__status(state, "Core metadata unavailable: %.180s",
                  error[0] ? error : "unknown");
         return;
     }
@@ -9135,26 +9151,26 @@ static int jw__perform_search(const char *db_path, jw_launcher_state *state,
                              JW_MAX_SEARCH_RESULTS, &state->search_count) != 0) {
         state->search_open = true;
         cat_list_state_init(&state->search_list, jw__search_visible_rows(state));
-        snprintf(state->status, sizeof(state->status), "%s", "search failed");
+        jw__status(state, "%s", T("search failed"));
         return -1;
     }
 
     state->search_open = true;
     cat_list_state_init(&state->search_list, jw__search_visible_rows(state));
     cat_list_state_jump(&state->search_list, 0, state->search_count);
-    snprintf(state->status, sizeof(state->status), "%d results", state->search_count);
+    jw__status(state, T("%d results"), state->search_count);
     return 0;
 }
 
 static void jw__open_search(const char *db_path, jw_launcher_state *state) {
     cat_keyboard_result result;
     int rc = cat_keyboard(state->search_query,
-                          "Search library\nStart: Confirm\nY: Cancel",
+                          T("Search library\nStart: Confirm\nY: Cancel"),
                           CAT_KB_GENERAL, &result);
     if (rc == CAT_OK) {
         jw__perform_search(db_path, state, result.text);
     } else if (rc == CAT_ERROR) {
-        snprintf(state->status, sizeof(state->status), "%s", "search keyboard failed");
+        jw__status(state, "%s", T("search keyboard failed"));
     }
 }
 
@@ -9167,11 +9183,11 @@ static int jw__open_system_games(const char *db_path, const char *system,
     int rc = jw__load_system_games_full(db_path, system, state, 0);
     if (rc != 0) {
         if (rc < 0) {
-            snprintf(state->status, sizeof(state->status), "Could not load games for %s",
+            jw__status(state, T("Could not load games for %s"),
                      display_name[0] ? display_name : system);
             return -1;
         }
-        snprintf(state->status, sizeof(state->status), "No launchable games for %s",
+        jw__status(state, T("No launchable games for %s"),
                  display_name[0] ? display_name : system);
         return -1;
     }
@@ -9183,7 +9199,7 @@ static int jw__open_system_games(const char *db_path, const char *system,
     state->games_open = true;
     cat_list_state_init(&state->game_list, jw__game_browser_visible_rows(state));
     cat_list_state_jump(&state->game_list, 0, state->game_count);
-    snprintf(state->status, sizeof(state->status), T("%d %s games"),
+    jw__status(state, T("%d %s games"),
              state->game_count, state->game_system_display);
     return 0;
 }
@@ -9191,7 +9207,7 @@ static int jw__open_system_games(const char *db_path, const char *system,
 static int jw__open_favorites(const char *db_path, jw_launcher_state *state) {
     if (jw__load_bounded_game_browser(db_path, state, jw_db_list_favorite_games,
                                       JW_OPENED_GAME_BROWSER_LIMIT) != 0) {
-        snprintf(state->status, sizeof(state->status), "%s", "Could not load favorites");
+        jw__status(state, "%s", T("Could not load favorites"));
         return -1;
     }
 
@@ -9203,10 +9219,10 @@ static int jw__open_favorites(const char *db_path, jw_launcher_state *state) {
     cat_list_state_init(&state->game_list, jw__game_browser_visible_rows(state));
     cat_list_state_jump(&state->game_list, 0, state->game_count);
     if (state->game_count == 0) {
-        snprintf(state->status, sizeof(state->status), "%s",
+        jw__status(state, "%s",
                  T("No favorites yet — press Y on a game to add one"));
     } else {
-        snprintf(state->status, sizeof(state->status), T("%d favorites"), state->game_count);
+        jw__status(state, T("%d favorites"), state->game_count);
     }
     return 0;
 }
@@ -9214,7 +9230,7 @@ static int jw__open_favorites(const char *db_path, jw_launcher_state *state) {
 static int jw__open_recents(const char *db_path, jw_launcher_state *state) {
     if (jw__load_bounded_game_browser(db_path, state, jw_db_list_recent_games,
                                       JW_OPENED_GAME_BROWSER_LIMIT) != 0) {
-        snprintf(state->status, sizeof(state->status), "%s", "Could not load recents");
+        jw__status(state, "%s", T("Could not load recents"));
         return -1;
     }
 
@@ -9226,9 +9242,9 @@ static int jw__open_recents(const char *db_path, jw_launcher_state *state) {
     cat_list_state_init(&state->game_list, jw__game_browser_visible_rows(state));
     cat_list_state_jump(&state->game_list, 0, state->game_count);
     if (state->game_count == 0) {
-        snprintf(state->status, sizeof(state->status), "%s", "No recent games yet");
+        jw__status(state, "%s", T("No recent games yet"));
     } else {
-        snprintf(state->status, sizeof(state->status), "%d recent", state->game_count);
+        jw__status(state, T("%d recent"), state->game_count);
     }
     return 0;
 }
@@ -9360,7 +9376,7 @@ static bool jw__pakrat_append(char *message, size_t capacity,
     }
     va_list args;
     va_start(args, fmt);
-    int n = vsnprintf(message + *used, capacity - *used, fmt, args);
+    int n = vsnprintf(message + *used, capacity - *used, T(fmt), args);
     va_end(args);
     if (n < 0 || (size_t)n >= capacity - *used) {
         return false;
@@ -9401,7 +9417,8 @@ static bool jw__confirm_pakrat_uninstall(
     }
     for (int i = 0; complete && i < info->item_count; i++) {
         const jw_pakrat_retained_item *item = &info->items[i];
-        char size[64] = "unknown size";
+        char size[64];
+        snprintf(size, sizeof(size), "%s", T("unknown size"));
         if (item->size_known) {
             jw__pakrat_format_size(item->size_bytes, size, sizeof(size));
         }
@@ -9409,15 +9426,15 @@ static bool jw__confirm_pakrat_uninstall(
             message, capacity, &used, "\n%s: %s (%s)", item->source_id,
             item->root,
             item->source_present
-                ? size : "card absent; not inventoried");
+                ? size : T("card absent; not inventoried"));
     }
     if (!complete) {
         free(message);
         return false;
     }
     cat_footer_item footer[] = {
-        { .button = CAT_BTN_B, .label = "Cancel",    .is_confirm = false },
-        { .button = CAT_BTN_A, .label = "Uninstall", .is_confirm = true },
+        { .button = CAT_BTN_B, .label = T("Cancel"),    .is_confirm = false },
+        { .button = CAT_BTN_A, .label = T("Uninstall"), .is_confirm = true },
     };
     cat_message_opts opts = {
         .message = message,
@@ -9440,11 +9457,11 @@ static bool jw__confirm_pakrat_remove_retained(
     char message[768];
     snprintf(
         message, sizeof(message),
-        "Also remove retained data for %.180s?\n\nThis separately deletes every declared retained directory on cards that are present now. Absent cards remain unchanged. This cannot be undone.",
+        T("Also remove retained data for %.180s?\n\nThis separately deletes every declared retained directory on cards that are present now. Absent cards remain unchanged. This cannot be undone."),
         app->package.name[0] ? app->package.name : app->package.id);
     cat_footer_item footer[] = {
-        { .button = CAT_BTN_B, .label = "Keep data", .is_confirm = false },
-        { .button = CAT_BTN_A, .label = "Remove", .is_confirm = true },
+        { .button = CAT_BTN_B, .label = T("Keep data"), .is_confirm = false },
+        { .button = CAT_BTN_A, .label = T("Remove"), .is_confirm = true },
     };
     cat_message_opts opts = {
         .message = message,
@@ -9461,11 +9478,11 @@ static bool jw__confirm_pakrat_reinstall(const jw_pakrat_app_state *app) {
     }
     char message[512];
     snprintf(message, sizeof(message),
-             "Reinstall %.180s?\n\nThe app package will be replaced. User data is preserved.",
+             T("Reinstall %.180s?\n\nThe app package will be replaced. User data is preserved."),
              app->package.name[0] ? app->package.name : app->package.id);
     cat_footer_item footer[] = {
-        { .button = CAT_BTN_B, .label = "Cancel",    .is_confirm = false },
-        { .button = CAT_BTN_A, .label = "Reinstall", .is_confirm = true },
+        { .button = CAT_BTN_B, .label = T("Cancel"),    .is_confirm = false },
+        { .button = CAT_BTN_A, .label = T("Reinstall"), .is_confirm = true },
     };
     cat_message_opts opts = {
         .message = message,
@@ -9495,13 +9512,13 @@ static bool jw__confirm_pakrat_adopt(const jw_pakrat_app_state *app) {
                  app->package.name[0] ? app->package.name : app->package.id);
     } else {
         snprintf(message, sizeof(message),
-                 "%.180s is already installed manually.\n\nReplace it with the Pak Rat "
-                 "version so it can be updated? User data is preserved.",
+                 T("%.180s is already installed manually.\n\nReplace it with the Pak Rat "
+                   "version so it can be updated? User data is preserved."),
                  app->package.name[0] ? app->package.name : app->package.id);
     }
     cat_footer_item footer[] = {
-        { .button = CAT_BTN_B, .label = theme ? T("Cancel") : "Cancel",  .is_confirm = false },
-        { .button = CAT_BTN_A, .label = theme ? T("Replace") : "Replace", .is_confirm = true },
+        { .button = CAT_BTN_B, .label = T("Cancel"),  .is_confirm = false },
+        { .button = CAT_BTN_A, .label = T("Replace"), .is_confirm = true },
     };
     cat_message_opts opts = {
         .message = message,
@@ -9515,32 +9532,32 @@ static bool jw__confirm_pakrat_adopt(const jw_pakrat_app_state *app) {
 static const char *jw__pakrat_running_label(const jw_pakrat_app_state *app,
                                             jw_pakrat_ui_action action) {
     if (action == JW_PAKRAT_UI_UNINSTALL) {
-        return "Uninstalling Pak Rat app";
+        return T("Uninstalling Pak Rat app");
     }
     if (!app) {
-        return "Installing Pak Rat app";
+        return T("Installing Pak Rat app");
     }
     switch (app->status) {
-        case JW_PAKRAT_APP_INSTALLED:        return "Reinstalling Pak Rat app";
-        case JW_PAKRAT_APP_UPDATE_AVAILABLE: return "Updating Pak Rat app";
-        case JW_PAKRAT_APP_STALE:            return "Restoring Pak Rat app";
-        default:                             return "Installing Pak Rat app";
+        case JW_PAKRAT_APP_INSTALLED:        return T("Reinstalling Pak Rat app");
+        case JW_PAKRAT_APP_UPDATE_AVAILABLE: return T("Updating Pak Rat app");
+        case JW_PAKRAT_APP_STALE:            return T("Restoring Pak Rat app");
+        default:                             return T("Installing Pak Rat app");
     }
 }
 
 static const char *jw__pakrat_done_label(const jw_pakrat_app_state *app,
                                          jw_pakrat_ui_action action) {
     if (action == JW_PAKRAT_UI_UNINSTALL) {
-        return "Uninstalled";
+        return T("Uninstalled");
     }
     if (!app) {
-        return "Installed";
+        return T("Installed");
     }
     switch (app->status) {
-        case JW_PAKRAT_APP_INSTALLED:        return "Reinstalled";
-        case JW_PAKRAT_APP_UPDATE_AVAILABLE: return "Updated";
-        case JW_PAKRAT_APP_STALE:            return "Restored";
-        default:                             return "Installed";
+        case JW_PAKRAT_APP_INSTALLED:        return T("Reinstalled");
+        case JW_PAKRAT_APP_UPDATE_AVAILABLE: return T("Updated");
+        case JW_PAKRAT_APP_STALE:            return T("Restored");
+        default:                             return T("Installed");
     }
 }
 
@@ -9550,9 +9567,9 @@ static void jw__set_pakrat_message(jw_launcher_state *state, const char *fmt, ..
     }
     va_list ap;
     va_start(ap, fmt);
-    vsnprintf(state->pakrat_message, sizeof(state->pakrat_message), fmt, ap);
+    vsnprintf(state->pakrat_message, sizeof(state->pakrat_message), T(fmt), ap);
     va_end(ap);
-    snprintf(state->status, sizeof(state->status), "%s", state->pakrat_message);
+    jw__status(state, "%s", state->pakrat_message);
 }
 
 static void jw__rebuild_for_layout(jw_launcher_state *state);
@@ -9975,7 +9992,7 @@ static void jw__run_pakrat_action(const char *db_path, jw_launcher_state *state,
         job.error_message[0] = '\0';
         char *remove_detail = detail;
         cat_process_opts remove_opts = {
-            .message = "Removing retained Pak Rat data",
+            .message = T("Removing retained Pak Rat data"),
             .show_progress = false,
             .progress = NULL,
             .interrupt_signal = NULL,
@@ -10023,9 +10040,9 @@ static void jw__open_apps(jw_launcher_state *state) {
     cat_list_state_init(&state->app_list, jw__app_browser_visible_rows(state));
     cat_list_state_jump(&state->app_list, 0, state->app_count);
     if (state->app_count > 0) {
-        snprintf(state->status, sizeof(state->status), T("%d apps"), state->app_count);
+        jw__status(state, T("%d apps"), state->app_count);
     } else {
-        snprintf(state->status, sizeof(state->status), "%s",
+        jw__status(state, "%s",
                  state->scan_ready ? T("No apps found") : T("Scanning library..."));
     }
 }
@@ -10169,7 +10186,7 @@ static int jw__launch_app_request(const char *socket_path, const char *name,
     char reply[sizeof(state->status)] = "";
     if (jw_ipc_launch_app(socket_path, pak_dir, reply, sizeof(reply)) != 0) {
         jw__bios_localize_launch_status(reply, sizeof(reply));
-        snprintf(state->status, sizeof(state->status), "%s", previous_status);
+        jw__status(state, "%s", previous_status);
         jw__launch_notice(state, reply);
         jw__haptic(state, "blocked");   /* refused: the launcher is still here */
         return -1;
@@ -10224,8 +10241,8 @@ static bool jw__confirm_storage_for_launch(jw_launcher_state *state,
     }
     jw_log_warn("launch: saves or states for %s are not writable (%s)", rom_path, reason);
     cat_footer_item footer[] = {
-        { .button = CAT_BTN_B, .label = "Cancel", .is_confirm = false },
-        { .button = CAT_BTN_A, .label = "Play anyway", .is_confirm = true },
+        { .button = CAT_BTN_B, .label = T("Cancel"), .is_confirm = false },
+        { .button = CAT_BTN_A, .label = T("Play anyway"), .is_confirm = true },
     };
     cat_message_opts opts = {
         .message = strcmp(reason, "storage-repair-hold") == 0
@@ -10271,7 +10288,7 @@ static int jw__launch_game_entry_with_mode(const char *socket_path,
                              reply, sizeof(reply));
     if (rc != 0) {
         jw__bios_localize_launch_status(reply, sizeof(reply));
-        snprintf(state->status, sizeof(state->status), "%s", previous_status);
+        jw__status(state, "%s", previous_status);
         jw__launch_notice(state, reply);
         /* The launcher stays up on a refusal, so this is the one outcome worth
            reporting by touch. */
@@ -10340,7 +10357,7 @@ static int jw__launch_selected_search_result(const char *socket_path,
     if (jw_ipc_launch_game(socket_path, result->system, result->rom_path,
                            reply, sizeof(reply)) != 0) {
         jw__bios_localize_launch_status(reply, sizeof(reply));
-        snprintf(state->status, sizeof(state->status), "%s", previous_status);
+        jw__status(state, "%s", previous_status);
         jw__launch_notice(state, reply);
         jw__haptic(state, "blocked");   /* refused: the launcher is still here */
         return -1;
@@ -10412,11 +10429,11 @@ static void jw__cycle_action_core(const char *db_path, jw_launcher_state *state,
                                       JW_CONTENT_SETTING_CORE_ID, next_id);
     }
     if (rc == 0) {
-        snprintf(state->status, sizeof(state->status), "Core: %.160s",
+        jw__status(state, T("Core: %.160s"),
                  jw__action_core_label(state, next_id));
         jw__refresh_after_action_write(db_path, state);
     } else {
-        snprintf(state->status, sizeof(state->status), "%s", "Core update failed");
+        jw__status(state, "%s", T("Core update failed"));
     }
 }
 
@@ -10448,12 +10465,12 @@ static void jw__cycle_action_performance(const char *db_path,
                                       next_name);
     }
     if (rc == 0) {
-        snprintf(state->status, sizeof(state->status), "Performance: %.160s",
+        jw__status(state, T("Performance: %.160s"),
                  jw_platform_perf_profile_label(kActionPerfProfiles[next]));
         jw__refresh_after_action_write(db_path, state);
     } else {
-        snprintf(state->status, sizeof(state->status), "%s",
-                 "Performance update failed");
+        jw__status(state, "%s",
+                 T("Performance update failed"));
     }
 }
 
@@ -10513,7 +10530,7 @@ static void jw__edit_action_display_name(const char *db_path,
     }
 
     int rc = cat_keyboard_ex(current,
-                          "Start: Confirm\nY: Cancel\nLeave empty to reset",
+                           T("Start: Confirm\nY: Cancel\nLeave empty to reset"),
                           CAT_KB_GENERAL, cf_backdrop, &result);
 
     if (cf_theme) {
@@ -10533,11 +10550,11 @@ static void jw__edit_action_display_name(const char *db_path,
                                          JW_CONTENT_SETTING_DISPLAY_NAME,
                                          result.text);
             if (write_rc != 0) {
-                snprintf(state->status, sizeof(state->status), "%s",
+                jw__status(state, "%s",
                          "Display name update failed");
                 return;
             }
-            snprintf(state->status, sizeof(state->status), "Display Name: %.160s",
+            jw__status(state, "Display Name: %.160s",
                      result.text);
         } else {
             int delete_rc = state->action_scope == JW_ACTION_SYSTEM
@@ -10546,16 +10563,16 @@ static void jw__edit_action_display_name(const char *db_path,
                 : jw_db_delete_game_setting(db_path, state->action_game.id,
                                             JW_CONTENT_SETTING_DISPLAY_NAME);
             if (delete_rc != 0) {
-                snprintf(state->status, sizeof(state->status), "%s",
+                jw__status(state, "%s",
                          "Display name reset failed");
                 return;
             }
-            snprintf(state->status, sizeof(state->status), "%s",
+            jw__status(state, "%s",
                      "Display name reset");
         }
         jw__refresh_after_action_write(db_path, state);
     } else if (rc == CAT_ERROR) {
-        snprintf(state->status, sizeof(state->status), "%s",
+        jw__status(state, "%s",
                  "display name keyboard failed");
     }
 }
@@ -10586,10 +10603,10 @@ static void jw__reset_action_overrides(const char *db_path,
                                           JW_CONTENT_SETTING_SATURN_BIOS);
     }
     if (rc == 0) {
-        snprintf(state->status, sizeof(state->status), "%s", "Overrides reset");
+        jw__status(state, "%s", T("Overrides reset"));
         jw__refresh_after_action_write(db_path, state);
     } else {
-        snprintf(state->status, sizeof(state->status), "%s", "Reset failed");
+        jw__status(state, "%s", T("Reset failed"));
     }
 }
 
@@ -10603,13 +10620,13 @@ static bool jw__screenscraper_account_configured(const char *db_path) {
 
 static bool jw__confirm_anonymous_batch_scrape(bool missing_only) {
     cat_footer_item footer[] = {
-        { .button = CAT_BTN_B, .label = "Cancel", .is_confirm = false },
-        { .button = CAT_BTN_A, .label = "Start",  .is_confirm = true },
+        { .button = CAT_BTN_B, .label = T("Cancel"), .is_confirm = false },
+        { .button = CAT_BTN_A, .label = T("Start"),  .is_confirm = true },
     };
     cat_message_opts opts = {
         .message = missing_only
-            ? "Scrape missing artwork anonymously? ScreenScraper can be slow and quota-limited without an account."
-            : "Re-scrape all artwork anonymously? ScreenScraper can be slow and quota-limited without an account.",
+            ? T("Scrape missing artwork anonymously? ScreenScraper can be slow and quota-limited without an account.")
+            : T("Re-scrape all artwork anonymously? ScreenScraper can be slow and quota-limited without an account."),
         .footer = footer,
         .footer_count = 2,
     };
@@ -10622,7 +10639,7 @@ static void jw__start_action_scrape(const char *socket_path, const char *db_path
     bool is_game = state->action_scope == JW_ACTION_GAME;
     if (!is_game && !jw__screenscraper_account_configured(db_path) &&
         !jw__confirm_anonymous_batch_scrape(missing_only)) {
-        snprintf(state->status, sizeof(state->status), "%s", "Scrape cancelled");
+        jw__status(state, "%s", T("Scrape cancelled"));
         return;
     }
     int enqueued = 0;
@@ -10635,23 +10652,24 @@ static void jw__start_action_scrape(const char *socket_path, const char *db_path
                                  missing_only, &enqueued,
                                  status, sizeof(status));
     if (rc != 0) {
-        snprintf(state->status, sizeof(state->status), "Scrape failed: %.180s",
-                 status[0] ? status : "daemon unavailable");
+        jw__status(state, T("Scrape failed: %.180s"),
+                 status[0] ? status : T("daemon unavailable"));
         return;
     }
     if (is_game) {
         char name[256];
         jw__clean_rom_name(state->action_game.name, name, sizeof(name));
-        snprintf(state->status, sizeof(state->status),
-                 "Scraping artwork: %.180s", name);
+        jw__status(state,
+                 T("Scraping artwork: %.180s"), name);
     } else if (enqueued == 0) {
-        snprintf(state->status, sizeof(state->status), "%s",
-                 missing_only ? "Nothing to scrape - all games have artwork"
-                              : "Nothing to scrape - no games in this system");
+        jw__status(state, "%s",
+                 missing_only ? T("Nothing to scrape - all games have artwork")
+                              : T("Nothing to scrape - no games in this system"));
     } else {
-        snprintf(state->status, sizeof(state->status),
-                 "Scraping %d game%s in %.140s", enqueued,
-                 enqueued == 1 ? "" : "s", state->action_system_display);
+        jw__status(state,
+                 enqueued == 1 ? T("Scraping %d game in %.140s")
+                               : T("Scraping %d games in %.140s"),
+                 enqueued, state->action_system_display);
     }
     jw__action_refresh(db_path, state);
 }
@@ -10666,13 +10684,13 @@ static void jw__cancel_action_scrape(const char *socket_path, const char *db_pat
                                      : state->action_system,
                              is_game ? state->action_game.rom_path : NULL,
                              &removed) != 0) {
-        snprintf(state->status, sizeof(state->status), "%s",
-                 "Cancel failed: daemon unavailable");
+        jw__status(state, "%s",
+                 T("Cancel failed: daemon unavailable"));
         return;
     }
-    snprintf(state->status, sizeof(state->status),
-             "Scraping cancelled (%d item%s stopped)", removed,
-             removed == 1 ? "" : "s");
+    jw__status(state,
+             removed == 1 ? T("Scraping cancelled (%d item stopped)")
+                          : T("Scraping cancelled (%d items stopped)"), removed);
     jw__action_refresh(db_path, state);
 }
 
@@ -10979,7 +10997,7 @@ static void jw__toggle_favorite_selected(const char *db_path, jw_launcher_state 
     int want_on = !game->favorite;
 
     if (jw_db_set_favorite(db_path, "game", game->id, want_on) != 0) {
-        snprintf(state->status, sizeof(state->status), "%s", "Favorite update failed");
+        jw__status(state, "%s", "Favorite update failed");
         return;
     }
     game->favorite = want_on;
@@ -11002,7 +11020,7 @@ static void jw__toggle_favorite_selected(const char *db_path, jw_launcher_state 
 
     /* Bound the name so the prefix + name always fit the status buffer; the
        line is ellipsized on screen anyway. */
-    snprintf(state->status, sizeof(state->status), "%s %.200s",
+    jw__status(state, "%s %.200s",
              want_on ? "Favorited" : "Unfavorited", game->name);
 }
 
@@ -11021,12 +11039,12 @@ static void jw__favorite_selected_search_result(const char *db_path,
 
     int want_on = !result->favorite;
     if (jw_db_set_favorite(db_path, "game", result->id, want_on) != 0) {
-        snprintf(state->status, sizeof(state->status), "%s",
+        jw__status(state, "%s",
                  "Favorite update failed");
         return;
     }
     result->favorite = want_on;
-    snprintf(state->status, sizeof(state->status), "%s %.200s",
+    jw__status(state, "%s %.200s",
              want_on ? "Favorited" : "Unfavorited", result->name);
 }
 
@@ -11148,7 +11166,7 @@ static void jw__switcher_remove_selected(const char *db_path, jw_launcher_state 
     snprintf(removed_name, sizeof(removed_name), "%.200s", sel->name);
 
     if (jw_db_remove_recent(db_path, "game", sel->id) != 0) {
-        snprintf(state->status, sizeof(state->status), "%s", "Remove failed");
+        jw__status(state, "%s", "Remove failed");
         return;
     }
 
@@ -11164,7 +11182,7 @@ static void jw__switcher_remove_selected(const char *db_path, jw_launcher_state 
         cat_list_state_jump(&state->list, c, jw__tab_list_count(state));
     }
 
-    snprintf(state->status, sizeof(state->status), "Removed %.200s", removed_name);
+    jw__status(state, "Removed %.200s", removed_name);
 }
 
 static void jw__handle_switcher_input(const char *socket_path, const char *db_path,
@@ -11497,7 +11515,7 @@ static void jw__handle_pakrat_input(const char *socket_path, const char *db_path
                 snprintf(store_id, sizeof(store_id), "%s", was ? was->package.id : "");
                 jw__load_pakrat_store(state);
                 jw__pakrat_jump_to(state, store_id, old_cursor);
-                snprintf(state->status, sizeof(state->status), "%s",
+                jw__status(state, "%s",
                          state->pakrat_message[0]
                             ? state->pakrat_message
                             : "Pak Rat refreshed");
@@ -11562,7 +11580,7 @@ static void jw__handle_pakrat_input(const char *socket_path, const char *db_path
             snprintf(store_id, sizeof(store_id), "%s", was ? was->package.id : "");
             jw__load_pakrat_store(state);
             jw__pakrat_jump_to(state, store_id, old_cursor);
-            snprintf(state->status, sizeof(state->status), "%s",
+            jw__status(state, "%s",
                      state->pakrat_message[0]
                         ? state->pakrat_message
                         : "Pak Rat refreshed");
@@ -11789,7 +11807,7 @@ static void jw__focus_pick_reenter(jw_launcher_state *state) {
 static void jw__pick_clear(jw_launcher_state *state) {
     state->focus_setup_count = 0;
     for (int i = 0; i < JW_FOCUS_SCREEN_MAX_TILES; i++) state->focus_setup_ids[i] = 0;
-    snprintf(state->focus_setup_note, sizeof(state->focus_setup_note), "Cleared");
+    snprintf(state->focus_setup_note, sizeof(state->focus_setup_note), "%s", T("Cleared"));
     jw__haptic(state, "select");
 }
 
@@ -12555,7 +12573,7 @@ static void jw__handle_input_inner(const char *socket_path, const char *db_path,
                 } else if (state->tools_list.cursor == 3) {
                     jw_settings_ui_enter(&state->settings);
                 } else {
-                    snprintf(state->status, sizeof(state->status), "%s", "Coming soon");
+                    jw__status(state, "%s", "Coming soon");
                 }
                 break;
             case CAT_BTN_B:
@@ -12717,10 +12735,10 @@ static void jw__handle_input_inner(const char *socket_path, const char *db_path,
                     int want_on = !rec->favorite;
                     if (jw_db_set_favorite(db_path, "game", rec->id, want_on) == 0) {
                         rec->favorite = want_on;
-                        snprintf(state->status, sizeof(state->status), "%s %.200s",
+                        jw__status(state, "%s %.200s",
                                  want_on ? "Favorited" : "Unfavorited", rec->name);
                     } else {
-                        snprintf(state->status, sizeof(state->status), "%s",
+                        jw__status(state, "%s",
                                  "Favorite update failed");
                     }
                 }
@@ -12736,16 +12754,16 @@ static void jw__handle_input_inner(const char *socket_path, const char *db_path,
                                     ? state->favorites_count - 1 : prev_cursor;
                         if (c < 0) c = 0;
                         cat_list_state_jump(&state->list, c, jw__tab_list_count(state));
-                        snprintf(state->status, sizeof(state->status), "%s",
+                        jw__status(state, "%s",
                                  "Removed from favorites");
                     } else {
-                        snprintf(state->status, sizeof(state->status), "%s",
+                        jw__status(state, "%s",
                                  "Favorite update failed");
                     }
                 }
                 break;
             }
-            snprintf(state->status, sizeof(state->status), "%s", "rescanning...");
+            jw__status(state, "%s", "rescanning...");
             cat_request_frame();
             jw__render_launcher(state);
             jw__scan_library(socket_path, db_path, state);
@@ -12787,13 +12805,13 @@ static void jw__hdmi_keep_prompt(const char *socket_path) {
     int sw = cat_get_screen_width();
     int sh = cat_get_screen_height();
     cat_footer_item footer[] = {
-        { .button = CAT_BTN_B, .label = "Revert", .is_confirm = false },
+        { .button = CAT_BTN_B, .label = T("Revert"), .is_confirm = false },
     };
-    static const char *const body =
+    const char *body = T(
         "Keep this TV display mode?\n\n"
         "Sending 1080p120 over HDMI. If your TV stays blank it can't show this "
-        "mode - leave it and Leaf reverts to a safe picture.";
-    static const char *const keep_hint = "Press L1 then R1 to keep";
+        "mode - leave it and Leaf reverts to a safe picture.");
+    const char *keep_hint = T("Press L1 then R1 to keep");
 
     /* Drive the visible countdown from a local deadline so the bar animates every
        frame; re-sync with the daemon every couple of seconds. */
@@ -12863,8 +12881,10 @@ static void jw__hdmi_keep_prompt(const char *socket_path) {
         cat_draw_rect(bx, by, bar_w, bar_h, theme->hint);
         cat_draw_rect(bx, by, (int)(bar_w * frac), bar_h, theme->highlight);
         char cd[48];
-        snprintf(cd, sizeof(cd), "Reverting in %d second%s", remaining_s,
-                 remaining_s == 1 ? "" : "s");
+        snprintf(cd, sizeof(cd),
+                 remaining_s == 1 ? T("Reverting in %d second")
+                                  : T("Reverting in %d seconds"),
+                 remaining_s);
         int cw = cat_measure_text(font, cd);
         cat_draw_text(font, cd, (sw - cw) / 2, by + bar_h + CAT_S(12), theme->text);
         int kw = cat_measure_text(font, keep_hint);
@@ -12993,22 +13013,24 @@ static bool jw__surface_blocked_game_launch(
         char title[192];
         jw__pakrat_format_size((unsigned long long)blocked->pending_bytes,
                                size, sizeof(size));
-        snprintf(title, sizeof(title), "Sync before play — %d item%s, %s",
-                 blocked->pending_items,
-                 blocked->pending_items == 1 ? "" : "s", size);
+        snprintf(title, sizeof(title),
+                 blocked->pending_items == 1
+                       ? T("Sync before play - %d item, %s")
+                       : T("Sync before play - %d items, %s"),
+                 blocked->pending_items, size);
         cat_list_item items[] = {
-            CAT_LIST_ITEM("Wait for sync", "wait"),
-            CAT_LIST_ITEM("Play anyway", "play"),
-            CAT_LIST_ITEM("Cancel", "cancel"),
+            CAT_LIST_ITEM(T("Wait for sync"), "wait"),
+            CAT_LIST_ITEM(T("Play anyway"), "play"),
+            CAT_LIST_ITEM(T("Cancel"), "cancel"),
         };
         cat_footer_item footer[] = {
-            { .button = CAT_BTN_B, .label = "Cancel", .is_confirm = false },
-            { .button = CAT_BTN_A, .label = "Choose", .is_confirm = true },
+            { .button = CAT_BTN_B, .label = T("Cancel"), .is_confirm = false },
+            { .button = CAT_BTN_A, .label = T("Choose"), .is_confirm = true },
         };
         cat_list_opts opts = cat_list_default_opts(title, items, 3);
         opts.footer = footer;
         opts.footer_count = 2;
-        opts.help_text = "Syncthing still has Saves or States to transfer. Wait keeps syncing for up to 15 seconds. Play anyway stops Syncthing first. Cancel leaves syncing active.";
+        opts.help_text = T("Syncthing still has Saves or States to transfer. Wait keeps syncing for up to 15 seconds. Play anyway stops Syncthing first. Cancel leaves syncing active.");
         cat_list_result result;
         int rc = cat_list(&opts, &result);
         const char *action = "game-check-cancel";
@@ -13029,47 +13051,46 @@ static bool jw__surface_blocked_game_launch(
             strcmp(blocked->reason, "unsafe-card-binding") == 0;
         if (unsafe_card_binding) {
             snprintf(message, sizeof(message),
-                     "Syncthing card setup needs attention.\n\nLeaf could not "
+                     T("Syncthing card setup needs attention.\n\nLeaf could not "
                      "match this game's card to its Saves and States folders. "
-                     "Review Cards and Folders in Syncthing.");
+                     "Review Cards and Folders in Syncthing."));
         } else if (blocked->pending_items > 0 || blocked->pending_bytes > 0) {
             char size[64];
             jw__pakrat_format_size(
                 (unsigned long long)blocked->pending_bytes,
                 size, sizeof(size));
-            snprintf(message, sizeof(message),
-                     "Sync needs attention.\n\n%d item%s (%s) remained when "
+            snprintf(message, sizeof(message), T(
+                     "Sync needs attention.\n\n%d items (%s) remained when "
                      "waiting ended. Play anyway will stop Syncthing first; "
-                     "Cancel leaves syncing active.",
-                     blocked->pending_items,
-                     blocked->pending_items == 1 ? "" : "s", size);
+                     "Cancel leaves syncing active."),
+                     blocked->pending_items, size);
         } else if (strcmp(blocked->reason, "raofflineproxy-not-ready") == 0) {
             snprintf(message, sizeof(message),
-                     "Offline achievements unavailable.\n\nRAOfflineProxy is "
+                     T("Offline achievements unavailable.\n\nRAOfflineProxy is "
                      "enabled but not responding. You can play now without "
                      "offline achievements, or cancel and check the service "
-                     "in Settings > System > Services.");
+                     "in Settings > System > Services."));
         } else if (blocked->requires_verified_stop) {
             snprintf(message, sizeof(message),
-                     "Sync needs attention.\n\nSyncthing could not be verified "
+                     T("Sync needs attention.\n\nSyncthing could not be verified "
                      "stopped. Play anyway will retry the safe stop; Leaf "
-                     "will not launch until Syncthing is stopped.");
+                     "will not launch until Syncthing is stopped."));
         } else {
-            snprintf(message, sizeof(message),
+            snprintf(message, sizeof(message), T(
                      "Game launch blocked.\n\n%.128s may still be writing Saves "
                      "or States. Play anyway only if you accept possible data "
-                     "corruption.",
+                     "corruption."),
                      blocked->service_id[0] ? blocked->service_id
-                                            : "A background service");
+                                            : T("A background service"));
         }
         bool rop_not_ready =
             strcmp(blocked->reason, "raofflineproxy-not-ready") == 0;
         cat_footer_item footer[] = {
-            { .button = CAT_BTN_B, .label = "Cancel", .is_confirm = false },
+            { .button = CAT_BTN_B, .label = T("Cancel"), .is_confirm = false },
             { .button = CAT_BTN_A,
-              .label = unsafe_card_binding ? "Stop & Play"
-                      : rop_not_ready  ? "Play without achievements"
-                                       : "Play Anyway",
+              .label = unsafe_card_binding ? T("Stop & Play")
+                      : rop_not_ready  ? T("Play without achievements")
+                                       : T("Play Anyway"),
               .is_confirm = true },
         };
         cat_message_opts opts = {
@@ -13089,12 +13110,12 @@ static bool jw__surface_blocked_game_launch(
         return false;
     }
 
-    snprintf(message, sizeof(message),
+    snprintf(message, sizeof(message), "%s", T(
              "Game launch blocked.\n\nA previous game may still be writing "
              "Saves or States. Restart the device before launching another "
-             "game.");
+             "game."));
     cat_footer_item footer[] = {
-        { .button = CAT_BTN_A, .label = "OK", .is_confirm = true },
+        { .button = CAT_BTN_A, .label = T("OK"), .is_confirm = true },
     };
     cat_message_opts opts = {
         .message = message,
@@ -13165,7 +13186,7 @@ static void jw__poll_storage_health(const char *socket_path, const char *db_path
     for (int i = 0; i < JW_STORAGE_UI_SOURCE_COUNT; i++) {
         if (have[i] && cards[i].warning_pending &&
             jw_storage_ui_show_warning(socket_path, &cards[i])) {
-            snprintf(state->status, sizeof(state->status), "%s",
+            jw__status(state, "%s",
                      T("Restarting to repair your SD card"));
             cat_request_frame();
             return;
@@ -13185,12 +13206,12 @@ static void jw__poll_storage_health(const char *socket_path, const char *db_path
             char status[256] = "";
             if (jw_ipc_scrape_start(socket_path, "all", NULL, NULL, true, &enqueued,
                                     status, sizeof(status)) != 0) {
-                snprintf(state->status, sizeof(state->status), "Scrape failed: %.180s",
+                jw__status(state, "Scrape failed: %.180s",
                          status[0] ? status : "daemon unavailable");
             } else if (enqueued > 0) {
-                snprintf(state->status, sizeof(state->status), "Scraping %d games", enqueued);
+                jw__status(state, "Scraping %d games", enqueued);
             } else {
-                snprintf(state->status, sizeof(state->status), "%s", "Nothing to scrape");
+                jw__status(state, "%s", "Nothing to scrape");
             }
         }
         break;   /* one result, reported on both cards' status */
@@ -13339,11 +13360,11 @@ int main(void) {
        screen, not a flash of the normal launcher. */
     jw__focus_init(&state);
 
-    snprintf(state.status, sizeof(state.status), "%s", "loading library...");
+    snprintf(state.status, sizeof(state.status), "%s", T("loading library..."));
 
     long long cache_start_ms = jw__monotonic_ms();
     if (jw__load_library_cache(socket_path, db_path, &state) != 0) {
-        snprintf(state.status, sizeof(state.status), "%s", "scanning library...");
+        snprintf(state.status, sizeof(state.status), "%s", T("scanning library..."));
         state.scan_ready = false;
         state.scan_running = true;
     }

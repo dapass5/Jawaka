@@ -1,4 +1,5 @@
 #include "internal/platform/bluetooth.h"
+#include "internal/i18n/i18n.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -110,7 +111,7 @@ int jw_bt_scan_start(void) {
 
 jw_bt_operation_status jw_bt_scan_poll(char *message, size_t message_len) {
     if (message && message_len > 0) {
-        snprintf(message, message_len, "Bluetooth unavailable");
+        snprintf(message, message_len, "%s", T("Bluetooth unavailable"));
     }
     return JW_BT_OP_FAILED;
 }
@@ -123,7 +124,7 @@ int jw_bt_connect_start(const char *mac, bool pair_if_needed) {
 
 jw_bt_operation_status jw_bt_connect_poll(char *message, size_t message_len) {
     if (message && message_len > 0) {
-        snprintf(message, message_len, "Bluetooth unavailable");
+        snprintf(message, message_len, "%s", T("Bluetooth unavailable"));
     }
     return JW_BT_OP_FAILED;
 }

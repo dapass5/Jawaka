@@ -2,6 +2,7 @@
 #include "internal/platform/device_backend.h"
 #include "internal/platform/bluetooth.h"
 #include "internal/core/log.h"
+#include "internal/i18n/i18n.h"
 #include "internal/storage/health.h"
 
 #include <ctype.h>
@@ -824,22 +825,22 @@ static int jw__mlp1_apply_perf_domain(jw_platform_perf_domain domain,
     jw_platform_perf_domain_status status;
     jw__mlp1_perf_domain_status(domain, base, &status);
     if (!status.supported) {
-        snprintf(message, message_size, "%s performance unavailable", status.name);
+        snprintf(message, message_size, T("%s performance unavailable"), status.name);
         return -1;
     }
     if (!jw__token_list_has(status.available_governors, request->governor)) {
-        snprintf(message, message_size, "%s governor unsupported: %s",
+        snprintf(message, message_size, T("%s governor unsupported: %s"),
                  status.name, request->governor);
         return -1;
     }
     if (request->frequency >= 0) {
         if (strcmp(request->governor, "userspace") != 0) {
-            snprintf(message, message_size, "%s fixed frequency requires userspace governor",
+            snprintf(message, message_size, T("%s fixed frequency requires userspace governor"),
                      status.name);
             return -1;
         }
         if (!jw__freq_list_has(status.available_frequencies, request->frequency)) {
-            snprintf(message, message_size, "%s frequency unsupported: %d",
+            snprintf(message, message_size, T("%s frequency unsupported: %d"),
                      status.name, request->frequency);
             return -1;
         }
@@ -851,12 +852,12 @@ static int jw__mlp1_apply_perf_domain(jw_platform_perf_domain domain,
                               ? "scaling_governor"
                               : "governor";
     if (jw__join_sysfs_path(path, sizeof(path), base, governor_leaf) != 0) {
-        snprintf(message, message_size, "%s governor path invalid", status.name);
+        snprintf(message, message_size, T("%s governor path invalid"), status.name);
         return -1;
     }
     snprintf(value, sizeof(value), "%s\n", request->governor);
     if (jw__write_text_file(path, value) != 0) {
-        snprintf(message, message_size, "%s governor write failed: %s",
+        snprintf(message, message_size, T("%s governor write failed: %s"),
                  status.name, strerror(errno));
         return -1;
     }
@@ -866,11 +867,11 @@ static int jw__mlp1_apply_perf_domain(jw_platform_perf_domain domain,
                              ? "scaling_setspeed"
                              : "userspace/set_freq";
         if (jw__join_sysfs_path(path, sizeof(path), base, set_leaf) != 0) {
-            snprintf(message, message_size, "%s frequency path invalid", status.name);
+            snprintf(message, message_size, T("%s frequency path invalid"), status.name);
             return -1;
         }
         if (jw__write_int_file(path, request->frequency) != 0) {
-            snprintf(message, message_size, "%s frequency write failed: %s",
+            snprintf(message, message_size, T("%s frequency write failed: %s"),
                      status.name, strerror(errno));
             return -1;
         }
@@ -2501,7 +2502,7 @@ static int jw__mlp1_set_audio_output(jw_platform_audio_output output,
     unsigned available = jw__mlp1_get_audio_available_outputs();
     if ((available & JW_PLATFORM_AUDIO_OUTPUT_BIT(output)) == 0) {
         char message[JW_PLATFORM_MAX_MESSAGE];
-        snprintf(message, sizeof(message), "%s output unavailable",
+        snprintf(message, sizeof(message), T("%s output unavailable"),
                  jw_platform_audio_output_label(output));
         jw_platform_result_set(out, JW_PLATFORM_RESULT_UNAVAILABLE, message);
         return -1;
@@ -2560,7 +2561,7 @@ static int jw__mlp1_set_audio_output(jw_platform_audio_output output,
 
     (void)jw__mlp1_apply_stored_audio_volume(output);
     char message[JW_PLATFORM_MAX_MESSAGE];
-    snprintf(message, sizeof(message), "audio output: %s",
+    snprintf(message, sizeof(message), T("audio output: %s"),
              jw_platform_audio_output_label(output));
     jw_platform_result_set_value(out, JW_PLATFORM_RESULT_OK, message, (int)output);
     return 0;
@@ -2822,9 +2823,9 @@ static void jw__mlp1_set_auto_sleep(int seconds, jw_platform_result *out) {
 
     char message[JW_PLATFORM_MAX_MESSAGE];
     if (seconds <= 0) {
-        snprintf(message, sizeof(message), "stock auto-sleep disabled");
+        snprintf(message, sizeof(message), "%s", T("stock auto-sleep disabled"));
     } else {
-        snprintf(message, sizeof(message), "stock auto-sleep set to %ds", seconds);
+        snprintf(message, sizeof(message), T("stock auto-sleep set to %ds"), seconds);
     }
     jw_platform_result_set_value(out, JW_PLATFORM_RESULT_OK, message, seconds);
 }
@@ -3212,7 +3213,7 @@ static void jw__mlp1_perform_action(jw_platform_context *ctx, jw_platform_action
             return;
         }
         char message[JW_PLATFORM_MAX_MESSAGE];
-        snprintf(message, sizeof(message), "volume set to %d%%", percent);
+        snprintf(message, sizeof(message), T("volume set to %d%%"), percent);
         jw_platform_result_set_value(out, JW_PLATFORM_RESULT_OK, message, percent);
         return;
     }
@@ -3272,7 +3273,7 @@ static void jw__mlp1_perform_action(jw_platform_context *ctx, jw_platform_action
         }
         jw_log_info("display: refresh rate -> %d Hz", hz);
         char msg[32];
-        snprintf(msg, sizeof(msg), "switching to %d Hz", hz);
+        snprintf(msg, sizeof(msg), T("switching to %d Hz"), hz);
         jw_platform_result_set(out, JW_PLATFORM_RESULT_OK, msg);
         return;
     }
@@ -3298,10 +3299,10 @@ static void jw__mlp1_perform_action(jw_platform_context *ctx, jw_platform_action
         } else {
             jw__mlp1_hdmi_audio_on();
         }
-        static const char *const names[] = { "off", "4:3", "stretch" };
+        const char *const names[] = { T("off"), T("4:3"), T("stretch") };
         jw_log_info("display: HDMI output -> %s", names[mode]);
         char msg[48];
-        snprintf(msg, sizeof(msg), "HDMI output %s", names[mode]);
+        snprintf(msg, sizeof(msg), T("HDMI output %s"), names[mode]);
         jw_platform_result_set(out, JW_PLATFORM_RESULT_OK, msg);
         return;
     }
@@ -3333,7 +3334,7 @@ static void jw__mlp1_perform_action(jw_platform_context *ctx, jw_platform_action
     }
 
     char message[JW_PLATFORM_MAX_MESSAGE];
-    snprintf(message, sizeof(message), "brightness set to %d%%", percent);
+    snprintf(message, sizeof(message), T("brightness set to %d%%"), percent);
     jw_platform_result_set_value(out, JW_PLATFORM_RESULT_OK, message, percent);
 }
 

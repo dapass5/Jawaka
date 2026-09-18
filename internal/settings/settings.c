@@ -657,7 +657,7 @@ static void jw__refresh_secondary_sd_status(jw_settings_ui *ui) {
     if (!ui) {
         return;
     }
-    snprintf(ui->secondary_sd_status, sizeof(ui->secondary_sd_status), "%s", "Unavailable");
+    snprintf(ui->secondary_sd_status, sizeof(ui->secondary_sd_status), "%s", T("Unavailable"));
     if (!ui->socket_path[0]) {
         return;
     }
@@ -810,7 +810,7 @@ static void jw__update_msg(jw_settings_ui *ui, const char *fmt, ...) {
     }
     va_list ap;
     va_start(ap, fmt);
-    vsnprintf(ui->update_msg, sizeof(ui->update_msg), fmt ? fmt : "", ap);
+    vsnprintf(ui->update_msg, sizeof(ui->update_msg), fmt ? T(fmt) : "", ap);
     va_end(ap);
     ui->update_msg_ms = SDL_GetTicks();
     if (ui->update_msg_ms == 0) {
@@ -1421,9 +1421,9 @@ void jw_settings_ui_refresh_services(jw_settings_ui *ui) {
     int refresh_result = jw__refresh_services(ui);
     if (refresh_result < 0 && ui->screen == JW_SETTINGS_SERVICES) {
         snprintf(ui->services_msg, sizeof(ui->services_msg), "%s",
-                 "Service status unavailable");
+                 T("Service status unavailable"));
     } else if (refresh_result >= 0 &&
-               strcmp(ui->services_msg, "Service status unavailable") == 0) {
+               strcmp(ui->services_msg, T("Service status unavailable")) == 0) {
         ui->services_msg[0] = '\0';
     }
     ui->services_next_poll_ms = now + JW_SERVICES_POLL_INTERVAL_MS;
@@ -2862,7 +2862,7 @@ static void jw__refresh_wifi_scan(jw_settings_ui *ui) {
 static void jw__wifi_msg(jw_settings_ui *ui, const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    vsnprintf(ui->wifi_msg, sizeof(ui->wifi_msg), fmt, ap);
+    vsnprintf(ui->wifi_msg, sizeof(ui->wifi_msg), T(fmt), ap);
     va_end(ap);
     ui->wifi_msg_ms = SDL_GetTicks();
     if (ui->wifi_msg_ms == 0) ui->wifi_msg_ms = 1;   /* 0 means "none" */
@@ -3059,10 +3059,10 @@ static void jw__draw_wifi_item(int idx, int ix, int iy, int iw, int ih,
 
     /* Right: signal word, "Open" prefix for unsecured nets, "saved" suffix for
        networks with a stored profile. */
-    const char *word = (net->strength >= 3) ? "Strong" :
-                       (net->strength == 2) ? "Good"   : "Weak";
-    const char *open_prefix = net->secured ? "" : "Open  ";
-    const char *saved_suffix = net->saved ? "  saved" : "";
+    const char *word = (net->strength >= 3) ? T("Strong") :
+                       (net->strength == 2) ? T("Good")   : T("Weak");
+    const char *open_prefix = net->secured ? "" : T("Open  ");
+    const char *saved_suffix = net->saved ? T("  saved") : "";
     char value[56];
     snprintf(value, sizeof(value), "%s%s%s", open_prefix, word, saved_suffix);
     int vw = cat_measure_text(body, value);
@@ -3314,17 +3314,18 @@ static void jw__render_bluetooth(const jw_settings_ui *ui, int x, int y, int w, 
     SDL_Rect content = jw__settings_boxes(x, y, w, h, true, 0, NULL, NULL);
     int dy = content.y;
 
-    const char *status = "Unavailable";
+    const char *status = T("Unavailable");
     if (ui->bt_status.available) {
-        status = ui->bt_radio_on ? "On" : "Off";
+        status = ui->bt_radio_on ? T("On") : T("Off");
     }
     char line[160];
-    snprintf(line, sizeof(line), "Status: %s", status);
+    snprintf(line, sizeof(line), T("Status: %s"), status);
     cat_draw_text(small, line, x + cat_scale(12), dy, theme->text);
     dy += line_h;
 
-    snprintf(line, sizeof(line), "Connected: %s",
-             (ui->bt_status.available && ui->bt_status.any_connected) ? "Yes" : "No");
+    snprintf(line, sizeof(line), T("Connected: %s"),
+             (ui->bt_status.available && ui->bt_status.any_connected)
+                 ? T("Yes") : T("No"));
     cat_draw_text(small, line, x + cat_scale(12), dy, theme->hint);
     dy += line_h;
 
@@ -3689,7 +3690,7 @@ static void jw__draw_scrape_download_item(int idx, int ix, int iy, int iw, int i
     } else {
         n = 0;
     }
-    snprintf(value, sizeof(value), c->replace ? "%d total" : "%d missing", n);
+    snprintf(value, sizeof(value), c->replace ? T("%d total") : T("%d missing"), n);
     cat_draw_text_ellipsized(body, label, ix + cat_scale(18), ty, label_c,
                              iw / 2);
     int vw = cat_measure_text(body, value);
@@ -3700,7 +3701,7 @@ static void jw__render_scrape_download(const jw_settings_ui *ui,
                                        int x, int y, int w, int h) {
     bool replace = ui->scrape_download_replace;
     char header[48];
-    snprintf(header, sizeof(header), "Scrape Artwork - %s",
+    snprintf(header, sizeof(header), T("Scrape Artwork - %s"),
              replace ? T("Replace All") : T("Missing"));
     jw__draw_header(header, x, y, w);
 
@@ -3727,8 +3728,8 @@ static void jw__render_scrape_download(const jw_settings_ui *ui,
 
     char subline[96];
     snprintf(subline, sizeof(subline),
-             replace ? "%d games across %d systems"
-                     : "%d missing across %d systems",
+             replace ? T("%d games across %d systems")
+                     : T("%d missing across %d systems"),
              all_count, ui->scrape_download_row_count);
     cat_draw_text_ellipsized(small, subline, sub.x + cat_scale(12), sub.y,
                              theme->hint, sub.w - cat_scale(24));
@@ -3813,7 +3814,7 @@ static void jw__scrape_queue_refresh_settings_cache(jw_settings_ui *ui,
 static void jw__scrape_queue_settings_value(jw_settings_ui *ui,
                                             char *buf, size_t buf_size) {
     if (!buf || buf_size == 0) return;
-    snprintf(buf, buf_size, "%s", "Open");
+    snprintf(buf, buf_size, "%s", T("Open"));
     jw__scrape_queue_refresh_settings_cache(ui, false);
     if (!ui || !ui->scrape_queue_have_cache) {
         return;
@@ -3822,13 +3823,13 @@ static void jw__scrape_queue_settings_value(jw_settings_ui *ui,
     if (!q) return;
     int failed = q->failed + q->not_found;
     if (strcmp(q->state, "paused-storage") == 0) {
-        snprintf(buf, buf_size, "%s", "Storage paused");
+        snprintf(buf, buf_size, "%s", T("Storage paused"));
     } else if (strcmp(q->state, "paused-quota") == 0) {
-        snprintf(buf, buf_size, "%s", "Quota paused");
+        snprintf(buf, buf_size, "%s", T("Quota paused"));
     } else if (q->active > 0 || q->queued > 0) {
         snprintf(buf, buf_size, T("%d/%d done"), q->done, q->total);
     } else if (q->total <= 0) {
-        snprintf(buf, buf_size, "%s", "Empty");
+        snprintf(buf, buf_size, "%s", T("Empty"));
     } else if (failed > 0) {
         snprintf(buf, buf_size, T("%d done, %d failed"), q->done, failed);
     } else {
@@ -3902,23 +3903,23 @@ static void jw__scrape_queue_summary(const jw_ipc_scrape_queue_info *q,
     jw__scrape_queue_format_eta(q->eta_seconds, eta, sizeof(eta));
     char api[64] = "";
     if (q->max_requests > 0) {
-        snprintf(api, sizeof(api), " | API %d/%d", q->requests_today, q->max_requests);
+        snprintf(api, sizeof(api), T(" | API %d/%d"), q->requests_today, q->max_requests);
     }
     char threads[40] = "";
     if (q->max_threads > 0) {
-        snprintf(threads, sizeof(threads), " | %d/%d threads", q->permits, q->max_threads);
+        snprintf(threads, sizeof(threads), T(" | %d/%d threads"), q->permits, q->max_threads);
     } else if (q->permits > 0) {
-        snprintf(threads, sizeof(threads), " | %d thread", q->permits);
+        snprintf(threads, sizeof(threads), T(" | %d thread"), q->permits);
     }
     char eta_part[64] = "";
-    if (eta[0]) snprintf(eta_part, sizeof(eta_part), " | ETA %s", eta);
+    if (eta[0]) snprintf(eta_part, sizeof(eta_part), T(" | ETA %s"), eta);
     char shown[48] = "";
     if (q->row_count > 0 && q->row_count < q->total) {
-        snprintf(shown, sizeof(shown), " | showing first %d", q->row_count);
+        snprintf(shown, sizeof(shown), T(" | showing first %d"), q->row_count);
     }
-    const char *prefix = strcmp(q->state, "paused-quota") == 0 ? "Quota paused, " :
-                         strcmp(q->state, "paused-storage") == 0 ? "Storage paused, " : "";
-    snprintf(buf, buf_size, "%s%d/%d done, %d failed, %d busy%s%s%s%s",
+    const char *prefix = strcmp(q->state, "paused-quota") == 0 ? T("Quota paused, ") :
+                         strcmp(q->state, "paused-storage") == 0 ? T("Storage paused, ") : "";
+    snprintf(buf, buf_size, T("%s%d/%d done, %d failed, %d busy%s%s%s%s"),
              prefix, q->done, q->total, failed, q->active + q->queued,
              api, threads, eta_part, shown);
 }
@@ -3929,30 +3930,33 @@ static void jw__scrape_start_status(const jw_ipc_scrape_start_info *info,
     if (!info || !buf || buf_size == 0) return;
     if (info->queue_full) {
         if (info->enqueued > 0) {
-            snprintf(buf, buf_size, "Queue full: queued %d of %d",
+            snprintf(buf, buf_size, T("Queue full: queued %d of %d"),
                      info->enqueued, info->requested);
         } else {
-            snprintf(buf, buf_size, "%s", "Scrape queue is full");
+            snprintf(buf, buf_size, "%s", T("Scrape queue is full"));
         }
     } else if (info->enqueued > 0) {
         if (info->already_queued > 0) {
-            snprintf(buf, buf_size, "Queued %d, %d already queued",
+            snprintf(buf, buf_size, T("Queued %d, %d already queued"),
                      info->enqueued, info->already_queued);
         } else {
-            snprintf(buf, buf_size, "Queued %d artwork job%s",
-                     info->enqueued, info->enqueued == 1 ? "" : "s");
+            snprintf(buf, buf_size,
+                     info->enqueued == 1 ? T("Queued %d artwork job")
+                                         : T("Queued %d artwork jobs"),
+                     info->enqueued);
         }
     } else if (info->already_queued > 0) {
-        snprintf(buf, buf_size, "%d artwork job%s already queued",
-                 info->already_queued,
-                 info->already_queued == 1 ? "" : "s");
+        snprintf(buf, buf_size,
+                 info->already_queued == 1 ? T("%d artwork job already queued")
+                                           : T("%d artwork jobs already queued"),
+                 info->already_queued);
     } else if (missing_only && info->skipped_existing > 0) {
-        snprintf(buf, buf_size, "%s", "No missing artwork");
+        snprintf(buf, buf_size, "%s", T("No missing artwork"));
     } else if (info->requested == 0) {
         snprintf(buf, buf_size, "%s",
-                 missing_only ? "No missing artwork" : "No games to scrape");
+                 missing_only ? T("No missing artwork") : T("No games to scrape"));
     } else {
-        snprintf(buf, buf_size, "%s", "No new scrape jobs");
+        snprintf(buf, buf_size, "%s", T("No new scrape jobs"));
     }
 }
 
@@ -4009,8 +4013,8 @@ static void jw__draw_scrape_queue_item(int i, int ix, int iy, int iw, int ih,
 
     const char *label = row->display_name[0] ? row->display_name : row->rom_path;
     char subtitle[160];
-    snprintf(subtitle, sizeof(subtitle), "%s  -  %s", row->system,
-             jw__scrape_queue_state_label(row->state));
+    snprintf(subtitle, sizeof(subtitle), T("%s  -  %s"), row->system,
+             T(jw__scrape_queue_state_label(row->state)));
     cat_draw_text_ellipsized(body, label, tx, block_y, main_c, text_w);
     cat_draw_text_ellipsized(small, subtitle, tx,
                              block_y + TTF_FontHeight(body) + line_gap,
@@ -4026,7 +4030,7 @@ static void jw__draw_scrape_queue_item(int i, int ix, int iy, int iw, int ih,
 static void jw__render_scrape_queue_detail(const jw_settings_ui *ui,
                                            int x, int y, int w, int h) {
     const jw_ipc_scrape_queue_row *row = &ui->scrape_queue_detail_row;
-    jw__draw_header(row->display_name[0] ? row->display_name : "Scrape Result", x, y, w);
+    jw__draw_header(row->display_name[0] ? row->display_name : T("Scrape Result"), x, y, w);
 
     ap_theme *theme = cat_get_theme();
     TTF_Font *body  = cat_get_font(CAT_FONT_MEDIUM);
@@ -4036,10 +4040,10 @@ static void jw__render_scrape_queue_detail(const jw_settings_ui *ui,
     /* Full-width key/value rows: keys are drawn whole (never ellipsized), values
        ellipsize to the rest of the width. */
     const char *info[][2] = {
-        { "Status", jw__scrape_queue_state_label(row->state) },
+        { T("Status"), T(jw__scrape_queue_state_label(row->state)) },
         { T("platform|System"), row->system },
-        { "ROM",    row->rom_path },
-        { JW_UI("Output"), row->output_path[0] ? row->output_path : "Not written" },
+        { T("ROM"), row->rom_path },
+        { T("Output"), row->output_path[0] ? row->output_path : T("Not written") },
     };
     int key_w = 0;
     for (int i = 0; i < 4; i++) {
@@ -4074,9 +4078,9 @@ static void jw__render_scrape_queue_detail(const jw_settings_ui *ui,
     if (row->state == JW_IPC_SCRAPE_ROW_NOT_FOUND)
         desc = T("Not found in the ScreenScraper.fr database.");
     else if (row->state == JW_IPC_SCRAPE_ROW_ERROR)
-        desc = row->message[0] ? row->message : "Artwork scrape failed.";
+        desc = row->message[0] ? T(row->message) : T("Artwork scrape failed.");
     else if (row->state == JW_IPC_SCRAPE_ROW_CANCELLED)
-        desc = row->message[0] ? row->message : "Scrape was cancelled before completion.";
+        desc = row->message[0] ? T(row->message) : T("Scrape was cancelled before completion.");
     if (desc) {
         ly += cat_scale(4);
         cat_draw_text_ellipsized(small, desc, c.x, ly, theme->hint, c.w);
@@ -4148,8 +4152,8 @@ static void jw__render_scrape_queue(const jw_settings_ui *ui,
     if (list->cursor >= count) list->cursor = count > 0 ? count - 1 : 0;
 
     if (count == 0) {
-        const char *msg = (q && q->total > 0) ? "No jobs match this filter."
-                                              : "No scrape jobs.";
+        const char *msg = (q && q->total > 0) ? T("No jobs match this filter.")
+                                              : T("No scrape jobs.");
         int tw = cat_measure_text(body, msg);
         cat_draw_text(body, msg, c.x + (c.w - tw) / 2,
                       c.y + (c.h - TTF_FontHeight(body)) / 2, theme->hint);
@@ -4169,7 +4173,7 @@ static void jw__render_scrape_queue(const jw_settings_ui *ui,
 }
 
 static void jw__render_games(const jw_settings_ui *ui, int x, int y, int w, int h) {
-    jw__draw_header("Games", x, y, w);
+    jw__draw_header(T("Games"), x, y, w);
     int ly = jw__settings_boxes(x, y, w, h, true, 0, NULL, NULL).y;
     int item_h = TTF_FontHeight(cat_get_font(CAT_FONT_MEDIUM)) + cat_scale(12);
     jw__begin_settings_rows(&ui->games_list, x, ly, w, y + h - ly,
@@ -4178,7 +4182,7 @@ static void jw__render_games(const jw_settings_ui *ui, int x, int y, int w, int 
     char download_value[64];
     if (ui->scrape_missing_have_cache) {
         int n = ui->scrape_missing_cache.total_missing;
-        snprintf(download_value, sizeof(download_value), "%d missing", n);
+        snprintf(download_value, sizeof(download_value), T("%d missing"), n);
     } else {
         download_value[0] = '\0';
     }
@@ -4196,7 +4200,7 @@ static void jw__render_games(const jw_settings_ui *ui, int x, int y, int w, int 
         snprintf(artwork_value, sizeof(artwork_value), T("%s first"),
                  jw_ss_media_types[ui->scrape_artwork_order[0]].display);
     } else {
-        snprintf(artwork_value, sizeof(artwork_value), "None selected");
+        snprintf(artwork_value, sizeof(artwork_value), "%s", T("None selected"));
     }
     jw__render_list_row(&ui->games_list, x, ly, w, JW_GAMES_ARTWORK,
                         "Artwork Priority", artwork_value, false);
@@ -4206,7 +4210,7 @@ static void jw__render_games(const jw_settings_ui *ui, int x, int y, int w, int 
         snprintf(region_value, sizeof(region_value), T("%s first"),
                  jw_ss_regions[ui->scrape_region_order[0]].display);
     } else {
-        snprintf(region_value, sizeof(region_value), "None selected");
+        snprintf(region_value, sizeof(region_value), "%s", T("None selected"));
     }
     jw__render_list_row(&ui->games_list, x, ly, w, JW_GAMES_REGION,
                         "Region Priority", region_value, false);
@@ -4217,7 +4221,7 @@ static void jw__render_games(const jw_settings_ui *ui, int x, int y, int w, int 
                  : JW_GAME_PERF_PROFILE_DEFAULT;
     const char *perf = ui->performance_supported
                      ? jw_platform_perf_profile_label(kGamePerfProfiles[perf_idx])
-                     : "Unavailable";
+                     : T("Unavailable");
     jw__render_list_row(&ui->games_list, x, ly, w, JW_GAMES_PERFORMANCE,
                         "Game Performance", perf, ui->performance_supported);
 
@@ -4298,32 +4302,33 @@ static void jw__render_accounts(const jw_settings_ui *ui, int x, int y, int w, i
     if (ui->ss_username[0] && ui->ss_verified) {
         char quota[32] = "";
         if (ui->ss_max_requests > 0) {
-            snprintf(quota, sizeof(quota), ", quota %d/%d",
+            snprintf(quota, sizeof(quota), T(", quota %d/%d"),
                      ui->ss_requests_today, ui->ss_max_requests);
         }
         if (ui->ss_max_threads > 0) {
-            snprintf(ss_value, sizeof(ss_value), "Signed in as %s - %d thread%s%s",
-                     ui->ss_username, ui->ss_max_threads,
-                     ui->ss_max_threads == 1 ? "" : "s", quota);
+            snprintf(ss_value, sizeof(ss_value),
+                     ui->ss_max_threads == 1 ? T("Signed in as %s - %d thread%s")
+                                             : T("Signed in as %s - %d threads%s"),
+                     ui->ss_username, ui->ss_max_threads, quota);
         } else {
-            snprintf(ss_value, sizeof(ss_value), "Signed in as %s%s",
+            snprintf(ss_value, sizeof(ss_value), T("Signed in as %s%s"),
                      ui->ss_username, quota);
         }
     } else if (ui->ss_username[0]) {
-        snprintf(ss_value, sizeof(ss_value), "Saved: %s (unverified)", ui->ss_username);
+        snprintf(ss_value, sizeof(ss_value), T("Saved: %s (unverified)"), ui->ss_username);
     } else if (ui->ss_rejected) {
-        snprintf(ss_value, sizeof(ss_value), "Rejected - wrong username or password");
+        snprintf(ss_value, sizeof(ss_value), "%s", T("Rejected - wrong username or password"));
     } else {
-        snprintf(ss_value, sizeof(ss_value), "Not signed in");
+        snprintf(ss_value, sizeof(ss_value), "%s", T("Not signed in"));
     }
     anim |= jw__render_account_row(&ui->accounts_list, x, ly, w,
                                    JW_ACCOUNTS_SCREENSCRAPER, "ScreenScraper.fr",
                                    ss_value, &mq[JW_ACCOUNTS_SCREENSCRAPER], dt);
     char ra_value[96];
     if (ui->ra_username[0]) {
-        snprintf(ra_value, sizeof(ra_value), "Saved: %s", ui->ra_username);
+        snprintf(ra_value, sizeof(ra_value), T("Saved: %s"), ui->ra_username);
     } else {
-        snprintf(ra_value, sizeof(ra_value), "Not signed in");
+        snprintf(ra_value, sizeof(ra_value), "%s", T("Not signed in"));
     }
     anim |= jw__render_account_row(&ui->accounts_list, x, ly, w,
                                    JW_ACCOUNTS_RETROACHIEVEMENTS, "RetroAchievements",
@@ -4514,8 +4519,8 @@ static void jw__render_about(const jw_settings_ui *ui, int x, int y, int w, int 
         jw_installed_release_read(internal_data, &release) == 0 &&
         (release.version[0] || release.release_id[0]);
     char identity[96];
-    snprintf(identity, sizeof(identity), "Leaf  %s",
-             (have_release && release.version[0]) ? release.version : "Unknown");
+    snprintf(identity, sizeof(identity), T("Leaf  %s"),
+             (have_release && release.version[0]) ? release.version : T("Unknown"));
     jw__about_push(rows, &n, JW_ABOUT_PLAIN, identity, "");
 
     jw__about_push(rows, &n, JW_ABOUT_HEADING, "System", "");
@@ -4563,7 +4568,8 @@ static void jw__render_about(const jw_settings_ui *ui, int x, int y, int w, int 
                    info.ipv4[0] ? info.ipv4 : (info.ip[0] ? info.ip : "—"));
     jw__about_push(rows, &n, JW_ABOUT_FIELD, "IPv6", info.ipv6[0] ? info.ipv6 : "—");
     if (info.battery_percent >= 0) {
-        snprintf(buf, sizeof(buf), "%d%%%s", info.battery_percent, info.charging ? " (charging)" : "");
+        snprintf(buf, sizeof(buf), "%d%%%s", info.battery_percent,
+                 info.charging ? T(" (charging)") : "");
         jw__about_push(rows, &n, JW_ABOUT_FIELD, "Battery", buf);
     }
     if (info.cpu_temp_c > 0) {
@@ -4571,7 +4577,8 @@ static void jw__render_about(const jw_settings_ui *ui, int x, int y, int w, int 
         jw__about_push(rows, &n, JW_ABOUT_FIELD, "CPU temp", buf);
     }
     if (info.uptime_s > 0) {
-        snprintf(buf, sizeof(buf), "%ldh %ldm", info.uptime_s / 3600, (info.uptime_s % 3600) / 60);
+        snprintf(buf, sizeof(buf), T("%ldh %ldm"), info.uptime_s / 3600,
+                 (info.uptime_s % 3600) / 60);
         jw__about_push(rows, &n, JW_ABOUT_FIELD, "Uptime", buf);
     }
 
@@ -4597,21 +4604,24 @@ static void jw__render_about(const jw_settings_ui *ui, int x, int y, int w, int 
 static void jw__fmt_playtime(long long s, char *buf, size_t n) {
     if (s <= 0)     { snprintf(buf, n, "%s", "\xe2\x80\x94"); return; }  /* em dash */
     long long h = s / 3600, m = (s % 3600) / 60;
-    if (h > 0)      snprintf(buf, n, "%lldh %lldm", h, m);
-    else if (m > 0) snprintf(buf, n, "%lldm", m);
-    else            snprintf(buf, n, "<1m");
+    if (h > 0)      snprintf(buf, n, T("%lldh %lldm"), h, m);
+    else if (m > 0) snprintf(buf, n, T("%lldm"), m);
+    else            snprintf(buf, n, "%s", T("<1m"));
 }
 
 /* "today" / "yesterday" / "3 days ago" / "2 weeks ago" / "—" for a unix time. */
 static void jw__fmt_ago(long long when, char *buf, size_t n) {
     if (when <= 0) { snprintf(buf, n, "%s", "\xe2\x80\x94"); return; }
     long long d = ((long long)time(NULL) - when) / 86400;
-    if (d <= 0)       snprintf(buf, n, "today");
-    else if (d == 1)  snprintf(buf, n, "yesterday");
-    else if (d < 7)   snprintf(buf, n, "%lld days ago", d);
-    else if (d < 30)  snprintf(buf, n, "%lld week%s ago",  d / 7,  d / 7  == 1 ? "" : "s");
-    else if (d < 365) snprintf(buf, n, "%lld month%s ago", d / 30, d / 30 == 1 ? "" : "s");
-    else              snprintf(buf, n, "%lld year%s ago",  d / 365, d / 365 == 1 ? "" : "s");
+    if (d <= 0)       snprintf(buf, n, "%s", T("today"));
+    else if (d == 1)  snprintf(buf, n, "%s", T("yesterday"));
+    else if (d < 7)   snprintf(buf, n, T("%lld days ago"), d);
+    else if (d < 30)  snprintf(buf, n, d / 7 == 1 ? T("%lld week ago")
+                                                      : T("%lld weeks ago"), d / 7);
+    else if (d < 365) snprintf(buf, n, d / 30 == 1 ? T("%lld month ago")
+                                                       : T("%lld months ago"), d / 30);
+    else              snprintf(buf, n, d / 365 == 1 ? T("%lld year ago")
+                                                        : T("%lld years ago"), d / 365);
 }
 
 /* Set by jw_settings_ui_open for the Info pages so the first frame after a
@@ -4767,7 +4777,7 @@ static void jw__shortcut_value(const jw_settings_ui *ui,
         snprintf(out, out_size, "%s", T("Disabled"));
         return;
     }
-    snprintf(out, out_size, "Menu + %s", label);
+    snprintf(out, out_size, T("Menu + %s"), label);
 }
 
 /* Which action currently holds `button`, ignoring the one being edited, or -1.
@@ -4829,7 +4839,7 @@ static void jw__draw_shortcut_pick_item(int idx, int ix, int iy, int iw, int ih,
     if (button == JW_INPUT_SHORTCUT_BUTTON_NONE) {
         snprintf(label, sizeof(label), "%s", T(name));
     } else {
-        snprintf(label, sizeof(label), "Menu + %s", name);
+        snprintf(label, sizeof(label), T("Menu + %s"), name);
     }
     cat_draw_text_ellipsized(body, label, ix + cat_scale(12), ty, label_c,
                              iw * 2 / 3);
@@ -4950,6 +4960,20 @@ static void jw__render_input_shortcuts(const jw_settings_ui *ui,
 }
 #endif
 
+static void jw__settings_status(char *out, size_t out_size,
+                                const char *fmt, ...) {
+    if (!out || out_size == 0 || !fmt) return;
+    va_list args;
+    va_start(args, fmt);
+    if (strcmp(fmt, "%s") == 0) {
+        const char *value = va_arg(args, const char *);
+        snprintf(out, out_size, "%s", T(value ? value : ""));
+    } else {
+        vsnprintf(out, out_size, T(fmt), args);
+    }
+    va_end(args);
+}
+
 #ifdef PLATFORM_MLP1
 /* Only three of the seven rows carry a binding; the rest are ordinary
    toggles. Returns false for those. */
@@ -4997,7 +5021,7 @@ static void jw__apply_shortcut(jw_settings_ui *ui,
                action name join differently in other languages, and gluing two
                translated fragments with a space forces English word order on
                all of them. */
-            snprintf(status_buf, status_size, T("Already used by %s"),
+            jw__settings_status(status_buf, status_size, T("Already used by %s"),
                      T(jw_input_shortcut_action_label(owner)));
         }
         return;
@@ -5007,7 +5031,7 @@ static void jw__apply_shortcut(jw_settings_ui *ui,
     const char *name = jw_input_shortcut_button_name(button);
     if (!key || !name || !jw__persist_checked(ui, key, name)) {
         if (status_buf && status_size > 0) {
-            snprintf(status_buf, status_size, "%s", T("Could not save"));
+            jw__settings_status(status_buf, status_size, "%s", T("Could not save"));
         }
         return;
     }
@@ -5022,7 +5046,7 @@ static void jw__apply_shortcut(jw_settings_ui *ui,
        binding is saved and simply is not live yet. Say so rather than leaving
        the user to wonder why the chord they just set does nothing. */
     if (!jw__push_shortcuts(ui) && status_buf && status_size > 0) {
-        snprintf(status_buf, status_size, "%s", T("Saved; active after restart"));
+        jw__settings_status(status_buf, status_size, "%s", T("Saved; active after restart"));
     }
 }
 #endif
@@ -5274,19 +5298,19 @@ static void jw__format_update_size(long long bytes, char *out, size_t out_size) 
 
 static const char *jw__update_state_label(const jw_ipc_update_status_info *u) {
     if (!u || !u->state[0]) {
-        return "Idle";
+        return T("Idle");
     }
-    if (strcmp(u->state, "checking") == 0) return "Checking...";
-    if (strcmp(u->state, "up-to-date") == 0) return "Up to date";
-    if (strcmp(u->state, "available") == 0) return "Available";
-    if (strcmp(u->state, "downloading") == 0) return "Downloading";
-    if (strcmp(u->state, "downloaded") == 0) return "Downloaded";
-    if (strcmp(u->state, "installing") == 0) return "Installing";
-    if (strcmp(u->state, "armed") == 0) return "Restart needed";
-    if (strcmp(u->state, "cancelled") == 0) return "Cancelled";
-    if (strcmp(u->state, "incompatible") == 0) return "Incompatible";
-    if (strcmp(u->state, "error") == 0) return "Error";
-    return "Idle";
+    if (strcmp(u->state, "checking") == 0) return T("Checking...");
+    if (strcmp(u->state, "up-to-date") == 0) return T("Up to date");
+    if (strcmp(u->state, "available") == 0) return T("Available");
+    if (strcmp(u->state, "downloading") == 0) return T("Downloading");
+    if (strcmp(u->state, "downloaded") == 0) return T("Downloaded");
+    if (strcmp(u->state, "installing") == 0) return T("Installing");
+    if (strcmp(u->state, "armed") == 0) return T("Restart needed");
+    if (strcmp(u->state, "cancelled") == 0) return T("Cancelled");
+    if (strcmp(u->state, "incompatible") == 0) return T("Incompatible");
+    if (strcmp(u->state, "error") == 0) return T("Error");
+    return T("Idle");
 }
 
 /* True when the offered release is the one already installed — so we don't tempt
@@ -5304,37 +5328,37 @@ static void jw__update_download_label(const jw_settings_ui *ui,
     }
     const jw_ipc_update_status_info *u = ui ? &ui->update : NULL;
     if (!ui || !ui->update_have_status) {
-        snprintf(out, out_size, "%s", "Unavailable");
+        snprintf(out, out_size, "%s", T("Unavailable"));
     } else if (u->download_active) {
         if (u->download_percent >= 0) {
-            snprintf(out, out_size, "Cancel %d%%", u->download_percent);
+            snprintf(out, out_size, T("Cancel %d%%"), u->download_percent);
         } else {
-            snprintf(out, out_size, "%s", "Cancel");
+            snprintf(out, out_size, "%s", T("Cancel"));
         }
     } else if (u->downloaded) {
-        snprintf(out, out_size, "%s", "Verified");
+        snprintf(out, out_size, "%s", T("Verified"));
     } else if (jw__update_is_current(u)) {
-        snprintf(out, out_size, "%s", "Up to date");
+        snprintf(out, out_size, "%s", T("Up to date"));
     } else if (u->compatible && u->artifact_name[0]) {
-        snprintf(out, out_size, "%s", "Download");
+        snprintf(out, out_size, "%s", T("Download"));
     } else {
-        snprintf(out, out_size, "%s", "Unavailable");
+        snprintf(out, out_size, "%s", T("Unavailable"));
     }
 }
 
 static const char *jw__update_blocked_label(const char *reason) {
-    if (!reason || !reason[0]) return "Blocked";
-    if (strcmp(reason, "install_again") == 0) return "Install Again";
-    if (strcmp(reason, "primary_slot_needed") == 0) return "Primary Slot";
-    if (strcmp(reason, "not_idle") == 0) return "Close Apps";
-    if (strcmp(reason, "space_low") == 0) return "No Space";
-    if (strcmp(reason, "battery_low") == 0) return "Battery Low";
-    if (strcmp(reason, "download_active") == 0) return "Downloading";
-    if (strcmp(reason, "not_downloaded") == 0) return "Download First";
-    if (strcmp(reason, "download_missing") == 0) return "Missing";
-    if (strcmp(reason, "unsupported_handoff") == 0) return "Unsupported";
-    if (strcmp(reason, "unsupported_artifact") == 0) return "Unsupported";
-    return "Blocked";
+    if (!reason || !reason[0]) return T("Blocked");
+    if (strcmp(reason, "install_again") == 0) return T("Install Again");
+    if (strcmp(reason, "primary_slot_needed") == 0) return T("Primary Slot");
+    if (strcmp(reason, "not_idle") == 0) return T("Close Apps");
+    if (strcmp(reason, "space_low") == 0) return T("No Space");
+    if (strcmp(reason, "battery_low") == 0) return T("Battery Low");
+    if (strcmp(reason, "download_active") == 0) return T("Downloading");
+    if (strcmp(reason, "not_downloaded") == 0) return T("Download First");
+    if (strcmp(reason, "download_missing") == 0) return T("Missing");
+    if (strcmp(reason, "unsupported_handoff") == 0) return T("Unsupported");
+    if (strcmp(reason, "unsupported_artifact") == 0) return T("Unsupported");
+    return T("Blocked");
 }
 
 static void jw__update_install_label(const jw_settings_ui *ui,
@@ -5345,32 +5369,32 @@ static void jw__update_install_label(const jw_settings_ui *ui,
     }
     const jw_ipc_update_status_info *u = ui ? &ui->update : NULL;
     if (!ui || !ui->update_have_status) {
-        snprintf(out, out_size, "%s", "Unavailable");
+        snprintf(out, out_size, "%s", T("Unavailable"));
     } else if (u->install_active) {
-        snprintf(out, out_size, "%s", "Installing");
+        snprintf(out, out_size, "%s", T("Installing"));
     } else if (u->install_armed) {
-        snprintf(out, out_size, "%s", "Restart");
+        snprintf(out, out_size, "%s", T("Restart"));
     } else if (u->install_ready) {
-        snprintf(out, out_size, "%s", "Install");
+        snprintf(out, out_size, "%s", T("Install"));
     } else if (u->install_needs_confirmation) {
-        snprintf(out, out_size, "%s", "Confirm");
+        snprintf(out, out_size, "%s", T("Confirm"));
     } else if (u->install_blocked) {
         snprintf(out, out_size, "%s",
                  jw__update_blocked_label(u->install_reason));
     } else if (u->downloaded) {
-        snprintf(out, out_size, "%s", "Ready Check");
+        snprintf(out, out_size, "%s", T("Ready Check"));
     } else if (u->install_result_state[0]) {
         if (strcmp(u->install_result_state, "installed") == 0) {
-            snprintf(out, out_size, "%s", "Installed");
+            snprintf(out, out_size, "%s", T("Installed"));
         } else if (strcmp(u->install_result_state, "armed") == 0) {
-            snprintf(out, out_size, "%s", "Restart Needed");
+            snprintf(out, out_size, "%s", T("Restart Needed"));
         } else if (strcmp(u->install_result_state, "error") == 0) {
-            snprintf(out, out_size, "%s", "Failed");
+            snprintf(out, out_size, "%s", T("Failed"));
         } else {
             snprintf(out, out_size, "%s", u->install_result_state);
         }
     } else {
-        snprintf(out, out_size, "%s", "Unavailable");
+        snprintf(out, out_size, "%s", T("Unavailable"));
     }
 }
 
@@ -5508,10 +5532,10 @@ static void jw__render_update(const jw_settings_ui *ui, int x, int y, int w, int
     snprintf(current_value, sizeof(current_value), "%s",
              (ui->update_have_status && u->current_release_id[0])
              ? u->current_release_id
-             : (ui->update_have_status && u->current_unknown ? "Unknown" : "-"));
+             : (ui->update_have_status && u->current_unknown ? T("Unknown") : "-"));
     if (ui->update_have_status && u->release_id[0]) {
         if (jw__update_is_current(u)) {
-            snprintf(candidate_value, sizeof(candidate_value), "%s (current)",
+            snprintf(candidate_value, sizeof(candidate_value), T("%s (current)"),
                      u->release_id);
         } else {
             jw__format_update_size(u->artifact_size, size_value, sizeof(size_value));
@@ -5519,10 +5543,10 @@ static void jw__render_update(const jw_settings_ui *ui, int x, int y, int w, int
                      u->release_id, size_value);
         }
     } else if (ui->update_have_status && u->install_result_release_id[0]) {
-        snprintf(candidate_value, sizeof(candidate_value), "Last: %s",
+        snprintf(candidate_value, sizeof(candidate_value), T("Last: %s"),
                  u->install_result_release_id);
     } else if (ui->update_have_status && strcmp(u->state, "up-to-date") == 0) {
-        snprintf(candidate_value, sizeof(candidate_value), "%s", "None");
+        snprintf(candidate_value, sizeof(candidate_value), "%s", T("None"));
     } else {
         snprintf(candidate_value, sizeof(candidate_value), "%s", "-");
     }
@@ -5534,7 +5558,7 @@ static void jw__render_update(const jw_settings_ui *ui, int x, int y, int w, int
     if (!ui->update_checked_this_visit && ui->update_have_status && !checking &&
         !u->download_active && !u->install_active && !u->install_armed &&
         !u->downloaded) {
-        snprintf(check_value, sizeof(check_value), "%s", "Not checked");
+        snprintf(check_value, sizeof(check_value), "%s", T("Not checked"));
         snprintf(download_value, sizeof(download_value), "%s", "-");
         snprintf(install_value, sizeof(install_value), "%s", "-");
         snprintf(candidate_value, sizeof(candidate_value), "%s", "-");
@@ -5545,7 +5569,7 @@ static void jw__render_update(const jw_settings_ui *ui, int x, int y, int w, int
         /* Amber-tint the value so "you're on the tester channel" reads at a glance. */
         ap_color warn = cat_hex_to_color("#E8A44C");
         jw__render_list_row_vc(&ui->update_list, x, ly, w, JW_UPDATE_ROW_CHANNEL,
-                               "Update Channel", "Beta", true, warn);
+                               "Update Channel", T("Beta"), true, warn);
     } else {
         jw__render_list_row(&ui->update_list, x, ly, w, JW_UPDATE_ROW_CHANNEL,
                             "Update Channel", "Stable", true);
@@ -5589,12 +5613,12 @@ static const char *jw__update_option_badge(const jw_ipc_update_option_info *opti
         return "";
     }
     if (option->selected) {
-        return "Selected";
+        return T("Selected");
     }
     if (option->installed) {
-        return "Installed";
+        return T("Installed");
     }
-    return idx == 0 ? "Latest" : "Older";
+    return idx == 0 ? T("Latest") : T("Older");
 }
 
 static void jw__draw_update_option_item(int idx, int ix, int iy, int iw, int ih,
@@ -5615,7 +5639,7 @@ static void jw__draw_update_option_item(int idx, int ix, int iy, int iw, int ih,
                                                theme->highlighted_text, focus);
     ap_color hint_color = cat_draw_color_lerp(theme->hint,
                                                theme->highlighted_text, focus);
-    const char *label = option->release_id[0] ? option->release_id : "Leaf update";
+    const char *label = option->release_id[0] ? option->release_id : T("Leaf update");
     char detail[320];
     char size[64];
     jw__format_update_size(option->artifact_size, size, sizeof(size));
@@ -5637,7 +5661,7 @@ static void jw__draw_update_option_item(int idx, int ix, int iy, int iw, int ih,
 
 static void jw__render_update_picker(const jw_settings_ui *ui,
                                       int x, int y, int w, int h) {
-    jw__draw_header("Pick Update", x, y, w);
+    jw__draw_header(T("Pick Update"), x, y, w);
     ap_theme *theme = cat_get_theme();
     TTF_Font *small = cat_get_font(CAT_FONT_SMALL);
     int dy = y + jw__header_h() + cat_scale(6);
@@ -5647,8 +5671,8 @@ static void jw__render_update_picker(const jw_settings_ui *ui,
     }
 
     const char *message = count > 0
-        ? "Compatible releases"
-        : "Check releases first";
+        ? T("Compatible releases")
+        : T("Check releases first");
     cat_draw_text_ellipsized(small, message, x + cat_scale(12), dy,
                              theme->hint, w - cat_scale(24));
     dy += TTF_FontHeight(small) + cat_scale(8);
@@ -5874,7 +5898,7 @@ static void jw__change_brightness(jw_settings_ui *ui, int delta,
         return;
     }
     if (status_buf && status_size > 0)
-        snprintf(status_buf, status_size, "%s", T("brightness failed"));
+        jw__settings_status(status_buf, status_size, "%s", T("brightness failed"));
 }
 
 static void jw__change_volume(jw_settings_ui *ui, int delta,
@@ -5896,7 +5920,7 @@ static void jw__change_volume(jw_settings_ui *ui, int delta,
         return;
     }
     if (status_buf && status_size > 0)
-        snprintf(status_buf, status_size, "%s", T("volume failed"));
+        jw__settings_status(status_buf, status_size, "%s", T("volume failed"));
 }
 
 static bool jw__audio_output_available(const jw_settings_ui *ui,
@@ -5937,7 +5961,7 @@ static void jw__set_audio_output(jw_settings_ui *ui, jw_platform_audio_output ou
                                  char *status_buf, size_t status_size) {
     if (!ui || !ui->socket_path[0]) {
         if (status_buf && status_size > 0)
-            snprintf(status_buf, status_size, "%s", T("audio output failed"));
+            jw__settings_status(status_buf, status_size, "%s", T("audio output failed"));
         return;
     }
     if (jw_ipc_set_audio_output(ui->socket_path, output, status_buf,
@@ -6035,7 +6059,7 @@ static void jw__reset_retroarch_config(jw_settings_ui *ui,
     }
 
     if (!jw__confirm_retroarch_reset()) {
-        snprintf(status_buf, status_size, "%s", T("RetroArch reset canceled"));
+        jw__settings_status(status_buf, status_size, "%s", T("RetroArch reset canceled"));
         return;
     }
 
@@ -6086,12 +6110,12 @@ static bool jw__confirm_adb_disable(void) {
 
 static bool jw__confirm_update_install(const char *release_id) {
     cat_footer_item footer[] = {
-        { .button = CAT_BTN_B, .label = "Cancel", .is_confirm = false },
-        { .button = CAT_BTN_A, .label = "Install", .is_confirm = true },
+        { .button = CAT_BTN_B, .label = T("Cancel"), .is_confirm = false },
+        { .button = CAT_BTN_A, .label = T("Install"), .is_confirm = true },
     };
     char message[192];
-    snprintf(message, sizeof(message), "Install Leaf %s?",
-             release_id && release_id[0] ? release_id : "update");
+    snprintf(message, sizeof(message), T("Install Leaf %s?"),
+             release_id && release_id[0] ? release_id : T("update"));
     cat_message_opts opts = {
         .message = message,
         .footer = footer,
@@ -6109,7 +6133,7 @@ static bool jw__confirm_update_unknown_preflight(const char *message) {
     cat_message_opts opts = {
         .message = message && message[0]
                    ? message
-                   : "Install update even though checks are incomplete?",
+                   : T("Install update even though checks are incomplete?"),
         .footer = footer,
         .footer_count = 2,
     };
@@ -6137,7 +6161,8 @@ static bool jw__confirm_bt_unpair(const char *name) {
         { .button = CAT_BTN_A, .label = "Unpair", .is_confirm = true },
     };
     char message[160];
-    snprintf(message, sizeof(message), "Unpair %s?", name && name[0] ? name : "device");
+    snprintf(message, sizeof(message), T("Unpair %s?"),
+             name && name[0] ? name : T("device"));
     cat_message_opts opts = {
         .message = message,
         .footer = footer,
@@ -6150,7 +6175,7 @@ static bool jw__confirm_bt_unpair(const char *name) {
 static void jw__copy_status(char *status_buf, size_t status_size,
                             const char *value) {
     if (status_buf && status_size > 0) {
-        snprintf(status_buf, status_size, "%s", value ? value : "");
+        jw__settings_status(status_buf, status_size, "%s", value ? T(value) : "");
     }
 }
 
@@ -6223,11 +6248,11 @@ static bool jw__confirm_update_picker_choice(const jw_settings_ui *ui,
     };
     char message[192];
     if (option->installed) {
-        snprintf(message, sizeof(message), "Pick installed Leaf %s again?",
-                 option->release_id[0] ? option->release_id : "release");
+        snprintf(message, sizeof(message), T("Pick installed Leaf %s again?"),
+                 option->release_id[0] ? option->release_id : T("release"));
     } else {
-        snprintf(message, sizeof(message), "Pick older Leaf %s?",
-                 option->release_id[0] ? option->release_id : "release");
+        snprintf(message, sizeof(message), T("Pick older Leaf %s?"),
+                 option->release_id[0] ? option->release_id : T("release"));
     }
     cat_message_opts opts = {
         .message = message,
@@ -6499,17 +6524,17 @@ static void jw__set_adb(jw_settings_ui *ui, bool enabled,
     }
 
     if (!ui->adb_supported || ui->adb_enabled < 0) {
-        snprintf(status_buf, status_size, "%s", T("ADB unavailable on this platform"));
+        jw__settings_status(status_buf, status_size, "%s", T("ADB unavailable on this platform"));
         return;
     }
 
     if (enabled) {
         if (!jw__confirm_adb_enable()) {
-            snprintf(status_buf, status_size, "%s", T("ADB enable canceled"));
+            jw__settings_status(status_buf, status_size, "%s", T("ADB enable canceled"));
             return;
         }
     } else if (!jw__confirm_adb_disable()) {
-        snprintf(status_buf, status_size, "%s", T("ADB disable canceled"));
+        jw__settings_status(status_buf, status_size, "%s", T("ADB disable canceled"));
         return;
     }
 
@@ -6517,7 +6542,7 @@ static void jw__set_adb(jw_settings_ui *ui, bool enabled,
     if (jw_ipc_set_adb(ui->socket_path, enabled ? 1 : 0,
                        status_buf, (int)status_size) != 0 &&
         !status_buf[0]) {
-        snprintf(status_buf, status_size, "%s",
+        jw__settings_status(status_buf, status_size, "%s",
                  enabled ? "ADB enable failed" : "ADB disable failed");
     }
     jw__refresh_adb(ui);
@@ -6530,7 +6555,7 @@ static void jw__set_boot_splash(jw_settings_ui *ui, bool enabled,
     }
 
     if (!ui->boot_splash_supported) {
-        snprintf(status_buf, status_size, "%s", T("boot splash unavailable on this platform"));
+        jw__settings_status(status_buf, status_size, "%s", T("boot splash unavailable on this platform"));
         return;
     }
 
@@ -6538,7 +6563,7 @@ static void jw__set_boot_splash(jw_settings_ui *ui, bool enabled,
     if (jw_ipc_set_boot_splash(ui->socket_path, enabled ? 1 : 0,
                                status_buf, (int)status_size) != 0 &&
         !status_buf[0]) {
-        snprintf(status_buf, status_size, "%s",
+        jw__settings_status(status_buf, status_size, "%s",
                  enabled ? "boot splash enable failed" : "boot splash disable failed");
     }
     jw__refresh_boot_splash(ui);
@@ -6552,14 +6577,14 @@ static void jw__set_refresh_rate(jw_settings_ui *ui, int hz,
     }
 
     if (!ui->refresh_rate_supported) {
-        snprintf(status_buf, status_size, "%s", T("refresh rate unavailable on this platform"));
+        jw__settings_status(status_buf, status_size, "%s", T("refresh rate unavailable on this platform"));
         return;
     }
 
     status_buf[0] = '\0';
     if (jw_ipc_set_refresh_rate(ui->socket_path, hz, status_buf, (int)status_size) != 0 &&
         !status_buf[0]) {
-        snprintf(status_buf, status_size, "%s", T("refresh rate change failed"));
+        jw__settings_status(status_buf, status_size, "%s", T("refresh rate change failed"));
         return;
     }
     /* The daemon restarts Weston and respawns this launcher, so re-querying now
@@ -6575,7 +6600,7 @@ static void jw__set_hdmi_output(jw_settings_ui *ui, int mode,
         return;
     }
     if (!ui->hdmi_supported) {
-        snprintf(status_buf, status_size, "%s", T("HDMI output unavailable on this platform"));
+        jw__settings_status(status_buf, status_size, "%s", T("HDMI output unavailable on this platform"));
         return;
     }
     if (mode < 0 || mode > 2) {
@@ -6584,7 +6609,7 @@ static void jw__set_hdmi_output(jw_settings_ui *ui, int mode,
     status_buf[0] = '\0';
     if (jw_ipc_set_hdmi_output(ui->socket_path, mode, status_buf, (int)status_size) != 0 &&
         !status_buf[0]) {
-        snprintf(status_buf, status_size, "%s", T("HDMI output change failed"));
+        jw__settings_status(status_buf, status_size, "%s", T("HDMI output change failed"));
         return;
     }
     /* Switching to a TV output restarts Weston + respawns this launcher, so
@@ -6600,7 +6625,7 @@ static void jw__safe_unmount_secondary_sd(jw_settings_ui *ui,
     }
 
     if (!jw__confirm_secondary_unmount()) {
-        snprintf(status_buf, status_size, "%s", T("Unmount canceled"));
+        jw__settings_status(status_buf, status_size, "%s", T("Unmount canceled"));
         jw__refresh_secondary_sd_status(ui);
         return;
     }
@@ -6609,7 +6634,7 @@ static void jw__safe_unmount_secondary_sd(jw_settings_ui *ui,
     if (jw_ipc_safe_unmount_storage(ui->socket_path, "secondary_sd",
                                     status_buf, (int)status_size) != 0 &&
         !status_buf[0]) {
-        snprintf(status_buf, status_size, "%s", T("Unmount failed"));
+        jw__settings_status(status_buf, status_size, "%s", T("Unmount failed"));
     }
     jw__refresh_secondary_sd_status(ui);
 }
@@ -6620,8 +6645,8 @@ static bool jw__confirm_beta_channel(void) {
         { .button = CAT_BTN_A, .label = "Switch", .is_confirm = true },
     };
     cat_message_opts opts = {
-        .message = "Beta builds are tester previews and may be unstable or lose "
-                   "data. Switch to the Beta update channel?",
+        .message = T("Beta builds are tester previews and may be unstable or lose "
+                     "data. Switch to the Beta update channel?"),
         .footer = footer,
         .footer_count = 2,
     };
@@ -6755,7 +6780,7 @@ static bool jw__enter_screen(jw_settings_ui *ui, jw_settings_screen screen,
            system has no row here. */
         if (!jw__services_available(ui)) {
             if (status_buf && status_size > 0)
-                snprintf(status_buf, status_size, "%s", T("No services installed"));
+                jw__settings_status(status_buf, status_size, "%s", T("No services installed"));
             return false;
         }
         ui->services_list.cursor = 0;
@@ -6852,7 +6877,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                        bug, and the user cannot see why it is inert. */
                     if (jw_i18n_language_is_cjk(jw_i18n_language())) {
                         if (status_buf && status_size > 0) {
-                            snprintf(status_buf, status_size, "%s",
+                            jw__settings_status(status_buf, status_size, "%s",
                                      T("font is fixed while a CJK language is selected"));
                         }
                         break;
@@ -6874,7 +6899,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                            get more serious. */
                         if (theme_changed) *theme_changed = true;
                     } else if (status_buf && status_size > 0) {
-                        snprintf(status_buf, status_size, "%s", T("font load failed"));
+                        jw__settings_status(status_buf, status_size, "%s", T("font load failed"));
                     }
                 } else if (row == JW_APPEAR_FONT_SIZE) {
                     int next = (ui->font_size_index + dir + JW_SETTINGS_FONT_SIZE_COUNT) % JW_SETTINGS_FONT_SIZE_COUNT;
@@ -7102,16 +7127,16 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                        unqualified "on" the user has to pair up themselves. */
                     int fps = jw_bfi_content_fps(ui->refresh_rate_hz);
                     if (fps <= 0) {
-                        snprintf(status_buf, status_size, "%s",
+                        jw__settings_status(status_buf, status_size, "%s",
                                  T("Black Frame Insertion needs 100 or 120 Hz"));
                     } else {
                         ui->bfi_enabled = !ui->bfi_enabled;
                         jw__persist_int(ui, "bfi_enabled", ui->bfi_enabled ? 1 : 0);
                         if (ui->bfi_enabled) {
-                            snprintf(status_buf, status_size,
+                            jw__settings_status(status_buf, status_size,
                                      "Black Frame Insertion on for %d fps", fps);
                         } else {
-                            snprintf(status_buf, status_size, "%s",
+                            jw__settings_status(status_buf, status_size, "%s",
                                      T("Black Frame Insertion off"));
                         }
                     }
@@ -7120,7 +7145,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     /* Cycle Off -> 4:3 -> Stretch (left/right step, A advances).
                        Actionable only with a TV plugged in. */
                     if (!(ui->hdmi_supported && ui->hdmi_connected == 1)) {
-                        snprintf(status_buf, status_size, "%s",
+                        jw__settings_status(status_buf, status_size, "%s",
                                  ui->hdmi_supported ? "No HDMI cable connected"
                                                     : "HDMI output unavailable");
                     } else {
@@ -7143,7 +7168,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     bool was_playing = ui->test_sound_playing;
                     jw_ipc_platform_action(ui->socket_path, "play-test-sound", 0);
                     ui->test_sound_playing = !was_playing;
-                    snprintf(status_buf, status_size, "%s",
+                    jw__settings_status(status_buf, status_size, "%s",
                              was_playing ? T("Stopped test sound") : T("Playing test sound…"));
                 }
                 break;
@@ -7174,14 +7199,14 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     if (!wifi_available) {
                         jw__wifi_msg(ui, "Wi-Fi unavailable on this platform");
                         if (status_buf && status_size > 0) {
-                            snprintf(status_buf, status_size, "%s", ui->wifi_msg);
+                            jw__settings_status(status_buf, status_size, "%s", ui->wifi_msg);
                         }
                         break;
                     }
                     bool turning_on = !ui->wifi_radio_on;
                     jw__wifi_msg(ui, turning_on ? "Turning Wi-Fi on…"
                                                 : "Turning Wi-Fi off…");
-                    snprintf(status_buf, status_size, "%s", ui->wifi_msg);
+                    jw__settings_status(status_buf, status_size, "%s", ui->wifi_msg);
                     jw__wifi_attempt_clear(ui);
                     jw_wifi_set_radio(turning_on);
                     ui->wifi_radio_on = jw_wifi_radio_is_on();
@@ -7194,7 +7219,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     if (!ui->adb_supported || ui->adb_enabled < 0) {
                         jw__wifi_msg(ui, "ADB unavailable on this platform");
                         if (status_buf && status_size > 0) {
-                            snprintf(status_buf, status_size, "%s", ui->wifi_msg);
+                            jw__settings_status(status_buf, status_size, "%s", ui->wifi_msg);
                         }
                         break;
                     }
@@ -7222,7 +7247,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                         jw__wifi_msg(ui,
                                  "Could not disconnect");
                     jw__wifi_attempt_clear(ui);
-                    snprintf(status_buf, status_size, "%s", ui->wifi_msg);
+                    jw__settings_status(status_buf, status_size, "%s", ui->wifi_msg);
                     ui->wifi_next_poll_ms = SDL_GetTicks();
                     break;
                 }
@@ -7232,14 +7257,14 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     cat_keyboard_result kb;
                     char prompt[160];
                     snprintf(prompt, sizeof(prompt),
-                             "Password for %s\nStart: Confirm\nY: Cancel",
+                             T("Password for %s\nStart: Confirm\nY: Cancel"),
                              net->ssid);
                     if (cat_keyboard("", prompt, CAT_KB_GENERAL, &kb) == CAT_OK &&
                         kb.text[0]) {
                         r = jw_wifi_connect_psk(net->ssid, kb.text);
                     } else {
                         jw__wifi_msg(ui, "Cancelled");
-                        snprintf(status_buf, status_size, "%s", ui->wifi_msg);
+                        jw__settings_status(status_buf, status_size, "%s", ui->wifi_msg);
                         break;
                     }
                 }
@@ -7254,7 +7279,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     jw__wifi_msg(ui,
                              "Could not connect to %s", net->ssid);
                 }
-                snprintf(status_buf, status_size, "%s", ui->wifi_msg);
+                jw__settings_status(status_buf, status_size, "%s", ui->wifi_msg);
                 ui->wifi_next_poll_ms = SDL_GetTicks();   /* poll right away */
                 break;
             }
@@ -7277,7 +7302,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                         jw__wifi_msg(ui,
                                  "%s isn't saved", net->ssid);
                     }
-                    snprintf(status_buf, status_size, "%s", ui->wifi_msg);
+                    jw__settings_status(status_buf, status_size, "%s", ui->wifi_msg);
                 }
                 break;
             }
@@ -7290,7 +7315,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                 jw__refresh_wifi_scan(ui);
                 ui->wifi_next_scan_ms = SDL_GetTicks() + JW_WIFI_SCAN_INTERVAL_MS;
                 jw__wifi_msg(ui, "Scanning Wi-Fi…");
-                snprintf(status_buf, status_size, "Scanning Wi-Fi…");
+                jw__settings_status(status_buf, status_size, "Scanning Wi-Fi…");
                 break;
             case CAT_BTN_B:
                 ui->screen = JW_SETTINGS_HOME;
@@ -7323,7 +7348,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                 if (ui->bt_op != JW_BT_OP_NONE) {
                     jw__bt_msg(ui, "Bluetooth is busy");
                     if (status_buf && status_size > 0)
-                        snprintf(status_buf, status_size, "%s", ui->bt_msg);
+                        jw__settings_status(status_buf, status_size, "%s", ui->bt_msg);
                     break;
                 }
 
@@ -7333,7 +7358,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     jw__bt_msg(ui, turning_on ? "Turning Bluetooth on..."
                                                : "Turning Bluetooth off...");
                     if (status_buf && status_size > 0)
-                        snprintf(status_buf, status_size, "%s", ui->bt_msg);
+                        jw__settings_status(status_buf, status_size, "%s", ui->bt_msg);
                     if (jw_bt_set_radio(turning_on) != 0) {
                         jw__bt_msg(ui, turning_on ? "Bluetooth on failed"
                                                   : "Bluetooth off failed");
@@ -7354,7 +7379,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                 if (row == JW_BLUETOOTH_ROW_NAME) {
                     jw__bt_msg(ui, "Bluetooth name is read-only");
                     if (status_buf && status_size > 0)
-                        snprintf(status_buf, status_size, "%s", ui->bt_msg);
+                        jw__settings_status(status_buf, status_size, "%s", ui->bt_msg);
                     break;
                 }
 
@@ -7374,7 +7399,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     if (disconnected)
                         jw__bt_route_back_if_orphaned(ui);
                     if (status_buf && status_size > 0)
-                        snprintf(status_buf, status_size, "%s", ui->bt_msg);
+                        jw__settings_status(status_buf, status_size, "%s", ui->bt_msg);
                     break;
                 }
 
@@ -7390,14 +7415,14 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     cat_request_frame_in(250);
                 }
                 if (status_buf && status_size > 0)
-                    snprintf(status_buf, status_size, "%s", ui->bt_msg);
+                    jw__settings_status(status_buf, status_size, "%s", ui->bt_msg);
                 break;
             }
             case CAT_BTN_Y: {
                 if (ui->bt_op != JW_BT_OP_NONE) {
                     jw__bt_msg(ui, "Bluetooth is busy");
                     if (status_buf && status_size > 0)
-                        snprintf(status_buf, status_size, "%s", ui->bt_msg);
+                        jw__settings_status(status_buf, status_size, "%s", ui->bt_msg);
                     break;
                 }
                 bool paired_device = false;
@@ -7420,7 +7445,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                 if (forgot)
                     jw__bt_route_back_if_orphaned(ui);
                 if (status_buf && status_size > 0)
-                    snprintf(status_buf, status_size, "%s", ui->bt_msg);
+                    jw__settings_status(status_buf, status_size, "%s", ui->bt_msg);
                 break;
             }
             case CAT_BTN_X:
@@ -7430,7 +7455,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                 }
                 (void)jw__bt_scan_start(ui, true);
                 if (status_buf && status_size > 0)
-                    snprintf(status_buf, status_size, "%s", ui->bt_msg);
+                    jw__settings_status(status_buf, status_size, "%s", ui->bt_msg);
                 break;
             case CAT_BTN_B:
                 if (ui->bt_op != JW_BT_OP_NONE) {
@@ -7512,21 +7537,21 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     ui->ss_rejected = false;   /* fresh attempt */
                     char prompt[160];
                     cat_keyboard_result kb;
-                    snprintf(prompt, sizeof(prompt),
-                             "ScreenScraper username\nStart: Confirm\nY: Cancel");
+                    snprintf(prompt, sizeof(prompt), "%s",
+                             T("ScreenScraper username\nStart: Confirm\nY: Cancel"));
                     if (cat_keyboard(entered, prompt, CAT_KB_GENERAL, &kb) != CAT_OK ||
                         !kb.text[0]) {
-                        snprintf(status_buf, status_size, "Cancelled");
+                        jw__settings_status(status_buf, status_size, "Cancelled");
                         break;
                     }
                     snprintf(entered, sizeof(entered), "%.*s",
                              (int)sizeof(entered) - 1, kb.text);
                     cat_keyboard_result pw;
-                    snprintf(prompt, sizeof(prompt),
-                             "ScreenScraper password\nStart: Confirm\nY: Cancel");
+                    snprintf(prompt, sizeof(prompt), "%s",
+                             T("ScreenScraper password\nStart: Confirm\nY: Cancel"));
                     if (cat_keyboard("", prompt, CAT_KB_GENERAL, &pw) != CAT_OK ||
                         !pw.text[0]) {
-                        snprintf(status_buf, status_size, "Cancelled");
+                        jw__settings_status(status_buf, status_size, "Cancelled");
                         break;
                     }
 
@@ -7553,19 +7578,19 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                         jw__persist_int(ui, "screenscraper_max_requests",
                                         info.max_requests);
                         if (info.max_requests > 0) {
-                            snprintf(status_buf, status_size,
+                            jw__settings_status(status_buf, status_size,
                                      "Signed in - %d thread%s, quota %d/%d today",
                                      info.max_threads,
                                      info.max_threads == 1 ? "" : "s",
                                      info.requests_today, info.max_requests);
                         } else {
-                            snprintf(status_buf, status_size, "Signed in as %s",
+                            jw__settings_status(status_buf, status_size, "Signed in as %s",
                                      ui->ss_username);
                         }
                     } else if (rc == 0 && info.rejected) {
                         /* Wrong username/password — shown on the row (see above). */
                         ui->ss_rejected = true;
-                        snprintf(status_buf, status_size,
+                        jw__settings_status(status_buf, status_size,
                                  "Rejected - wrong username or password");
                     } else {
                         /* Daemon or network unavailable: keep them, unverified. */
@@ -7582,7 +7607,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                         jw__persist(ui, "screenscraper_maxthreads", "");
                         jw__persist(ui, "screenscraper_requests_today", "");
                         jw__persist(ui, "screenscraper_max_requests", "");
-                        snprintf(status_buf, status_size,
+                        jw__settings_status(status_buf, status_size,
                                  "Saved - could not verify: %s",
                                  (rc == 0 && info.message[0]) ? info.message
                                                               : "daemon unavailable");
@@ -7594,26 +7619,26 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                    game launch. */
                 char prompt[160];
                 cat_keyboard_result kb;
-                snprintf(prompt, sizeof(prompt),
-                         "RetroAchievements username\nStart: Confirm\nY: Cancel");
+                snprintf(prompt, sizeof(prompt), "%s",
+                         T("RetroAchievements username\nStart: Confirm\nY: Cancel"));
                 if (cat_keyboard(ui->ra_username, prompt, CAT_KB_GENERAL, &kb) != CAT_OK ||
                     !kb.text[0]) {
-                    snprintf(status_buf, status_size, "Cancelled");
+                    jw__settings_status(status_buf, status_size, "Cancelled");
                     break;
                 }
                 cat_keyboard_result pw;
-                snprintf(prompt, sizeof(prompt),
-                         "RetroAchievements password\nStart: Confirm\nY: Cancel");
+                snprintf(prompt, sizeof(prompt), "%s",
+                         T("RetroAchievements password\nStart: Confirm\nY: Cancel"));
                 if (cat_keyboard("", prompt, CAT_KB_GENERAL, &pw) != CAT_OK ||
                     !pw.text[0]) {
-                    snprintf(status_buf, status_size, "Cancelled");
+                    jw__settings_status(status_buf, status_size, "Cancelled");
                     break;
                 }
                 snprintf(ui->ra_username, sizeof(ui->ra_username), "%.*s",
                          (int)sizeof(ui->ra_username) - 1, kb.text);
                 jw__persist(ui, "retroachievements_user", ui->ra_username);
                 jw__persist(ui, "retroachievements_pass", pw.text);
-                snprintf(status_buf, status_size,
+                jw__settings_status(status_buf, status_size,
                          "Saved - RetroArch signs in at game launch");
                 break;
             }
@@ -7632,13 +7657,13 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     jw__persist(ui, "screenscraper_maxthreads", "");
                     jw__persist(ui, "screenscraper_requests_today", "");
                     jw__persist(ui, "screenscraper_max_requests", "");
-                    snprintf(status_buf, status_size, "Signed out of ScreenScraper");
+                    jw__settings_status(status_buf, status_size, "Signed out of ScreenScraper");
                 } else if (ui->accounts_list.cursor == JW_ACCOUNTS_RETROACHIEVEMENTS &&
                            ui->ra_username[0]) {
                     ui->ra_username[0] = '\0';
                     jw__persist(ui, "retroachievements_user", "");
                     jw__persist(ui, "retroachievements_pass", "");
-                    snprintf(status_buf, status_size, "Signed out of RetroAchievements");
+                    jw__settings_status(status_buf, status_size, "Signed out of RetroAchievements");
                 }
                 break;
             case CAT_BTN_B:
@@ -7668,8 +7693,8 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                 if (row == JW_GAMES_PERFORMANCE) {
                     if (!ui->performance_supported) {
                         if (status_buf && status_size > 0) {
-                            snprintf(status_buf, (size_t)status_size, "%s",
-                                     T("performance unavailable"));
+                            jw__settings_status(status_buf, (size_t)status_size,
+                                                "%s", "performance unavailable");
                         }
                         break;
                     }
@@ -7685,11 +7710,12 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                         jw__persist(ui, "platform.performance.game_profile",
                                     jw_platform_perf_profile_name(profile));
                         if (status_buf && status_size > 0) {
-                            snprintf(status_buf, (size_t)status_size, "%s", status);
+                            jw__settings_status(status_buf, (size_t)status_size,
+                                                "%s", status);
                         }
                     } else if (status_buf && status_size > 0) {
-                        snprintf(status_buf, (size_t)status_size, "%s",
-                                 status[0] ? status : "performance failed");
+                        jw__settings_status(status_buf, (size_t)status_size, "%s",
+                                            status[0] ? status : "performance failed");
                     }
                     break;
                 }
@@ -7803,12 +7829,12 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     if (jw__scrape_queue_active(q)) {
                         int stopped = 0;
                         (void)jw_ipc_scrape_stop_all(ui->socket_path, &stopped);
-                        snprintf(status_buf, status_size, "Stopped %d job%s",
+                        jw__settings_status(status_buf, status_size, "Stopped %d job%s",
                                  stopped, stopped == 1 ? "" : "s");
                     } else if (q && q->done > 0) {
                         int cleared = 0;
                         (void)jw_ipc_scrape_clear_done(ui->socket_path, &cleared);
-                        snprintf(status_buf, status_size, "Cleared %d", cleared);
+                        jw__settings_status(status_buf, status_size, "Cleared %d", cleared);
                         ui->scrape_queue_list.cursor = 0;
                         ui->scrape_queue_list.scroll_offset = 0;
                     }
@@ -7874,7 +7900,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                             ui->scrape_queue_filter = 0;
                         }
                     } else {
-                        snprintf(status_buf, status_size, "%s",
+                        jw__settings_status(status_buf, status_size, "%s",
                                  st[0] ? st : "Scrape failed");
                     }
                 }
@@ -7951,7 +7977,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                 } else if (cursor < *included) {
                     ui->scrape_edit_grabbed = true;
                 } else {
-                    snprintf(status_buf, status_size,
+                    jw__settings_status(status_buf, status_size,
                              "Excluded entries cannot be reordered");
                 }
                 break;
@@ -8003,7 +8029,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     int tab = ui->home_tab_order[cursor];
                     if (tab < 0 || tab >= JW_HOME_TABS_COUNT) break;
                     if (!ui->home_tab_hidden[tab] && ui->home_tab_visible <= 1) {
-                        snprintf(status_buf, status_size,
+                        jw__settings_status(status_buf, status_size,
                                  "At least one tab must stay visible");
                         break;
                     }
@@ -8182,15 +8208,15 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                        its tick. Report the transition, not a completion the
                        poll below may well contradict a moment later. */
                     snprintf(ui->services_msg, sizeof(ui->services_msg),
-                             "%s %s", running ? "Stopping" : "Starting",
+                             T("%s %s"), running ? T("Stopping") : T("Starting"),
                              svc->id);
                 } else {
                     snprintf(ui->services_msg, sizeof(ui->services_msg),
-                             "%s", status[0] ? status : "Request failed");
+                             "%s", status[0] ? T(status) : T("Request failed"));
                 }
                 jw__refresh_services(ui);
                 if (status_buf && status_size > 0)
-                    snprintf(status_buf, status_size, "%s", ui->services_msg);
+                    jw__settings_status(status_buf, status_size, "%s", ui->services_msg);
                 break;
             }
             case CAT_BTN_X: {
@@ -8202,7 +8228,7 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                 if (strcmp(svc->state, "unavailable") == 0 &&
                     !svc->desired_enabled) {
                     snprintf(ui->services_msg, sizeof(ui->services_msg), "%s",
-                             "Unavailable services cannot be enabled");
+                             T("Unavailable services cannot be enabled"));
                     break;
                 }
                 /* X toggles persistent "Start with Leaf". */
@@ -8211,16 +8237,16 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                 if (jw_ipc_service_ctl(ui->socket_path, op, svc->id,
                                        status, sizeof(status)) == 0) {
                     snprintf(ui->services_msg, sizeof(ui->services_msg),
-                             "%s %s",
-                             svc->desired_enabled ? "Disabled" : "Enabled",
+                             T("%s %s"),
+                             svc->desired_enabled ? T("Disabled") : T("Enabled"),
                              svc->id);
                 } else {
                     snprintf(ui->services_msg, sizeof(ui->services_msg),
-                             "%s", status[0] ? status : "Request failed");
+                             "%s", status[0] ? T(status) : T("Request failed"));
                 }
                 jw__refresh_services(ui);
                 if (status_buf && status_size > 0)
-                    snprintf(status_buf, status_size, "%s", ui->services_msg);
+                    jw__settings_status(status_buf, status_size, "%s", ui->services_msg);
                 break;
             }
             case CAT_BTN_B:
@@ -8353,14 +8379,14 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     /* The daemon gates the chord on this and reads it from
                        memory, so it has to be told. */
                     if (!jw__push_shortcuts(ui) && status_buf && status_size > 0) {
-                        snprintf(status_buf, status_size, "%s",
+                        jw__settings_status(status_buf, status_size, "%s",
                                  T("Saved; active after restart"));
                     }
                 } else if (ui->shortcuts_list.cursor == JW_SHORTCUT_RECORDING) {
                     ui->recording_enabled = !ui->recording_enabled;
                     jw__persist_bool(ui, "recording_enabled", ui->recording_enabled);
                     if (!jw__push_shortcuts(ui) && status_buf && status_size > 0) {
-                        snprintf(status_buf, status_size, "%s",
+                        jw__settings_status(status_buf, status_size, "%s",
                                  T("Saved; active after restart"));
                     }
                 } else if (ui->shortcuts_list.cursor == JW_SHORTCUT_REC_SPLIT) {
@@ -8481,8 +8507,8 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                         ui->language_pending[0] = '\0';
                     }
                     if (status_buf && status_size > 0) {
-                        snprintf(status_buf, (size_t)status_size, "%s",
-                                 status[0] ? status : "language change failed");
+                        jw__settings_status(status_buf, (size_t)status_size, "%s",
+                                            status[0] ? status : "language change failed");
                     }
                 } else if (kind == JW_SYSTEM_ROW_AUTO_SLEEP) {
                     int next = (ui->auto_sleep_index + dir + JW_AUTO_SLEEP_COUNT)
@@ -8553,8 +8579,9 @@ static bool jw__settings_handle_button_inner(jw_settings_ui *ui, cat_button butt
                     jw__persist(ui, "timezone", ui->timezone);
                     jw__apply_timezone(ui->timezone);   /* clock updates immediately */
                     if (status_buf && status_size > 0)
-                        snprintf(status_buf, (size_t)status_size, "Time zone: %s",
-                                 kJawakaTimeZones[idx].label);
+                        jw__settings_status(status_buf, (size_t)status_size,
+                                            "Time zone: %s",
+                                            kJawakaTimeZones[idx].label);
                 }
                 ui->screen = JW_SETTINGS_SYSTEM;
                 break;
@@ -8645,20 +8672,20 @@ bool jw_settings_ui_select_user_theme(jw_settings_ui *ui, int next,
                                               &present, &flagged);
         const char *name = ui->user_themes.items[next].name;
         if (rejected && flagged)
-            snprintf(status_buf, status_size,
+            jw__settings_status(status_buf, status_size,
                      T("%s: %d icons over %dpx skipped, %d off-size"),
                      name, rejected, JW_USER_THEME_ICON_MAX_PX, flagged);
         else if (rejected)
-            snprintf(status_buf, status_size,
+            jw__settings_status(status_buf, status_size,
                      T("%s: %d icons over %dpx skipped"),
                      name, rejected, JW_USER_THEME_ICON_MAX_PX);
         else if (flagged)
-            snprintf(status_buf, status_size,
+            jw__settings_status(status_buf, status_size,
                      T("%s: %d icons not %dx%d (contain-fit)"),
                      name, flagged, JW_USER_THEME_ICON_TARGET_PX,
                      JW_USER_THEME_ICON_TARGET_PX);
         else if (present)
-            snprintf(status_buf, status_size, T("%s: %d icons ok"),
+            jw__settings_status(status_buf, status_size, T("%s: %d icons ok"),
                      name, present);
     } else if (status_buf && status_size > 0) {
         status_buf[0] = '\0';

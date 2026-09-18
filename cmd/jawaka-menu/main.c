@@ -326,6 +326,19 @@ typedef struct {
     }                               load_entries[32];
 } jw_ingame_state;
 
+static void jw__ingame_status(jw_ingame_state *state, const char *fmt, ...) {
+    if (!state || !fmt) return;
+    va_list args;
+    va_start(args, fmt);
+    if (strcmp(fmt, "%s") == 0) {
+        const char *value = va_arg(args, const char *);
+        snprintf(state->status, sizeof(state->status), "%s", T(value ? value : ""));
+    } else {
+        vsnprintf(state->status, sizeof(state->status), T(fmt), args);
+    }
+    va_end(args);
+}
+
 /* Footer labels are UI text; the button_text pills ("A", "L1/R1") are glyphs and
    stay as they are. Funnelled here so the eight footer arrays below stay
    untouched -- they are stack locals, so rewriting the pointer is safe. */
@@ -463,15 +476,15 @@ static int jw__activate(const char *socket_path, jw_menu_state *state, bool *run
             state->pending_settings = JW_SETTINGS_ABOUT;
             return 0;
         case JW_MENU_RESCAN: {
-            snprintf(state->status, sizeof(state->status), "%s", T("Scanning…"));
+            jw__ingame_status(state, "%s", T("Scanning…"));
             cat_request_frame();
             jw__render_menu(state);
             int rc = jw_ipc_scan_library(socket_path, state->status,
                                          sizeof(state->status));
             if (rc == 0 && strcmp(state->status, "scan started") == 0) {
-                snprintf(state->status, sizeof(state->status), "%s", T("Scanning…"));
+                jw__ingame_status(state, "%s", T("Scanning…"));
             } else if (rc != 0 && !state->status[0]) {
-                snprintf(state->status, sizeof(state->status), "%s", T("Scan failed"));
+                jw__ingame_status(state, "%s", T("Scan failed"));
             }
             /* Refresh cached counts opportunistically; the daemon now runs the
                scan asynchronously, so these may remain the pre-scan counts. */
@@ -486,14 +499,14 @@ static int jw__activate(const char *socket_path, jw_menu_state *state, bool *run
             /* The platform "sleep" write to /sys/power/state blocks until the
                system resumes, so this call returns after wake. Keep the menu
                open so the user lands back where they were. */
-            snprintf(state->status, sizeof(state->status), "%s", T("Sleeping…"));
+            jw__ingame_status(state, "%s", T("Sleeping…"));
             cat_request_frame();
             jw__render_menu(state);
             if (jw_ipc_platform_action(socket_path, "sleep", 0) != 0) {
                 /* Daemon unreachable: keep the feedback up instead of flashing.
                    Return the failure too, or the caller's haptic contradicts
                    the status line the user is looking at. */
-                snprintf(state->status, sizeof(state->status), "%s", T("Sleep failed"));
+                jw__ingame_status(state, "%s", T("Sleep failed"));
                 return -1;
             }
             state->status[0] = '\0';
@@ -505,7 +518,7 @@ static int jw__activate(const char *socket_path, jw_menu_state *state, bool *run
            gets right. */
         case JW_MENU_EXIT_STOCK:
             if (jw_ipc_exit_stock(socket_path) != 0) {
-                snprintf(state->status, sizeof(state->status), "%s",
+                jw__ingame_status(state, "%s",
                          "Exit to stock failed");
                 return -1;
             }
@@ -513,14 +526,14 @@ static int jw__activate(const char *socket_path, jw_menu_state *state, bool *run
             return 0;
         case JW_MENU_REBOOT:
             if (jw_ipc_platform_action(socket_path, "reboot", 0) != 0) {
-                snprintf(state->status, sizeof(state->status), "%s", T("Reboot failed"));
+                jw__ingame_status(state, "%s", T("Reboot failed"));
                 return -1;
             }
             *running = false;
             return 0;
         case JW_MENU_POWEROFF:
             if (jw_ipc_platform_action(socket_path, "poweroff", 0) != 0) {
-                snprintf(state->status, sizeof(state->status), "%s",
+                jw__ingame_status(state, "%s",
                          "Power off failed");
                 return -1;
             }
@@ -1048,13 +1061,13 @@ static void jw__ingame_shader_refresh(const char *socket_path,
 
 static const char *jw__ingame_perf_active_label(const jw_ingame_state *state) {
     if (!state || !state->perf_ready || !state->perf.supported) {
-        return "Unavailable";
+        return T("Unavailable");
     }
     jw_platform_perf_profile profile;
     if (jw_platform_parse_perf_profile(state->perf.active_profile, &profile)) {
         return jw_platform_perf_profile_label(profile);
     }
-    return "Unknown";
+    return T("Unknown");
 }
 
 static void jw__perf_request_init(jw_platform_perf_request *request) {
@@ -1119,7 +1132,7 @@ static void jw__ingame_detail(const jw_ingame_state *state, int item,
         }
     } else if (item == JW_INGAME_PERF) {
         if (state->perf_ready && state->perf.supported && state->perf.soc_temp_c >= 0) {
-            snprintf(out, out_size, "%s, %d C",
+            snprintf(out, out_size, T("%s, %d C"),
                      jw__ingame_perf_active_label(state),
                      state->perf.soc_temp_c);
         } else {
@@ -1455,7 +1468,7 @@ static void jw__render_ingame_menu(const jw_ingame_state *state) {
 
     const char *session_line = state->console_title[0]
                              ? state->console_title
-                             : (state->session.active ? "" : "No active RetroArch session");
+                             : (state->session.active ? "" : T("No active RetroArch session"));
     if (session_line[0]) {
         cat_draw_text_ellipsized(small, session_line, x, meta_y,
                                  theme->hint, list_w);
@@ -1538,8 +1551,8 @@ static void jw__render_ingame_menu(const jw_ingame_state *state) {
                       state->load_count > 0 &&
                       state->load_entries[state->load_index].is_latest);
     if (!status_text[0] && on_latest) {
-        snprintf(latest_hint, sizeof(latest_hint),
-                 "Save & Quit quicksave \xe2\x80\x94 A resumes, Y keeps it as a slot");
+        snprintf(latest_hint, sizeof(latest_hint), "%s",
+                 T("Save & Quit quicksave \xe2\x80\x94 A resumes, Y keeps it as a slot"));
         status_text = latest_hint;
     }
     if (state->show_hints && status_text[0]) {
@@ -1584,8 +1597,8 @@ static void jw__ingame_perf_apply_profile(const char *socket_path,
         return;
     }
     if (!state->perf_ready || !state->perf.supported) {
-        snprintf(state->status, sizeof(state->status), "%s",
-                 "Performance unavailable");
+        jw__ingame_status(state, "%s",
+                 T("Performance unavailable"));
         return;
     }
     jw_platform_perf_profile profile = kInGamePerfProfiles[state->perf_profile_index];
@@ -1644,8 +1657,8 @@ static bool jw__ingame_perf_adjust(const char *socket_path,
         return false;
     }
     if (!state->perf_ready || !state->perf.supported) {
-        snprintf(state->status, sizeof(state->status), "%s",
-                 "Performance unavailable");
+        jw__ingame_status(state, "%s",
+                 T("Performance unavailable"));
         return false;
     }
     switch (list->cursor) {
@@ -2386,7 +2399,7 @@ static void jw__ingame_refresh(const char *socket_path, jw_ingame_state *state) 
                                      sizeof(state->status)) != 0) {
         memset(&state->session, 0, sizeof(state->session));
         if (!state->status[0]) {
-            snprintf(state->status, sizeof(state->status), "%s",
+            jw__ingame_status(state, "%s",
                      "RetroArch session unavailable");
         }
     } else if (state->session.active && state->session.command_ok) {
@@ -2460,7 +2473,7 @@ static void jw__ingame_continue(const char *socket_path, jw_ingame_state *state,
 static int jw__ingame_activate(const char *socket_path, jw_ingame_state *state,
                                bool *running) {
     if (!state->session.active) {
-        snprintf(state->status, sizeof(state->status), "%s",
+        jw__ingame_status(state, "%s",
                  "No active RetroArch session");
         *running = false;
         return -1;
@@ -2475,7 +2488,7 @@ static int jw__ingame_activate(const char *socket_path, jw_ingame_state *state,
             return 0;
         case JW_INGAME_SAVE:
             if (!state->session.savestate_supported) {
-                snprintf(state->status, sizeof(state->status), "%s",
+                jw__ingame_status(state, "%s",
                          "Savestates are not available");
                 return -1;
             }
@@ -2484,12 +2497,12 @@ static int jw__ingame_activate(const char *socket_path, jw_ingame_state *state,
             break;
         case JW_INGAME_LOAD:
             if (!state->session.savestate_supported) {
-                snprintf(state->status, sizeof(state->status), "%s",
+                jw__ingame_status(state, "%s",
                          "Savestates are not available");
                 return -1;
             }
             if (state->load_count <= 0) {
-                snprintf(state->status, sizeof(state->status), "%s",
+                jw__ingame_status(state, "%s",
                          T("No saves to load"));
                 return -1;
             }
@@ -2570,8 +2583,8 @@ static bool jw__ingame_adjust(const char *socket_path, jw_ingame_state *state,
             jw__ingame_perf_refresh(socket_path, state);
         }
         if (!state->perf_ready || !state->perf.supported) {
-            snprintf(state->status, sizeof(state->status), "%s",
-                     "Performance unavailable");
+            jw__ingame_status(state, "%s",
+                     T("Performance unavailable"));
             return false;
         }
         int quick_count = JW_INGAME_PERF_PROFILE_COUNT - 1; /* keep Custom in the tuner */
@@ -2659,11 +2672,11 @@ static void jw__handle_ingame_input(const char *socket_path,
                 if (jw__ingame_states_dir(state, dir, sizeof(dir)) &&
                     jw_ra_promote_switcher_slot(dir, state->session.rom_path,
                                                 &kept)) {
-                    snprintf(state->status, sizeof(state->status),
+                    jw__ingame_status(state,
                              "Kept as Slot %d", kept);
                     jw__ingame_rebuild_slots(state);
                 } else {
-                    snprintf(state->status, sizeof(state->status), "%s",
+                    jw__ingame_status(state, "%s",
                              "Keep failed");
                 }
             }

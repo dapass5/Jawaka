@@ -9,6 +9,7 @@
 #include "internal/ipc/ipc.h"
 #include "internal/ipc/ipc_stream.h"
 #include "internal/ipc/life1.h"
+#include "internal/i18n/i18n.h"
 #include "internal/launcher/active_game.h"
 #include "internal/launcher/bios.h"
 #include "internal/launcher/core_selection.h"
@@ -2024,7 +2025,7 @@ static int jw__reply_scan_ok(jw_ipc_client *client, const char *action,
 static int jw__reply_error(jw_ipc_client *client, const char *message) {
     cJSON *root = cJSON_CreateObject();
     cJSON_AddStringToObject(root, "type", "error");
-    cJSON_AddStringToObject(root, "message", message);
+    cJSON_AddStringToObject(root, "message", message ? T(message) : "");
     return jw__reply_json(client, root);
 }
 
@@ -2899,8 +2900,8 @@ static void jw__poll_update_install(jw_daemon_state *state) {
         state->update_status.status = JW_UPDATE_STATUS_ERROR;
         snprintf(state->update_status.message,
                  sizeof(state->update_status.message),
-                 "Update finished but service restore failed: %s",
-                 reason[0] ? reason : "unknown");
+                 T("Update finished but service restore failed: %s"),
+                 reason[0] ? reason : T("unknown"));
     } else {
         state->update_package_quiesce_release_warned = false;
         jw_log_info("update install: package quiesce released after rescan");
@@ -3214,7 +3215,7 @@ static int jw__handle_scrape_validate(jw_daemon_state *state,
         cJSON_AddBoolToObject(root, "valid", false);
         cJSON_AddBoolToObject(root, "rejected", false);
         cJSON_AddStringToObject(root, "message",
-                                "scraping unavailable in this build");
+                                T("scraping unavailable in this build"));
         return jw__reply_json(client, root);
     }
 
@@ -3237,7 +3238,7 @@ static int jw__handle_scrape_validate(jw_daemon_state *state,
     } else {
         const char *msg = jw_ss_last_error();
         cJSON_AddStringToObject(root, "message",
-                                msg ? msg : "validation failed");
+                                msg ? T(msg) : T("validation failed"));
         jw_log_info("scrape-validate failed user=%s rc=%d", ss.username, rc);
     }
     return jw__reply_json(client, root);
@@ -3472,17 +3473,17 @@ static int jw__handle_update_install(jw_daemon_state *state,
                     if (!state->services) {
                         snprintf(state->update_status.message,
                                  sizeof(state->update_status.message), "%s",
-                                 "Service supervisor unavailable; update not started");
+                                  T("Service supervisor unavailable; update not started"));
                     } else if (stuck[0]) {
                         snprintf(state->update_status.message,
                                  sizeof(state->update_status.message),
-                                 "Service quiesce failed: %s (%s)",
-                                 stuck, reason[0] ? reason : "unknown");
+                                  T("Service quiesce failed: %s (%s)"),
+                                  stuck, reason[0] ? reason : T("unknown"));
                     } else {
                         snprintf(state->update_status.message,
                                  sizeof(state->update_status.message),
-                                 "Service quiesce failed: %s",
-                                 reason[0] ? reason : "unknown");
+                                  T("Service quiesce failed: %s"),
+                                  reason[0] ? reason : T("unknown"));
                     }
                 }
             }
@@ -3503,7 +3504,7 @@ static int jw__handle_update_install(jw_daemon_state *state,
             state->update_status.status = JW_UPDATE_STATUS_ERROR;
             snprintf(state->update_status.message,
                      sizeof(state->update_status.message),
-                     "%s", "Update runner path is too long");
+                      "%s", T("Update runner path is too long"));
         }
     }
 
@@ -3539,12 +3540,12 @@ static int jw__handle_package_quiesce_begin(jw_daemon_state *state,
         char message[320];
         if (stuck[0]) {
             snprintf(message, sizeof(message),
-                     "package quiesce failed: %.127s (%.127s)", stuck,
-                     reason[0] ? reason : "unknown");
+                     T("package quiesce failed: %.127s (%.127s)"), stuck,
+                     reason[0] ? reason : T("unknown"));
         } else {
             snprintf(message, sizeof(message),
-                     "package quiesce failed: %.127s",
-                     reason[0] ? reason : "unknown");
+                     T("package quiesce failed: %.127s"),
+                     reason[0] ? reason : T("unknown"));
         }
         return jw__reply_error(client, message);
     }
@@ -3564,8 +3565,8 @@ static int jw__handle_package_quiesce_end(jw_daemon_state *state,
                                        reason, sizeof(reason))) {
         char message[256];
         snprintf(message, sizeof(message),
-                 "package quiesce release failed: %.127s",
-                 reason[0] ? reason : "unknown");
+                 T("package quiesce release failed: %.127s"),
+                 reason[0] ? reason : T("unknown"));
         return jw__reply_error(client, message);
     }
     jw_log_info("package quiesce: end operation=%s", operation_id);
@@ -3640,12 +3641,12 @@ static int jw__handle_package_mutation_begin(jw_daemon_state *state,
         char message[320];
         if (stuck[0]) {
             snprintf(message, sizeof(message),
-                     "package mutation failed: %.127s (%.127s)", stuck,
-                     reason[0] ? reason : "unknown");
+                     T("package mutation failed: %.127s (%.127s)"), stuck,
+                     reason[0] ? reason : T("unknown"));
         } else {
             snprintf(message, sizeof(message),
-                     "package mutation failed: %.127s",
-                     reason[0] ? reason : "unknown");
+                     T("package mutation failed: %.127s"),
+                     reason[0] ? reason : T("unknown"));
         }
         return jw__reply_error(client, message);
     }
@@ -3690,8 +3691,8 @@ static int jw__handle_package_mutation_end(jw_daemon_state *state,
             reason, sizeof(reason))) {
         char message[256];
         snprintf(message, sizeof(message),
-                 "package mutation release failed: %.127s",
-                 reason[0] ? reason : "unknown");
+                 T("package mutation release failed: %.127s"),
+                 reason[0] ? reason : T("unknown"));
         return jw__reply_error(client, message);
     }
     jw_log_info("package mutation: end operation=%s target=%s package=%s",
@@ -3904,7 +3905,8 @@ static int jw__reply_platform_result(jw_ipc_client *client, const char *action,
     cJSON_AddStringToObject(root, "code",
                             jw_platform_result_code_name(result ? result->code
                                                                 : JW_PLATFORM_RESULT_FAILED));
-    cJSON_AddStringToObject(root, "message", result ? result->message : "platform action failed");
+    cJSON_AddStringToObject(root, "message",
+                            result ? T(result->message) : T("platform action failed"));
     if (result && result->has_value) {
         cJSON_AddNumberToObject(root, "value", result->value);
     }
@@ -4555,7 +4557,7 @@ static int jw__handle_storage_action(jw_daemon_state *state, jw_ipc_client *clie
                                                  sizeof(stuck))) {
         char message[256];
         snprintf(message, sizeof(message),
-                 "Cannot unmount: service %s could not be verified stopped",
+                 T("Cannot unmount: service %s could not be verified stopped"),
                  stuck);
         memset(&result, 0, sizeof(result));
         result.code = JW_PLATFORM_RESULT_FAILED;
@@ -4577,7 +4579,7 @@ static int jw__handle_storage_action(jw_daemon_state *state, jw_ipc_client *clie
            by running it. Unavoidable side effect, and still a refusal. */
         char message[256];
         snprintf(message, sizeof(message),
-                 "Cannot unmount: service %s could not be verified stopped",
+                 T("Cannot unmount: service %s could not be verified stopped"),
                  stuck);
         memset(&result, 0, sizeof(result));
         result.code = JW_PLATFORM_RESULT_FAILED;
@@ -4604,8 +4606,8 @@ static int jw__handle_storage_action(jw_daemon_state *state, jw_ipc_client *clie
             jw_log_warn("safe-unmount: library rescan could not start");
         } else {
             snprintf(result.message, sizeof(result.message), "%s",
-                     scan_rc > 0 ? "Secondary SD unmounted; library rescan queued"
-                                 : "Secondary SD unmounted; library update started");
+                      scan_rc > 0 ? T("Secondary SD unmounted; library rescan queued")
+                                  : T("Secondary SD unmounted; library update started"));
         }
     }
 
@@ -12647,7 +12649,8 @@ static int jw__reply_ctl1_error(jw_ipc_client *client, const char *id,
     cJSON_AddStringToObject(reply, "id", id ? id : "");
     cJSON *error = cJSON_AddObjectToObject(reply, "error");
     cJSON_AddStringToObject(error, "code", code ? code : "internal-error");
-    cJSON_AddStringToObject(error, "message", message ? message : code);
+    cJSON_AddStringToObject(error, "message",
+                            message ? T(message) : (code ? T(code) : ""));
     if (code && strcmp(code, "unsupported-version") == 0) {
         cJSON *versions = cJSON_AddArrayToObject(error, "supported_versions");
         cJSON_AddItemToArray(versions, cJSON_CreateNumber(JW_CTL1_VERSION));
@@ -12797,7 +12800,7 @@ static int jw__handle_service_ctl(jw_daemon_state *state,
 
     if (!ok) {
         char message[128];
-        snprintf(message, sizeof(message), "%s failed: %s",
+        snprintf(message, sizeof(message), T("%s failed: %s"),
                  jw_ctl1_operation_name(request->operation), reason);
         return jw__reply_ctl1_error(client, request->id,
                                     reason[0] ? reason : "operation-failed",
@@ -12991,6 +12994,7 @@ static int jw__handle_message(jw_daemon_state *state, jw_ipc_client *client,
             cJSON_Delete(root);
             return jw__reply_error(client, "could not save language");
         }
+        (void)jw_i18n_load(lang_buf);
         /* A launcher that can swap its own string table and font asks to stay
            running, so the user keeps their place in Settings. The daemon still
            owns persistence and the OSD refresh either way; only the SIGTERM is
@@ -15472,6 +15476,7 @@ static void jw__cleanup(jw_daemon_state *state) {
         }
     }
     jw_platform_shutdown(&state->platform);
+    jw_i18n_shutdown();
     free(state->runtime_dir);
     free(state->sdcard_root);
     free(state->socket_path);
@@ -15613,6 +15618,12 @@ int main(int argc, char *argv[]) {
         }
         jw_log_warn("storage: library database unreadable on a read-only card; "
                     "showing an empty library");
+    }
+    {
+        char language[16] = "en";
+        (void)jw_db_get_setting(state.db_path, "language",
+                                language, sizeof(language));
+        (void)jw_i18n_load(language);
     }
     jw__load_library_generation(&state);
     jw__perf_load_global(&state);

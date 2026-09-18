@@ -1,5 +1,6 @@
 #include "internal/platform/device.h"
 #include "internal/platform/device_backend.h"
+#include "internal/i18n/i18n.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,7 +20,7 @@ void jw_platform_result_set(jw_platform_result *out,
         return;
     }
     out->code = code;
-    snprintf(out->message, sizeof(out->message), "%s", message ? message : "");
+    snprintf(out->message, sizeof(out->message), "%s", message ? T(message) : "");
     out->has_value = false;
     out->value = 0;
 }
@@ -39,7 +40,7 @@ void jw_platform_result_unsupported(jw_platform_action action,
                                     const char *platform_id,
                                     jw_platform_result *out) {
     char message[JW_PLATFORM_MAX_MESSAGE];
-    snprintf(message, sizeof(message), "%s is unsupported on %s",
+    snprintf(message, sizeof(message), T("%s is unsupported on %s"),
              jw_platform_action_name(action), platform_id ? platform_id : "unknown");
     jw_platform_result_set(out, JW_PLATFORM_RESULT_UNSUPPORTED, message);
 }
@@ -292,7 +293,7 @@ static void jw__platform_perf_status_init(jw_platform_perf_status *out) {
         out->domains[i].current_freq = -1;
         out->domains[i].set_freq = -1;
     }
-    snprintf(out->message, sizeof(out->message), "%s", "performance unsupported");
+    snprintf(out->message, sizeof(out->message), "%s", T("performance unsupported"));
 }
 
 void jw_platform_get_performance_status(jw_platform_context *ctx,
@@ -302,7 +303,7 @@ void jw_platform_get_performance_status(jw_platform_context *ctx,
     }
     jw__platform_perf_status_init(out);
     if (!ctx) {
-        snprintf(out->message, sizeof(out->message), "%s", "platform not initialized");
+        snprintf(out->message, sizeof(out->message), "%s", T("platform not initialized"));
         return;
     }
 
@@ -354,8 +355,8 @@ void jw_platform_get_storage_status(jw_platform_context *ctx, const char *source
     memset(out, 0, sizeof(*out));
     snprintf(out->source_id, sizeof(out->source_id), "%s",
              source_id && source_id[0] ? source_id : "secondary_sd");
-    snprintf(out->label, sizeof(out->label), "%s", "Secondary SD");
-    snprintf(out->message, sizeof(out->message), "%s", "storage source unavailable");
+    snprintf(out->label, sizeof(out->label), "%s", T("Secondary SD"));
+    snprintf(out->message, sizeof(out->message), "%s", T("storage source unavailable"));
 
     if (!ctx) {
         return;
@@ -413,7 +414,7 @@ int jw_platform_storage_roots(jw_platform_context *ctx, jw_platform_storage_root
     memset(&out[0], 0, sizeof(out[0]));
     snprintf(out[0].source_id, sizeof(out[0].source_id), "%s",
              JW_PLATFORM_STORAGE_LAUNCHER_ID);
-    snprintf(out[0].label, sizeof(out[0].label), "%s", "Launcher SD");
+    snprintf(out[0].label, sizeof(out[0].label), "%s", T("Launcher SD"));
     snprintf(out[0].root, sizeof(out[0].root), "%s", ctx->sdcard_root);
     count++;
 
@@ -430,7 +431,7 @@ int jw_platform_storage_roots(jw_platform_context *ctx, jw_platform_storage_root
             memset(&out[count], 0, sizeof(out[count]));
             snprintf(out[count].source_id, sizeof(out[count].source_id), "%s",
                      JW_PLATFORM_STORAGE_SECONDARY_ID);
-            snprintf(out[count].label, sizeof(out[count].label), "%s", "Secondary SD");
+            snprintf(out[count].label, sizeof(out[count].label), "%s", T("Secondary SD"));
             snprintf(out[count].root, sizeof(out[count].root), "%s", token);
             count++;
             break;
